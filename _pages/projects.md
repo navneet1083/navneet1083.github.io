@@ -5,7 +5,7 @@ permalink: /projects/
 
 
 <details>
-  <summary><a href="https://inkers.ai">Inkers Technologies Pvt. Ltd.</a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  [<time datetime="09/05/2019">{{ "09/05/2019" | date: "%B %d, %Y" }}</time> - till date]
+  <summary><a href="https://inkers.ai">Inkers Technologies Pvt. Ltd.</a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  [<time datetime="09/05/2016">{{ "09/05/2016" | date: "%B %d, %Y" }}</time> - till date]
   </summary>
 
   {% include inkers.md %}
