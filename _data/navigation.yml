@@ -14,3 +14,38 @@ main:
   #   url: /collection-archive/
   # - title: "Sitemap"
   #   url: /sitemap/
+  -
+
+  # Blogs navigation
+blognav:
+  - title: "Machine Learning"
+    url: "/machine-learning/"
+    children:
+      - title: "Visualisation Features"
+        url: "/viz_feat/"
+      - title: "Hand-crafted Features"
+        url: "/craft_feat/"
+  - title: "Deep Learning"
+    children:
+      - title: "Medical Prognosis"
+        url: "/medical/"
+      - title: "Medical Diagnosis"
+        url: "/medical2/"
+      - title: "Python OpenCV"
+        url: "/dlopencv/"
+      - title: "PyTorch Training"
+        url: "/pytorch_train/"
+      - title: "PyTorch Google Colab"
+        url: "/pytorch_goog_colab/"
+      - title: "Neural Networks Perceptron"
+        url: "/nnet_percept/"
+      - title: "Networks Visualisation"
+        url: "/nnet_viz/"
+      - title: "Qunatizations"
+        url: "/nnet_quant/"
+      - title: "Docker Build"
+        url: "/dock_build/"
+  - title: "Reinforcement Learning"
+    children:
+      - title: "Rewards Efficacy"
+        url: "/rewards_eff/"

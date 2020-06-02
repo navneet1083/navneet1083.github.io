@@ -136,6 +136,8 @@
               <a href="/projects/">Projects</a>
             </li><li class="masthead__menu-item">
               <a href="/deep-learning/">Deep Learning</a>
+            </li><li class="masthead__menu-item">
+              <a href=""></a>
             </li></ul>
         
         <button class="greedy-nav__toggle hidden" type="button">
@@ -158,127 +160,101 @@
   
   <div class="sidebar sticky">
   
-
-
-<div itemscope itemtype="https://schema.org/Person">
-
   
-    <div class="author__avatar">
-      
-        <img src="/assets/images/elipticle_face.png" alt="Navneet" itemprop="image">
-      
-    </div>
-  
-
-  <div class="author__content">
     
-      <h3 class="author__name" itemprop="name">Navneet</h3>
+      
+      
+      
+      
+    
+      
+      
+      
+      
+    
+      
+      
+      
+      
+    
+      
+      
+      
+      
     
     
-      <div class="author__bio" itemprop="description">
-        <p>Research Scientist</p>
+      
 
-      </div>
+<nav class="nav__list">
+  <h3 class="nav__title" style="padding-left: 0;">Posts</h3>
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">Toggle menu</label>
+  <ul class="nav__items">
     
-  </div>
-
-  <div class="author__urls-wrapper">
-    <button class="btn btn--inverse">Follow</button>
-    <ul class="author__urls social-icons">
-      
-        <li itemprop="homeLocation" itemscope itemtype="https://schema.org/Place">
-          <i class="fas fa-fw fa-map-marker-alt" aria-hidden="true"></i> <span itemprop="name">Bengaluru, IN</span>
-        </li>
-      
-
-      
+      <li>
         
+          <a href="/machine-learning/"><span class="nav__sub-title">Machine Learning</span></a>
+        
+
+        
+        <ul>
           
-        
+            <li><a href="/viz_feat/">Visualisation Features</a></li>
           
-        
+            <li><a href="/craft_feat/">Hand-crafted Features</a></li>
           
+        </ul>
         
+      </li>
+    
+      <li>
+        
+          <span class="nav__sub-title">Deep Learning</span>
+        
+
+        
+        <ul>
           
-        
+            <li><a href="/medical/" class="active">Medical Prognosis</a></li>
           
-        
+            <li><a href="/medical2/">Medical Diagnosis</a></li>
           
+            <li><a href="/dlopencv/">Python OpenCV</a></li>
+          
+            <li><a href="/pytorch_train/">PyTorch Training</a></li>
+          
+            <li><a href="/pytorch_goog_colab/">PyTorch Google Colab</a></li>
+          
+            <li><a href="/nnet_percept/">Neural Networks Perceptron</a></li>
+          
+            <li><a href="/nnet_viz/">Networks Visualisation</a></li>
+          
+            <li><a href="/nnet_quant/">Qunatizations</a></li>
+          
+            <li><a href="/dock_build/">Docker Build</a></li>
+          
+        </ul>
         
-      
+      </li>
+    
+      <li>
+        
+          <span class="nav__sub-title">Reinforcement Learning</span>
+        
 
-      
+        
+        <ul>
+          
+            <li><a href="/rewards_eff/">Rewards Efficacy</a></li>
+          
+        </ul>
+        
+      </li>
+    
+  </ul>
+</nav>
 
-      
-        <li>
-          <a href="mailto:navneet1083@gmail.com">
-            <meta itemprop="email" content="navneet1083@gmail.com" />
-            <i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i><span class="label">Email</span>
-          </a>
-        </li>
-      
-
-      
-
-      
-
-      
-
-      
-        <li>
-          <a href="https://www.linkedin.com/in/navneet1083" itemprop="sameAs" rel="nofollow noopener noreferrer">
-            <i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span class="label">LinkedIn</span>
-          </a>
-        </li>
-      
-
-      
-
-      
-
-      
-
-      
-
-      
-
-      
-
-      
-
-      
-
-      
-
-      
-
-      
-
-      
-
-      
-
-      
-
-      
-
-      
-
-      
-
-      
-
-      <!--
-  <li>
-    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs" rel="nofollow noopener noreferrer">
-      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
-    </a>
-  </li>
--->
-    </ul>
-  </div>
-</div>
-
+    
   
   </div>
 
@@ -467,7 +443,9 @@
     <ul>
       <li>What is the probability of survival past any time <code class="language-plaintext highlighter-rouge">t</code>
         <ul>
-          <li>$S(t)=P_r(T&gt;t)$</li>
+          <li>
+\[S(t)=P_r(T&gt;t)\]
+          </li>
         </ul>
       </li>
       <li>Survival to Hazard</li>
@@ -478,8 +456,8 @@
             <table>
               <tbody>
                 <tr>
-                  <td>$\lambda(t) = P_r(T=t</td>
-                  <td>T\gt t)$  (what is the risk of death if aged t )</td>
+                  <td>$$\lambda(t) = P_r(T=t</td>
+                  <td>T\gt t)$$  (what is the risk of death if aged t )</td>
                 </tr>
               </tbody>
             </table>
@@ -488,34 +466,52 @@
       </li>
       <li>What’s the patient’s accumulated hazard upto time <code class="language-plaintext highlighter-rouge">t</code> ?
         <ul>
-          <li>$\Lambda(t)$</li>
-          <li>$\Lambda(3)=\lambda(0)+\lambda(1)+\lambda(2)+\lambda(3)$</li>
-          <li>$\Lambda(t)=\sum_{i=0}^t\lambda(i)$</li>
-          <li>$\Lambda(t)=\int_0^t\lambda(i) d_i$</li>
+          <li>
+\[\Lambda(t)\]
+          </li>
+          <li>
+\[\Lambda(3)=\lambda(0)+\lambda(1)+\lambda(2)+\lambda(3)\]
+          </li>
+          <li>
+\[\Lambda(t)=\sum_{i=0}^t\lambda(i)\]
+          </li>
+          <li>
+\[\Lambda(t)=\int_0^t\lambda(i) d_i\]
+          </li>
         </ul>
       </li>
       <li>Smoker v/s Non-Smoker
         <ul>
-          <li>$\lambda_{smoker}(t)=\lambda_0(t)exp(0.08 \times 1 + 0.01 \times age)$</li>
-          <li>$\lambda_{non_smoker}(t)=\lambda_0(t)exp(0.08 \times 0 + 0.01 \times age)$</li>
-          <li>$\frac{\lambda_{smoker}}{\lambda_{non_smoker}}=\frac{\lambda_0(t)exp(0.08+0.01 \ times age)}{\lambda_0(t)exp(0.01 \times age)}= \frac{exp(0.08)\times exp(0.01 \times age)}{exp(0.01 \times age)}=exp(0.08)=1.08$</li>
+          <li>
+\[\lambda_{smoker}(t)=\lambda_0(t)exp(0.08 \times 1 + 0.01 \times age)\]
+          </li>
+          <li>
+\[\lambda_{non\_smoker}(t)=\lambda_0(t)exp(0.08 \times 0 + 0.01 \times age)\]
+          </li>
+          <li>
+\[\frac{\lambda_{smoker}}{\lambda_{non\_smoker}}=\frac{\lambda_0(t)exp(0.08+0.01 \ times age)}{\lambda_0(t)exp(0.01 \times age)}= \frac{exp(0.08)\times exp(0.01 \times age)}{exp(0.01 \times age)}=exp(0.08)=1.08\]
+          </li>
         </ul>
       </li>
       <li>Now, effect of age on hazard
         <ul>
           <li>How much more risky is being 51 compared to 50
             <blockquote>
-              <p>$\lambda_{51}(t)=\lambda_0(t)exp(0.08 \times is_smoker + 0.01 \times 51)$
-$\lambda_{50}(t)=\lambda_0(t)exp(0.08 \times is_smoker + 0.01 \times 50)$
-$\frac{\lambda_{51}(t)}{\lambda_{50}(t)}=\frac{exp(0.01 \times 51)}{exp(0.01 \times 50)}=exp(0.51-0.50)=1.01$</p>
+              <p>\(\lambda_{51}(t)=\lambda_0(t)exp(0.08 \times is\_smoker + 0.01 \times 51)\)
+\(\lambda_{50}(t)=\lambda_0(t)exp(0.08 \times is\_smoker + 0.01 \times 50)\)
+\(\frac{\lambda_{51}(t)}{\lambda_{50}(t)}=\frac{exp(0.01 \times 51)}{exp(0.01 \times 50)}=exp(0.51-0.50)=1.01\)</p>
             </blockquote>
           </li>
         </ul>
       </li>
       <li>Finally, following observation:
         <ul>
-          <li>$\lambda_{smoker}(t)= 1.08 \times \lambda_{non_smoker}(t)$</li>
-          <li>$\lambda_{51}(t)=1.01 \times \lambda_{50}(t)$</li>
+          <li>
+\[\lambda_{smoker}(t)= 1.08 \times \lambda_{non\_smoker}(t)\]
+          </li>
+          <li>
+\[\lambda_{51}(t)=1.01 \times \lambda_{50}(t)\]
+          </li>
         </ul>
 
         <table>
@@ -546,21 +542,31 @@ $\frac{\lambda_{51}(t)}{\lambda_{50}(t)}=\frac{exp(0.01 \times 51)}{exp(0.01 \ti
       </li>
       <li>Factor Risk increase or decrease
         <ul>
-          <li>$\lambda(t)=\lambda_0(t)exp(0.08 \times is_smoker + 0.01 \times age)$</li>
-          <li>$\lambda(t)=\lambda_0(t)exp(\beta_1X_1+\beta_2X_2…)$</li>
-          <li>$= \lambda_0(t)exp(\sum_i\beta_iX_i)$</li>
+          <li>
+\[\lambda(t)=\lambda_0(t)exp(0.08 \times is\_smoker + 0.01 \times age)\]
+          </li>
+          <li>
+\[\lambda(t)=\lambda_0(t)exp(\beta_1X_1+\beta_2X_2...)\]
+          </li>
+          <li>
+\[= \lambda_0(t)exp(\sum_i\beta_iX_i)\]
+          </li>
         </ul>
       </li>
       <li>Cummulative hazard or <code class="language-plaintext highlighter-rouge">Nelson Aalen estimator</code>
         <ul>
-          <li>$H(t)=\sum_{i=0}^t\frac {d_i}{n_i}$</li>
+          <li>
+\[H(t)=\sum_{i=0}^t\frac {d_i}{n_i}\]
+          </li>
         </ul>
       </li>
       <li>Harrell’s <em>C</em>-Index
         <ul>
           <li>+1 for a permissible pair that is concordant</li>
           <li>+0.5 for a permissible pair that is a risk-tie.</li>
-          <li>$C-Index = \frac{# concordant pairs + 0.5 \times # risk ties}{# permissible pairs}$</li>
+          <li>
+\[C-Index = \frac{\# concordant pairs + 0.5 \times \# risk ties}{\# permissible pairs}\]
+          </li>
         </ul>
       </li>
       <li>
@@ -607,7 +613,9 @@ $\frac{\lambda_{51}(t)}{\lambda_{50}(t)}=\frac{exp(0.01 \times 51)}{exp(0.01 \ti
           <li>Permissible pairs are : (A,C);(A,E);(B,C);(B,E);(C,D);(C,E)</li>
           <li>Concordant paris (only look for permissible pairs): (A,C);(A,E);(C,D)</li>
           <li>Risk Ties : None</li>
-          <li>$C-Index = \frac{# concordant pairs + # Risk Ties}{# permissible pairs}= \frac{3 + 0.5 \times 0}{6}=3/6=0.5$</li>
+          <li>
+\[C-Index = \frac{\# concordant pairs + \# Risk Ties}{\# permissible pairs}= \frac{3 + 0.5 \times 0}{6}=3/6=0.5\]
+          </li>
         </ul>
       </li>
     </ul>
@@ -652,18 +660,7 @@ $\frac{\lambda_{51}(t)}{\lambda_{50}(t)}=\frac{exp(0.01 \times 51)}{exp(0.01 \ti
         
       </footer>
 
-      <section class="page__share">
-  
-    <h4 class="page__share-title">Share on</h4>
-  
-
-  <a href="https://twitter.com/intent/tweet?text=Medical+Prognosis%20http%3A%2F%2Flocalhost%3A4000%2Fmedical%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
-
-  <a href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Flocalhost%3A4000%2Fmedical%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
-
-  <a href="https://www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Flocalhost%3A4000%2Fmedical%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
-</section>
-
+      
 
       
   <nav class="pagination">
@@ -672,7 +669,8 @@ $\frac{\lambda_{51}(t)}{\lambda_{50}(t)}=\frac{exp(0.01 \times 51)}{exp(0.01 \ti
 ">Previous</a>
     
     
-      <a href="#" class="pagination--pager disabled">Next</a>
+      <a href="/medical2/" class="pagination--pager" title="Medical Diagnosis
+">Next</a>
     
   </nav>
 
@@ -681,43 +679,6 @@ $\frac{\lambda_{51}(t)}{\lambda_{50}(t)}=\frac{exp(0.01 \times 51)}{exp(0.01 \ti
     
   </article>
 
-  
-  
-    <div class="page__related">
-      <h4 class="page__related-title">You may also enjoy</h4>
-      <div class="grid__wrapper">
-        
-          
-
-
-
-<div class="grid__item">
-  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
-    
-    <h2 class="archive__item-title" itemprop="headline">
-      
-        <a href="/dlopencv/" rel="permalink">Python code to extract BBox: OpenCV
-</a>
-      
-    </h2>
-    
-      <p class="page__meta"><i class="far fa-clock" aria-hidden="true"></i> 
-
-
-
-
-  1 minute read
-
-</p>
-    
-    <p class="archive__item-excerpt" itemprop="description">Machine Learning, OpenCV, Python
-</p>
-  </article>
-</div>
-
-        
-      </div>
-    </div>
   
   
 </div>

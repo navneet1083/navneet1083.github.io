@@ -276,11 +276,16 @@ defaults:
       type: posts
     values:
       layout: single
-      author_profile: true
+      author_profile: false
       read_time: true
       comments: # true
-      share: true
-      related: true
+      share: false
+      related: false
+      sidebar:
+        title: "Posts"
+        nav: blognav
+        toc: true
+        toc_sticky: true
 
   # _pages
   - scope:
@@ -289,20 +294,5 @@ defaults:
     values:
       layout: single
       author_profile: true
-#      sidebar:
-#        - title: "About"
-#          url: /about/
-#        - title: "Resume"
-#          url: /machine-learning/
-#        - title: "Projects"
-#          url: "/"
-#        - title: "Deep Learning"
-#          url: "/"
-#        - title: "Embedded"
-#          url: "/"
-#        - title: "Bayesian Inference"
-#          url: "/"
-#        - title: "Reinforcement Learning"
-#          url: "/"
-#        - title: "Articles"
-#          url: "/"
+
+

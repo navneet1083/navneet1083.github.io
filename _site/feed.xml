@@ -1,4 +1,91 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-06-01T15:28:10+05:30</updated><id>http://localhost:4000/feed.xml</id><title type="html">Navneet</title><subtitle>Research Scientist</subtitle><author><name>Navneet</name><email>navneet1083@gmail.com</email></author><entry><title type="html">Medical Prognosis</title><link href="http://localhost:4000/medical/" rel="alternate" type="text/html" title="Medical Prognosis" /><published>2020-03-21T00:00:00+05:30</published><updated>2020-03-21T00:00:00+05:30</updated><id>http://localhost:4000/medical</id><content type="html" xml:base="http://localhost:4000/medical/">&lt;blockquote&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-06-02T11:57:18+05:30</updated><id>http://localhost:4000/feed.xml</id><title type="html">Navneet</title><subtitle>Research Scientist</subtitle><author><name>Navneet</name><email>navneet1083@gmail.com</email></author><entry><title type="html">Medical Diagnosis</title><link href="http://localhost:4000/medical2/" rel="alternate" type="text/html" title="Medical Diagnosis" /><published>2020-04-20T00:00:00+05:30</published><updated>2020-04-20T00:00:00+05:30</updated><id>http://localhost:4000/medical2</id><content type="html" xml:base="http://localhost:4000/medical2/">&lt;h1 id=&quot;medical-diagnosis&quot;&gt;Medical Diagnosis&lt;/h1&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;em&gt;Dermatalogy&lt;/em&gt; - Deals with skin diseases&lt;/li&gt;
+  &lt;li&gt;&lt;em&gt;Opthalmology&lt;/em&gt; - Deals with diagnoses and treatment of eye disorders.&lt;/li&gt;
+  &lt;li&gt;&lt;em&gt;Histopathology&lt;/em&gt; - Medical speciality involving examining of tissue under the microscope. [study involves is to check the cancer spread]&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;evaluations&quot;&gt;Evaluations&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Evaluation Metrics:
+    &lt;ul&gt;
+      &lt;li&gt;How good is a model :
+ \(Accuracy = \dfrac{Examples\ correctly \ classified} {Total\ number\ of\ examples}\)&lt;/li&gt;
+      &lt;li&gt;Accuracy in terms of conditional probability
+        &lt;ul&gt;
+          &lt;li&gt;could be defined as :
+\(Accuracy = P(correct)\)&lt;/li&gt;
+          &lt;li&gt;Well, the above is not always correct; because it could be biased if multiple labels are there, so it can be modified as :
+\(Accuracy = P(correct\ \cap \ disease) + P(correct\  \cap \ normal)\)&lt;/li&gt;
+          &lt;li&gt;Law of conditional probability
+\(P(A \cap B) = P(A|B)P(B)\)
+So, the above accuracy can be defined as :
+\(Accuracy = P(correct|disease)P(disease) + P(correct|normal)P(normal)\)
+\(Accuracy = P(+|disease)P(disease) + P(-|normal)P(normal)\)&lt;/li&gt;
+          &lt;li&gt;Sensitivity - &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;true positive rate&lt;/code&gt;&lt;/li&gt;
+          &lt;li&gt;Specificity - &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;true negative rate&lt;/code&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;em&gt;Sensitivity&lt;/em&gt; - It is the probability that the model classify the patient is having a disease given that they have the disease.&lt;/li&gt;
+          &lt;li&gt;&lt;em&gt;Specificity&lt;/em&gt; - It is the probability that the model classify the patient as being normal given that they are normal&lt;/li&gt;
+          &lt;li&gt;So the accuracy would be defined as :
+\(Accuracy = Sensitivity\ * \ P(disease) + Specificity \ * \ P(normal)\)
+\(Accuracy = Sensitivity * prevalence + Specificity * (1 - prevalence)\)&lt;/li&gt;
+          &lt;li&gt;Sensitivity and Specificity can be computed as :
+\(P(+|disease) = sensitivity = \dfrac{\#(+\ and\ disease)}{\#(disease)}\)
+\(P(-|normal) = specificity = \dfrac{\#(-\ and\ normal)}{\#(normal)}\)&lt;/li&gt;
+          &lt;li&gt;Prevalence can be computed as :
+\(prevalence = P(disease) = \dfrac{\#(disease)} {\#(total)}\)&lt;/li&gt;
+          &lt;li&gt;PPV (Positive Predictive Value) - If a model prediction is positive, what is the probability that a patient has a disease:
+\(P(disease\ |\ +)\)&lt;/li&gt;
+          &lt;li&gt;NPV (Negative Predictive Vlaue) - If a model prediction is negative, what is the probability that a patient is normal:
+\(P(normal\ |\ -)\)&lt;/li&gt;
+          &lt;li&gt;PPV &amp;amp; NPV
+\(PPV = P(disease|+) = \dfrac{\#(+\ and\ disease)}{\#(+)}\)
+\(NPV = P(normal|-) = \dfrac{\#(-\ and\ normal)}{\#(-)}\)&lt;/li&gt;
+          &lt;li&gt;Confusion Matrix:&lt;/li&gt;
+        &lt;/ul&gt;
+
+        &lt;table&gt;
+          &lt;tbody&gt;
+            &lt;tr&gt;
+              &lt;td&gt;Disease&lt;/td&gt;
+              &lt;td&gt;True Positive&lt;/td&gt;
+              &lt;td&gt;False Negative&lt;/td&gt;
+            &lt;/tr&gt;
+            &lt;tr&gt;
+              &lt;td&gt;Normal&lt;/td&gt;
+              &lt;td&gt;False Positive&lt;/td&gt;
+              &lt;td&gt;True Negative&lt;/td&gt;
+            &lt;/tr&gt;
+          &lt;/tbody&gt;
+        &lt;/table&gt;
+
+        &lt;p&gt;\(Sensitivity = \dfrac{TP}{TP\ + \ FN}\)
+\(Specificity = \dfrac{FP}{FP\ +\ TN}\)
+\(PPV = \dfrac{TP}{TP\ + \ FP}\)
+\(NPV = \dfrac{FN}{FN\ + \ TN}\)&lt;/p&gt;
+
+        &lt;ul&gt;
+          &lt;li&gt;Another way of computing PPV:
+\(PPV = \dfrac{sensitivity * prevalence}{(sensitivity * prevalence)+((1-specificity)*(1-prevalence))}\)&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;segmentation&quot;&gt;Segmentation&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Image Segmentation
+    &lt;ul&gt;
+      &lt;li&gt;Soft Dice Loss of image segmentation problem
+\(L(P,G) = 1 - \dfrac{2\sum_i^n p_ig_i}{\sum_i^n p_i^2 + \sum_i^n g_i^2}\)&lt;/li&gt;
+      &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;P&lt;/code&gt; is predicted value &amp;amp; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;G&lt;/code&gt; is ground truth value&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Navneet</name><email>navneet1083@gmail.com</email></author><category term="UNet" /><category term="PyTorch" /><summary type="html">Deep Learning, UNet, Neural Network, PyTorch</summary></entry><entry><title type="html">Medical Prognosis</title><link href="http://localhost:4000/medical/" rel="alternate" type="text/html" title="Medical Prognosis" /><published>2020-03-21T00:00:00+05:30</published><updated>2020-03-21T00:00:00+05:30</updated><id>http://localhost:4000/medical</id><content type="html" xml:base="http://localhost:4000/medical/">&lt;blockquote&gt;
   &lt;p&gt;Prognosis&lt;/p&gt;
 &lt;/blockquote&gt;
 
@@ -155,7 +242,9 @@
     &lt;ul&gt;
       &lt;li&gt;What is the probability of survival past any time &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;t&lt;/code&gt;
         &lt;ul&gt;
-          &lt;li&gt;$S(t)=P_r(T&amp;gt;t)$&lt;/li&gt;
+          &lt;li&gt;
+\[S(t)=P_r(T&amp;gt;t)\]
+          &lt;/li&gt;
         &lt;/ul&gt;
       &lt;/li&gt;
       &lt;li&gt;Survival to Hazard&lt;/li&gt;
@@ -166,8 +255,8 @@
             &lt;table&gt;
               &lt;tbody&gt;
                 &lt;tr&gt;
-                  &lt;td&gt;$\lambda(t) = P_r(T=t&lt;/td&gt;
-                  &lt;td&gt;T\gt t)$  (what is the risk of death if aged t )&lt;/td&gt;
+                  &lt;td&gt;$$\lambda(t) = P_r(T=t&lt;/td&gt;
+                  &lt;td&gt;T\gt t)$$  (what is the risk of death if aged t )&lt;/td&gt;
                 &lt;/tr&gt;
               &lt;/tbody&gt;
             &lt;/table&gt;
@@ -176,34 +265,52 @@
       &lt;/li&gt;
       &lt;li&gt;What’s the patient’s accumulated hazard upto time &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;t&lt;/code&gt; ?
         &lt;ul&gt;
-          &lt;li&gt;$\Lambda(t)$&lt;/li&gt;
-          &lt;li&gt;$\Lambda(3)=\lambda(0)+\lambda(1)+\lambda(2)+\lambda(3)$&lt;/li&gt;
-          &lt;li&gt;$\Lambda(t)=\sum_{i=0}^t\lambda(i)$&lt;/li&gt;
-          &lt;li&gt;$\Lambda(t)=\int_0^t\lambda(i) d_i$&lt;/li&gt;
+          &lt;li&gt;
+\[\Lambda(t)\]
+          &lt;/li&gt;
+          &lt;li&gt;
+\[\Lambda(3)=\lambda(0)+\lambda(1)+\lambda(2)+\lambda(3)\]
+          &lt;/li&gt;
+          &lt;li&gt;
+\[\Lambda(t)=\sum_{i=0}^t\lambda(i)\]
+          &lt;/li&gt;
+          &lt;li&gt;
+\[\Lambda(t)=\int_0^t\lambda(i) d_i\]
+          &lt;/li&gt;
         &lt;/ul&gt;
       &lt;/li&gt;
       &lt;li&gt;Smoker v/s Non-Smoker
         &lt;ul&gt;
-          &lt;li&gt;$\lambda_{smoker}(t)=\lambda_0(t)exp(0.08 \times 1 + 0.01 \times age)$&lt;/li&gt;
-          &lt;li&gt;$\lambda_{non_smoker}(t)=\lambda_0(t)exp(0.08 \times 0 + 0.01 \times age)$&lt;/li&gt;
-          &lt;li&gt;$\frac{\lambda_{smoker}}{\lambda_{non_smoker}}=\frac{\lambda_0(t)exp(0.08+0.01 \ times age)}{\lambda_0(t)exp(0.01 \times age)}= \frac{exp(0.08)\times exp(0.01 \times age)}{exp(0.01 \times age)}=exp(0.08)=1.08$&lt;/li&gt;
+          &lt;li&gt;
+\[\lambda_{smoker}(t)=\lambda_0(t)exp(0.08 \times 1 + 0.01 \times age)\]
+          &lt;/li&gt;
+          &lt;li&gt;
+\[\lambda_{non\_smoker}(t)=\lambda_0(t)exp(0.08 \times 0 + 0.01 \times age)\]
+          &lt;/li&gt;
+          &lt;li&gt;
+\[\frac{\lambda_{smoker}}{\lambda_{non\_smoker}}=\frac{\lambda_0(t)exp(0.08+0.01 \ times age)}{\lambda_0(t)exp(0.01 \times age)}= \frac{exp(0.08)\times exp(0.01 \times age)}{exp(0.01 \times age)}=exp(0.08)=1.08\]
+          &lt;/li&gt;
         &lt;/ul&gt;
       &lt;/li&gt;
       &lt;li&gt;Now, effect of age on hazard
         &lt;ul&gt;
           &lt;li&gt;How much more risky is being 51 compared to 50
             &lt;blockquote&gt;
-              &lt;p&gt;$\lambda_{51}(t)=\lambda_0(t)exp(0.08 \times is_smoker + 0.01 \times 51)$
-$\lambda_{50}(t)=\lambda_0(t)exp(0.08 \times is_smoker + 0.01 \times 50)$
-$\frac{\lambda_{51}(t)}{\lambda_{50}(t)}=\frac{exp(0.01 \times 51)}{exp(0.01 \times 50)}=exp(0.51-0.50)=1.01$&lt;/p&gt;
+              &lt;p&gt;\(\lambda_{51}(t)=\lambda_0(t)exp(0.08 \times is\_smoker + 0.01 \times 51)\)
+\(\lambda_{50}(t)=\lambda_0(t)exp(0.08 \times is\_smoker + 0.01 \times 50)\)
+\(\frac{\lambda_{51}(t)}{\lambda_{50}(t)}=\frac{exp(0.01 \times 51)}{exp(0.01 \times 50)}=exp(0.51-0.50)=1.01\)&lt;/p&gt;
             &lt;/blockquote&gt;
           &lt;/li&gt;
         &lt;/ul&gt;
       &lt;/li&gt;
       &lt;li&gt;Finally, following observation:
         &lt;ul&gt;
-          &lt;li&gt;$\lambda_{smoker}(t)= 1.08 \times \lambda_{non_smoker}(t)$&lt;/li&gt;
-          &lt;li&gt;$\lambda_{51}(t)=1.01 \times \lambda_{50}(t)$&lt;/li&gt;
+          &lt;li&gt;
+\[\lambda_{smoker}(t)= 1.08 \times \lambda_{non\_smoker}(t)\]
+          &lt;/li&gt;
+          &lt;li&gt;
+\[\lambda_{51}(t)=1.01 \times \lambda_{50}(t)\]
+          &lt;/li&gt;
         &lt;/ul&gt;
 
         &lt;table&gt;
@@ -234,21 +341,31 @@ $\frac{\lambda_{51}(t)}{\lambda_{50}(t)}=\frac{exp(0.01 \times 51)}{exp(0.01 \ti
       &lt;/li&gt;
       &lt;li&gt;Factor Risk increase or decrease
         &lt;ul&gt;
-          &lt;li&gt;$\lambda(t)=\lambda_0(t)exp(0.08 \times is_smoker + 0.01 \times age)$&lt;/li&gt;
-          &lt;li&gt;$\lambda(t)=\lambda_0(t)exp(\beta_1X_1+\beta_2X_2…)$&lt;/li&gt;
-          &lt;li&gt;$= \lambda_0(t)exp(\sum_i\beta_iX_i)$&lt;/li&gt;
+          &lt;li&gt;
+\[\lambda(t)=\lambda_0(t)exp(0.08 \times is\_smoker + 0.01 \times age)\]
+          &lt;/li&gt;
+          &lt;li&gt;
+\[\lambda(t)=\lambda_0(t)exp(\beta_1X_1+\beta_2X_2...)\]
+          &lt;/li&gt;
+          &lt;li&gt;
+\[= \lambda_0(t)exp(\sum_i\beta_iX_i)\]
+          &lt;/li&gt;
         &lt;/ul&gt;
       &lt;/li&gt;
       &lt;li&gt;Cummulative hazard or &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Nelson Aalen estimator&lt;/code&gt;
         &lt;ul&gt;
-          &lt;li&gt;$H(t)=\sum_{i=0}^t\frac {d_i}{n_i}$&lt;/li&gt;
+          &lt;li&gt;
+\[H(t)=\sum_{i=0}^t\frac {d_i}{n_i}\]
+          &lt;/li&gt;
         &lt;/ul&gt;
       &lt;/li&gt;
       &lt;li&gt;Harrell’s &lt;em&gt;C&lt;/em&gt;-Index
         &lt;ul&gt;
           &lt;li&gt;+1 for a permissible pair that is concordant&lt;/li&gt;
           &lt;li&gt;+0.5 for a permissible pair that is a risk-tie.&lt;/li&gt;
-          &lt;li&gt;$C-Index = \frac{# concordant pairs + 0.5 \times # risk ties}{# permissible pairs}$&lt;/li&gt;
+          &lt;li&gt;
+\[C-Index = \frac{\# concordant pairs + 0.5 \times \# risk ties}{\# permissible pairs}\]
+          &lt;/li&gt;
         &lt;/ul&gt;
       &lt;/li&gt;
       &lt;li&gt;
@@ -295,7 +412,9 @@ $\frac{\lambda_{51}(t)}{\lambda_{50}(t)}=\frac{exp(0.01 \times 51)}{exp(0.01 \ti
           &lt;li&gt;Permissible pairs are : (A,C);(A,E);(B,C);(B,E);(C,D);(C,E)&lt;/li&gt;
           &lt;li&gt;Concordant paris (only look for permissible pairs): (A,C);(A,E);(C,D)&lt;/li&gt;
           &lt;li&gt;Risk Ties : None&lt;/li&gt;
-          &lt;li&gt;$C-Index = \frac{# concordant pairs + # Risk Ties}{# permissible pairs}= \frac{3 + 0.5 \times 0}{6}=3/6=0.5$&lt;/li&gt;
+          &lt;li&gt;
+\[C-Index = \frac{\# concordant pairs + \# Risk Ties}{\# permissible pairs}= \frac{3 + 0.5 \times 0}{6}=3/6=0.5\]
+          &lt;/li&gt;
         &lt;/ul&gt;
       &lt;/li&gt;
     &lt;/ul&gt;
