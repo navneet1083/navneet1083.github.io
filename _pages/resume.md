@@ -3,5 +3,4 @@ title: "Résumé"
 permalink: /resume/
 ---
 
-<iframe frameborder="5" src="/assets/pdfs/Navneet_Resume_RS.pdf" width="125%" height="1110">
-</iframe>
+<iframe src="https://drive.google.com/file/d/1HFku6ZO092MoNCg0a7LeCcHKW-B46qiC/preview" width="125%" height="1110" scrolling="no" frameBorder="0"></iframe>
