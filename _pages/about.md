@@ -22,7 +22,7 @@ permalink: /about/
 <br>
 
 
-I am Data Scientist specialising in training Deep Learning model on computer vision and also visualising neural network attentions to see how model is doing. It includes Grad-CAM, neurons activations, layers visualisation etc. I have trained several models on object detection (large as satellite-images and small as cashews nuts), gaze detection, facial attributes (like gender, emotion, age, pose on single model).
+I am Deep Learning Programmer specialising in training Deep Learning model on computer vision and also visualising neural network attentions to see how model is doing. It includes Grad-CAM, neurons activations, layers visualisation etc. I have trained several models on object detection (large as satellite-images and small as cashews nuts), gaze detection, facial attributes (like gender, emotion, age, pose on single model).
 
 Passionate about discovering insights into complex systems from data. Results oriented, decisive leader in Big Data space that combines an entrepreneurial spirit with corporate-refined execution in Big Data strategy. Creativity to go beyond current tools to deliver the best solution to the problem, ability and comfort with working independently and making key decisions on projects.
  
