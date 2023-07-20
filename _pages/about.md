@@ -24,8 +24,10 @@ permalink: /about/
 
 I am Deep Learning Programmer specialising in training Deep Learning model on computer vision and also visualising neural network attentions to see how model is doing. It includes Grad-CAM, neurons activations, layers visualisation etc. I have trained several models on object detection (large as satellite-images and small as cashews nuts), gaze detection, facial attributes (like gender, emotion, age, pose on single model).
 
-Passionate about discovering insights into complex systems from data. Results oriented, decisive leader in Big Data space that combines an entrepreneurial spirit with corporate-refined execution in Big Data strategy. Creativity to go beyond current tools to deliver the best solution to the problem, ability and comfort with working independently and making key decisions on projects.
- 
+[//]: # (Passionate about discovering insights into complex systems from data. Results oriented, decisive leader in Big Data space that combines an entrepreneurial spirit with corporate-refined execution in Big Data strategy. Creativity to go beyond current tools to deliver the best solution to the problem, ability and comfort with working independently and making key decisions on projects.)
+
+Now, I have been investing effective timings in fine-tuning LLMs. I have done couple of PoCs and hosted website for question-answering with BERT/GPT model and vector database (pincecone;redis). I have been fine-tuning model like FLAN-T5, GPT with PEFT using LoRA, Adapter techniques which reduces the parameters to be trained hence most weights remain unchanged. Also worked on BLEU and ROUGE score for model performance and evaluation. I have also worked on models hosted on hugging face (like Llama, GPT etc) and benchmarks like HELM and GLUE.
+
 I have done research on temporal data for determining fight, vandalism, bullying etc. I have trained these models on (with modified) MobileNets, Squeezenets, FireNets etc. to run on embedded devices like RockPro, Nvidia Nano etc. Where device is not concern, i trained models on ResNet-101 also with little bit modification as related to features extractions.
 
 #### Summary of my DL/ML proficiency skills are:
