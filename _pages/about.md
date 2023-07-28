@@ -21,6 +21,7 @@ permalink: /about/
 -->
 <br>
 
+## This is from `blog-updt` branch, to check the github-pages
 
 I am Deep Learning Programmer specialising in training Deep Learning model on computer vision and also visualising neural network attentions to see how model is doing. It includes Grad-CAM, neurons activations, layers visualisation etc. I have trained several models on object detection (large as satellite-images and small as cashews nuts), gaze detection, facial attributes (like gender, emotion, age, pose on single model).
 
