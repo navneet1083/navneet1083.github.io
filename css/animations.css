@@ -1,0 +1,275 @@
+/* ============================================
+   Animations
+   Keyframes, scroll animations, hover effects
+   ============================================ */
+
+
+/* ===========================
+   KEYFRAMES
+   =========================== */
+
+@keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+}
+
+@keyframes scrollLine {
+    0% {
+        transform: scaleY(0);
+        transform-origin: top;
+    }
+    50% {
+        transform: scaleY(1);
+        transform-origin: top;
+    }
+    51% {
+        transform: scaleY(1);
+        transform-origin: bottom;
+    }
+    100% {
+        transform: scaleY(0);
+        transform-origin: bottom;
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeInRight {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
+    }
+    50% {
+        box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
+    }
+}
+
+@keyframes gradientShift {
+    0% {
+        background-position: 0% center;
+    }
+    50% {
+        background-position: 100% center;
+    }
+    100% {
+        background-position: 0% center;
+    }
+}
+
+@keyframes meshFloat {
+    0%, 100% {
+        transform: translate(0, 0);
+    }
+    33% {
+        transform: translate(10px, -10px);
+    }
+    66% {
+        transform: translate(-5px, 5px);
+    }
+}
+
+
+/* ===========================
+   SCROLL ANIMATIONS
+   =========================== */
+
+.animate-on-scroll {
+    opacity: 0;
+    transform: translateY(20px);
+    transition:
+        opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+        transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.animate-on-scroll.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Generic stagger for direct children */
+.animate-on-scroll:nth-child(2) {
+    transition-delay: 0.1s;
+}
+
+.animate-on-scroll:nth-child(3) {
+    transition-delay: 0.2s;
+}
+
+.animate-on-scroll:nth-child(4) {
+    transition-delay: 0.3s;
+}
+
+
+/* ===========================
+   ERA CARD STAGGER
+   =========================== */
+
+.eras .animate-on-scroll:nth-child(1) { transition-delay: 0s; }
+.eras .animate-on-scroll:nth-child(2) { transition-delay: 0.12s; }
+.eras .animate-on-scroll:nth-child(3) { transition-delay: 0.24s; }
+.eras .animate-on-scroll:nth-child(4) { transition-delay: 0.36s; }
+
+
+/* ===========================
+   IMPACT CARD STAGGER
+   =========================== */
+
+.impact-card {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.impact-card.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.impact-grid .impact-card:nth-child(1) { transition-delay: 0s; }
+.impact-grid .impact-card:nth-child(2) { transition-delay: 0.1s; }
+.impact-grid .impact-card:nth-child(3) { transition-delay: 0.2s; }
+.impact-grid .impact-card:nth-child(4) { transition-delay: 0.3s; }
+
+
+/* ===========================
+   HERO ELEMENT STAGGER
+   =========================== */
+
+.hero .animate-on-scroll:nth-child(1) { transition-delay: 0.1s; }
+.hero .animate-on-scroll:nth-child(2) { transition-delay: 0.25s; }
+.hero .animate-on-scroll:nth-child(3) { transition-delay: 0.4s; }
+.hero .animate-on-scroll:nth-child(4) { transition-delay: 0.55s; }
+.hero .animate-on-scroll:nth-child(5) { transition-delay: 0.65s; }
+
+
+/* ===========================
+   EXPERTISE DOMAIN STAGGER
+   =========================== */
+
+.expertise-domains .animate-on-scroll:nth-child(1) { transition-delay: 0s; }
+.expertise-domains .animate-on-scroll:nth-child(2) { transition-delay: 0.1s; }
+.expertise-domains .animate-on-scroll:nth-child(3) { transition-delay: 0.2s; }
+.expertise-domains .animate-on-scroll:nth-child(4) { transition-delay: 0.3s; }
+.expertise-domains .animate-on-scroll:nth-child(5) { transition-delay: 0.4s; }
+.expertise-domains .animate-on-scroll:nth-child(6) { transition-delay: 0.5s; }
+
+
+/* ===========================
+   JOURNEY ENTRY ANIMATIONS
+   =========================== */
+
+.journey-entry.visible .journey-entry__card {
+    animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.journey-entry:nth-child(odd).visible .journey-entry__card {
+    animation: fadeInRight 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.journey-entry:nth-child(even).visible .journey-entry__card {
+    animation: fadeInLeft 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+
+/* ===========================
+   HOVER DEPTH EFFECTS
+   =========================== */
+
+.glass-card {
+    transition:
+        transform var(--transition-base),
+        box-shadow var(--transition-base),
+        border-color var(--transition-base);
+}
+
+.era:hover {
+    border-left-width: 6px;
+}
+
+.contact-link:hover {
+    box-shadow: var(--shadow-md);
+}
+
+/* Nav link underline animation */
+.navbar__link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: var(--color-primary);
+    transition:
+        width var(--transition-fast),
+        left var(--transition-fast);
+}
+
+.navbar__link:hover::after,
+.navbar__link--active::after {
+    width: 80%;
+    left: 10%;
+}
+
+/* Mesh float for hero background */
+.hero__mesh {
+    animation: meshFloat 20s ease-in-out infinite;
+}
+
+
+/* ===========================
+   REDUCED MOTION
+   =========================== */
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    .animate-on-scroll,
+    .impact-card {
+        opacity: 1;
+        transform: none;
+    }
+
+    .hero__mesh {
+        animation: none;
+    }
+
+    .hero__title-accent {
+        animation: none;
+    }
+}

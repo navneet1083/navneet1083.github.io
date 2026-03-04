@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Small Language Models: When Less is More — Navneet Singh</title>
+    <meta name="description" content="Why SLMs are revolutionizing edge deployment, and how fine-tuning small models often outperforms prompting large ones.">
+
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/sections.css">
+    <link rel="stylesheet" href="../css/animations.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+
+    <style>
+        .post { max-width: 780px; margin: 0 auto; padding: calc(var(--nav-height) + var(--space-2xl)) var(--space-lg) var(--space-3xl); }
+        .post__header { margin-bottom: var(--space-2xl); }
+        .post__category { font-size: var(--text-sm); font-weight: 600; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.05em; }
+        .post__title { font-size: var(--text-3xl); font-weight: 800; margin: var(--space-sm) 0; }
+        .post__meta { display: flex; gap: var(--space-lg); font-size: var(--text-sm); color: var(--color-text-light); flex-wrap: wrap; }
+        .post__body { line-height: 1.85; }
+        .post__body h2 { font-size: var(--text-2xl); margin: var(--space-2xl) 0 var(--space-md); }
+        .post__body h3 { font-size: var(--text-xl); margin: var(--space-xl) 0 var(--space-md); }
+        .post__body p { margin-bottom: var(--space-md); color: var(--color-text); }
+        .post__body ul, .post__body ol { margin: 0 0 var(--space-md) var(--space-xl); color: var(--color-text); }
+        .post__body li { margin-bottom: var(--space-sm); line-height: 1.7; }
+        .post__body blockquote { border-left: 3px solid var(--color-primary); padding: var(--space-md) var(--space-lg); margin: var(--space-lg) 0; background: var(--color-bg-alt); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
+        .post__body blockquote p { color: var(--color-text-muted); margin: 0; font-style: italic; }
+        .post__tags { display: flex; flex-wrap: wrap; gap: var(--space-sm); margin-top: var(--space-2xl); padding-top: var(--space-xl); border-top: 1px solid rgba(0,0,0,0.06); }
+        .post__nav { display: flex; justify-content: space-between; margin-top: var(--space-2xl); }
+        .comparison-table { width: 100%; border-collapse: collapse; margin: var(--space-lg) 0; font-size: var(--text-sm); }
+        .comparison-table th { background: var(--color-bg-alt); padding: 0.75rem 1rem; text-align: left; font-weight: 600; border-bottom: 2px solid rgba(0,0,0,0.08); }
+        .comparison-table td { padding: 0.75rem 1rem; border-bottom: 1px solid rgba(0,0,0,0.04); }
+        .comparison-table tr:hover td { background: rgba(79, 70, 229, 0.03); }
+        .info-box { background: rgba(79, 70, 229, 0.05); border: 1px solid rgba(79, 70, 229, 0.15); border-radius: var(--radius-md); padding: var(--space-lg); margin: var(--space-lg) 0; }
+        .info-box h4 { color: var(--color-primary); margin-bottom: var(--space-sm); font-size: var(--text-base); }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar--scrolled" id="navbar">
+        <div class="container navbar__container">
+            <a href="../index.html" class="navbar__logo"><span class="navbar__logo-mark">N</span><span class="navbar__logo-text">Navneet</span></a>
+            <ul class="navbar__links">
+                <li><a href="../index.html" class="navbar__link">Home</a></li>
+                <li><a href="../journey.html" class="navbar__link">Journey</a></li>
+                <li><a href="../work.html" class="navbar__link">Work</a></li>
+                <li><a href="index.html" class="navbar__link navbar__link--active">Blog</a></li>
+                <li><a href="../index.html#contact" class="navbar__link">Contact</a></li>
+            </ul>
+            <a href="https://drive.google.com/file/d/18Cal1KKLT0yNRQb4aXkJiduLd1hAJITM/view" target="_blank" class="btn btn--primary btn--sm navbar__cta"><i class="fas fa-file-alt"></i> Resume</a>
+            <button class="navbar__hamburger" id="hamburger" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+        <div class="navbar__mobile" id="mobileMenu">
+            <ul class="navbar__mobile-links">
+                <li><a href="../index.html" class="navbar__link">Home</a></li>
+                <li><a href="../journey.html" class="navbar__link">Journey</a></li>
+                <li><a href="../work.html" class="navbar__link">Work</a></li>
+                <li><a href="index.html" class="navbar__link navbar__link--active">Blog</a></li>
+                <li><a href="../index.html#contact" class="navbar__link">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <article class="post">
+        <header class="post__header">
+            <span class="post__category">Edge AI</span>
+            <h1 class="post__title">Small Language Models: When Less is More</h1>
+            <div class="post__meta">
+                <span><i class="fas fa-calendar"></i> February 2026</span>
+                <span><i class="fas fa-clock"></i> 7 min read</span>
+                <span><i class="fas fa-user"></i> Navneet Singh</span>
+            </div>
+        </header>
+
+        <div class="post__body">
+            <p>
+                There's a growing misconception in the AI community: bigger is always better. While frontier models with hundreds of billions of parameters achieve stunning benchmark scores, the most impactful AI deployments I've worked on over the past decade have often relied on <strong>small, focused models optimized for specific tasks</strong>.
+            </p>
+
+            <p>
+                The emergence of capable Small Language Models (SLMs) — Microsoft's Phi series, Google's Gemma, Meta's Llama-3.2 small variants, and others — is proving that a well-trained 1-3B parameter model can outperform a general-purpose 70B model on targeted tasks, at a fraction of the cost.
+            </p>
+
+            <h2>The Case for Small</h2>
+
+            <p>Why would you choose a smaller model when larger ones are available? The reasons are compelling and practical:</p>
+
+            <ul>
+                <li><strong>Latency</strong> — SLMs respond in milliseconds, not seconds. For real-time applications (autocomplete, live translation, voice assistants), this is the difference between usable and unusable.</li>
+                <li><strong>Cost</strong> — Inference cost scales roughly linearly with parameter count. A 3B model is ~25x cheaper to run than a 70B model. At scale, this is the difference between a viable product and bankruptcy.</li>
+                <li><strong>Privacy</strong> — SLMs can run entirely on-device or on-premise. Data never leaves the user's hardware. For healthcare, finance, and enterprise applications, this isn't a nice-to-have — it's a requirement.</li>
+                <li><strong>Edge deployment</strong> — You can run a quantized 3B model on a smartphone, Jetson Nano, or Raspberry Pi. This opens AI to scenarios where cloud connectivity is unreliable or absent.</li>
+            </ul>
+
+            <h2>The SLM Landscape</h2>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Model</th>
+                        <th>Params</th>
+                        <th>Key Strength</th>
+                        <th>Best For</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Phi-3 Mini</strong></td>
+                        <td>3.8B</td>
+                        <td>Reasoning quality per parameter</td>
+                        <td>Code, math, structured output</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Gemma 2</strong></td>
+                        <td>2B / 9B</td>
+                        <td>Instruction following</td>
+                        <td>Chatbots, summarization</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Llama-3.2</strong></td>
+                        <td>1B / 3B</td>
+                        <td>Multilingual, general purpose</td>
+                        <td>Mobile, edge, on-device</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Qwen2.5</strong></td>
+                        <td>0.5B-3B</td>
+                        <td>Code generation</td>
+                        <td>IDE assistants, code review</td>
+                    </tr>
+                    <tr>
+                        <td><strong>SmolLM2</strong></td>
+                        <td>135M-1.7B</td>
+                        <td>Ultra-lightweight</td>
+                        <td>IoT, embedded systems</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Architecture Innovations Enabling SLMs</h2>
+
+            <p>SLMs aren't just smaller versions of large models — they incorporate architectural innovations that maximize capability per parameter:</p>
+
+            <h3>Knowledge Distillation</h3>
+            <p>
+                A large "teacher" model's knowledge is compressed into a smaller "student" model. The student learns not just from ground truth labels, but from the teacher's output distributions — capturing the nuances and soft rankings that simple training would miss. This is how Phi-3 achieves remarkable reasoning despite its small size.
+            </p>
+
+            <h3>Efficient Attention Mechanisms</h3>
+            <p>
+                Grouped-query attention (GQA) reduces the key-value head count, cutting memory usage without significant quality loss. Multi-query attention (MQA) goes further, sharing a single set of key-value heads across all query heads. These techniques enable longer context windows on constrained hardware.
+            </p>
+
+            <h3>Structured Pruning</h3>
+            <p>
+                Rather than removing individual weights (unstructured pruning), structured pruning removes entire attention heads, FFN neurons, or even full layers. The result is a smaller model that maintains hardware-friendly compute patterns. From my experience at Inkers optimizing edge models, structured pruning combined with fine-tuning recovery achieves 2-4x compression with minimal accuracy loss.
+            </p>
+
+            <h2>Fine-Tuning SLMs: The Sweet Spot</h2>
+
+            <p>
+                Here's the key insight from my work: <strong>a fine-tuned 3B model often outperforms a prompted 70B model on domain-specific tasks</strong>. The cost per query drops by 25x, latency drops by 10x, and accuracy goes up.
+            </p>
+
+            <p>
+                LoRA (Low-Rank Adaptation) and QLoRA make fine-tuning SLMs practical on a single GPU:
+            </p>
+
+            <pre><code class="language-python">from peft import LoraConfig, get_peft_model, TaskType
+from transformers import AutoModelForCausalLM, AutoTokenizer
+
+# Load a small language model
+model_name = "microsoft/phi-3-mini-4k-instruct"
+model = AutoModelForCausalLM.from_pretrained(
+    model_name,
+    torch_dtype=torch.float16,
+    device_map="auto"
+)
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+
+# Configure LoRA — only ~0.5% of parameters become trainable
+lora_config = LoraConfig(
+    task_type=TaskType.CAUSAL_LM,
+    r=16,                    # Low-rank dimension
+    lora_alpha=32,           # Scaling factor
+    lora_dropout=0.05,
+    target_modules=[
+        "q_proj", "k_proj", "v_proj", "o_proj",
+        "gate_proj", "up_proj", "down_proj"
+    ],
+)
+
+# Apply LoRA
+model = get_peft_model(model, lora_config)
+model.print_trainable_parameters()
+# Output: trainable params: 18,350,080 || all params: 3,839,162,368
+#         trainable%: 0.478%</code></pre>
+
+            <div class="info-box">
+                <h4>LoRA vs. Full Fine-Tuning for SLMs</h4>
+                <p>For models under 3B parameters, LoRA with r=16-32 captures most task-specific adaptation. Full fine-tuning yields marginally better results but requires 4-8x more memory and risks catastrophic forgetting. QLoRA (quantized LoRA) further reduces memory by loading the base model in 4-bit, enabling fine-tuning of 3B models on a single 16GB GPU.</p>
+            </div>
+
+            <h2>Quantization for Deployment</h2>
+
+            <p>
+                Quantization reduces model precision from FP32/FP16 to INT8 or even INT4, shrinking memory footprint and accelerating inference. For SLMs, this is the final step that makes on-device deployment practical.
+            </p>
+
+            <p>Common quantization approaches in practice:</p>
+
+            <ul>
+                <li><strong>GPTQ</strong> — Post-training quantization to 4-bit. Works well for most models, supported by vLLM and TGI for serving.</li>
+                <li><strong>AWQ</strong> (Activation-aware Weight Quantization) — Preserves important weights based on activation patterns. Often slightly better quality than GPTQ at 4-bit.</li>
+                <li><strong>GGUF</strong> — The llama.cpp ecosystem format. Highly optimized for CPU inference, making it ideal for edge devices without GPUs.</li>
+                <li><strong>BitsAndBytes</strong> — Dynamic quantization in PyTorch. Great for development and experimentation.</li>
+            </ul>
+
+            <pre><code class="language-python"># Quantize to GGUF for edge deployment using llama.cpp
+# Convert to GGUF format
+python convert_hf_to_gguf.py \
+    ./my-finetuned-phi3 \
+    --outtype q4_K_M \
+    --outfile phi3-custom-q4.gguf
+
+# Run on CPU (laptop, Jetson, Raspberry Pi)
+./llama-cli \
+    -m phi3-custom-q4.gguf \
+    -p "Classify this medical report:" \
+    -n 256 \
+    --threads 4</code></pre>
+
+            <p>
+                A quantized 3B model in GGUF format is typically 1.5-2GB — small enough to fit on a smartphone or embedded device.
+            </p>
+
+            <h2>When SLMs Beat LLMs</h2>
+
+            <p>
+                Through my experiments, I've identified scenarios where SLMs consistently outperform larger models:
+            </p>
+
+            <ol>
+                <li><strong>Narrow classification tasks</strong> — Sentiment analysis, intent detection, spam filtering. A fine-tuned 1B model achieves 95%+ accuracy where GPT-4 scores 90% via prompting.</li>
+                <li><strong>Structured output generation</strong> — JSON extraction, form filling, entity recognition. SLMs fine-tuned on schema-specific data are more reliable than prompted LLMs.</li>
+                <li><strong>Real-time applications</strong> — Autocomplete, live translation, voice command parsing. Latency under 100ms is only achievable with SLMs.</li>
+                <li><strong>High-volume inference</strong> — When you're processing millions of documents, the 25x cost reduction makes SLMs the only economically viable option.</li>
+            </ol>
+
+            <h2>Choosing the Right Model Size</h2>
+
+            <p>
+                There's no universal answer, but here's a practical decision framework:
+            </p>
+
+            <ul>
+                <li><strong>&lt;500M params</strong>: Single, well-defined tasks (classification, extraction). Train from scratch or distill.</li>
+                <li><strong>1-3B params</strong>: Domain-specific tasks requiring some reasoning. Fine-tune with LoRA on 1-10K examples.</li>
+                <li><strong>3-8B params</strong>: Multi-step reasoning, code generation, complex instruction following. QLoRA fine-tune on high-quality data.</li>
+                <li><strong>&gt;8B params</strong>: General-purpose assistant, creative writing, multi-domain support. Consider whether prompting a larger API model is simpler.</li>
+            </ul>
+
+            <blockquote>
+                <p>The best model is not the largest one — it's the smallest one that solves your problem reliably. Every unnecessary parameter is wasted compute, wasted energy, and wasted money.</p>
+            </blockquote>
+
+            <h2>Looking Ahead</h2>
+
+            <p>
+                The SLM revolution is accelerating. We're seeing new architectures specifically designed for small scale (state-space models, linear attention variants), better distillation techniques, and hardware optimized for small model inference (NPUs in phones, Intel's neural sticks, Apple's Neural Engine).
+            </p>
+
+            <p>
+                For practitioners, the message is clear: start with the smallest model that might work, fine-tune it on your data, quantize it for your target hardware, and benchmark against larger alternatives. More often than not, the small model wins where it matters — in production.
+            </p>
+        </div>
+
+        <div class="post__tags">
+            <span class="tag">SLM</span>
+            <span class="tag tag--secondary">LoRA</span>
+            <span class="tag tag--accent">Quantization</span>
+            <span class="tag">Edge AI</span>
+            <span class="tag tag--secondary">Fine-Tuning</span>
+            <span class="tag tag--accent">GGUF</span>
+        </div>
+
+        <div class="post__nav">
+            <a href="agentic-ai.html" class="btn btn--outline btn--sm"><i class="fas fa-arrow-left"></i> Prev: Agentic AI</a>
+            <a href="index.html" class="btn btn--outline btn--sm">All Articles <i class="fas fa-arrow-right"></i></a>
+        </div>
+    </article>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer__content">
+                <div class="footer__brand"><span class="navbar__logo-mark">N</span><p>Principal GenAI / LLM Architect<br>Bengaluru, India</p></div>
+                <div class="footer__nav"><a href="../index.html">Home</a><a href="../journey.html">Journey</a><a href="../work.html">Work</a><a href="index.html">Blog</a><a href="../index.html#contact">Contact</a></div>
+                <div class="footer__social"><a href="mailto:navneet1083@gmail.com"><i class="fas fa-envelope"></i></a><a href="https://linkedin.com/in/navneet1083" target="_blank"><i class="fab fa-linkedin"></i></a><a href="https://github.com/navneet1083" target="_blank"><i class="fab fa-github"></i></a></div>
+            </div>
+            <div class="footer__bottom"><p>&copy; 2026 Navneet Singh. Crafted with two decades of passion.</p></div>
+        </div>
+    </footer>
+
+    <script defer src="../js/theme.js"></script>
+    <script defer src="../js/navigation.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.Portfolio && window.Portfolio.initNavigation) window.Portfolio.initNavigation();
+        });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Rise of Agentic AI: Building Autonomous Systems — Navneet Singh</title>
+    <meta name="description" content="Exploring agentic AI patterns — ReAct, Plan-and-Execute, Reflexion — and how they enable AI systems to reason, plan, and act autonomously.">
+
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/sections.css">
+    <link rel="stylesheet" href="../css/animations.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+
+    <style>
+        .post { max-width: 780px; margin: 0 auto; padding: calc(var(--nav-height) + var(--space-2xl)) var(--space-lg) var(--space-3xl); }
+        .post__header { margin-bottom: var(--space-2xl); }
+        .post__category { font-size: var(--text-sm); font-weight: 600; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.05em; }
+        .post__title { font-size: var(--text-3xl); font-weight: 800; margin: var(--space-sm) 0; }
+        .post__meta { display: flex; gap: var(--space-lg); font-size: var(--text-sm); color: var(--color-text-light); flex-wrap: wrap; }
+        .post__body { line-height: 1.85; }
+        .post__body h2 { font-size: var(--text-2xl); margin: var(--space-2xl) 0 var(--space-md); }
+        .post__body h3 { font-size: var(--text-xl); margin: var(--space-xl) 0 var(--space-md); }
+        .post__body p { margin-bottom: var(--space-md); color: var(--color-text); }
+        .post__body ul, .post__body ol { margin: 0 0 var(--space-md) var(--space-xl); color: var(--color-text); }
+        .post__body li { margin-bottom: var(--space-sm); line-height: 1.7; }
+        .post__body blockquote { border-left: 3px solid var(--color-primary); padding: var(--space-md) var(--space-lg); margin: var(--space-lg) 0; background: var(--color-bg-alt); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
+        .post__body blockquote p { color: var(--color-text-muted); margin: 0; font-style: italic; }
+        .post__tags { display: flex; flex-wrap: wrap; gap: var(--space-sm); margin-top: var(--space-2xl); padding-top: var(--space-xl); border-top: 1px solid rgba(0,0,0,0.06); }
+        .post__nav { display: flex; justify-content: space-between; margin-top: var(--space-2xl); }
+        .info-box { background: rgba(79, 70, 229, 0.05); border: 1px solid rgba(79, 70, 229, 0.15); border-radius: var(--radius-md); padding: var(--space-lg); margin: var(--space-lg) 0; }
+        .info-box h4 { color: var(--color-primary); margin-bottom: var(--space-sm); font-size: var(--text-base); }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar--scrolled" id="navbar">
+        <div class="container navbar__container">
+            <a href="../index.html" class="navbar__logo"><span class="navbar__logo-mark">N</span><span class="navbar__logo-text">Navneet</span></a>
+            <ul class="navbar__links">
+                <li><a href="../index.html" class="navbar__link">Home</a></li>
+                <li><a href="../journey.html" class="navbar__link">Journey</a></li>
+                <li><a href="../work.html" class="navbar__link">Work</a></li>
+                <li><a href="index.html" class="navbar__link navbar__link--active">Blog</a></li>
+                <li><a href="../index.html#contact" class="navbar__link">Contact</a></li>
+            </ul>
+            <a href="https://drive.google.com/file/d/18Cal1KKLT0yNRQb4aXkJiduLd1hAJITM/view" target="_blank" class="btn btn--primary btn--sm navbar__cta"><i class="fas fa-file-alt"></i> Resume</a>
+            <button class="navbar__hamburger" id="hamburger" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+        <div class="navbar__mobile" id="mobileMenu">
+            <ul class="navbar__mobile-links">
+                <li><a href="../index.html" class="navbar__link">Home</a></li>
+                <li><a href="../journey.html" class="navbar__link">Journey</a></li>
+                <li><a href="../work.html" class="navbar__link">Work</a></li>
+                <li><a href="index.html" class="navbar__link navbar__link--active">Blog</a></li>
+                <li><a href="../index.html#contact" class="navbar__link">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <article class="post">
+        <header class="post__header">
+            <span class="post__category">Generative AI</span>
+            <h1 class="post__title">The Rise of Agentic AI: Building Autonomous Systems</h1>
+            <div class="post__meta">
+                <span><i class="fas fa-calendar"></i> March 2026</span>
+                <span><i class="fas fa-clock"></i> 8 min read</span>
+                <span><i class="fas fa-user"></i> Navneet Singh</span>
+            </div>
+        </header>
+
+        <div class="post__body">
+            <p>
+                We are witnessing a paradigm shift in how we build AI systems. The era of single-prompt, stateless interactions with language models is giving way to something far more powerful: <strong>Agentic AI</strong> — systems that can reason about goals, create plans, use tools, and iteratively refine their approach to solve complex problems autonomously.
+            </p>
+
+            <p>
+                Having spent the last three years deeply immersed in Generative AI, I've watched this transition unfold from simple chain-of-thought prompting to sophisticated multi-agent orchestration frameworks. In this article, I'll share what I've learned about the core patterns, practical implementation strategies, and the challenges that remain.
+            </p>
+
+            <h2>What Makes an AI System "Agentic"?</h2>
+
+            <p>
+                An agentic AI system goes beyond simple prompt-response interactions. At its core, an agent possesses four key capabilities:
+            </p>
+
+            <ol>
+                <li><strong>Reasoning</strong> — The ability to break down complex problems into steps and think through approaches before acting.</li>
+                <li><strong>Planning</strong> — Creating and adapting multi-step plans to achieve a goal, adjusting when things don't go as expected.</li>
+                <li><strong>Tool Use</strong> — Interacting with external systems — APIs, databases, code execution environments, search engines — to gather information and take actions.</li>
+                <li><strong>Memory</strong> — Maintaining context across interactions, learning from past results, and building persistent knowledge.</li>
+            </ol>
+
+            <blockquote>
+                <p>An agent is not just a model that generates text — it's a model embedded in a loop that observes, thinks, acts, and reflects.</p>
+            </blockquote>
+
+            <h2>Core Agentic Patterns</h2>
+
+            <h3>1. ReAct (Reason + Act)</h3>
+
+            <p>
+                The ReAct pattern, introduced by Yao et al. (2022), interleaves reasoning traces with actions. At each step, the model generates a thought (reasoning about what to do), takes an action (calling a tool), and observes the result before deciding the next step.
+            </p>
+
+            <pre><code class="language-python">def react_agent(query, tools, max_steps=10):
+    """Simple ReAct agent loop."""
+    context = f"Question: {query}\n"
+
+    for step in range(max_steps):
+        # Think: generate reasoning and action
+        response = llm.generate(
+            prompt=REACT_PROMPT + context,
+            stop=["Observation:"]
+        )
+
+        # Parse the thought and action
+        thought, action, action_input = parse_response(response)
+        context += f"Thought: {thought}\nAction: {action}[{action_input}]\n"
+
+        # Check if agent wants to finish
+        if action == "Final Answer":
+            return action_input
+
+        # Act: execute the tool
+        result = tools[action].execute(action_input)
+        context += f"Observation: {result}\n"
+
+    return "Could not determine answer within step limit."</code></pre>
+
+            <p>
+                The elegance of ReAct lies in its transparency — every decision is traceable through the reasoning chain. This is especially valuable in production systems where explainability matters.
+            </p>
+
+            <h3>2. Plan-and-Execute</h3>
+
+            <p>
+                While ReAct decides one step at a time, the Plan-and-Execute pattern separates planning from execution. A "planner" LLM creates a complete plan upfront, and an "executor" agent carries out each step. After execution, the planner can revise remaining steps based on results.
+            </p>
+
+            <div class="info-box">
+                <h4>When to use Plan-and-Execute vs. ReAct</h4>
+                <ul>
+                    <li><strong>ReAct</strong>: Best for exploratory tasks where the path forward is unclear and each step informs the next. Examples: research questions, debugging.</li>
+                    <li><strong>Plan-and-Execute</strong>: Best for well-defined tasks with predictable steps. Examples: data pipelines, multi-file code changes, report generation.</li>
+                </ul>
+            </div>
+
+            <h3>3. Reflexion</h3>
+
+            <p>
+                Reflexion adds a self-evaluation loop. After attempting a task, the agent reviews its own output, identifies failures or areas for improvement, and retries with this reflection as additional context. This pattern is powerful for tasks like code generation, where the agent can run tests and iteratively fix issues.
+            </p>
+
+            <h2>Tool Use and Function Calling</h2>
+
+            <p>
+                Tools are what transform a language model from a conversationalist into an agent. Modern LLMs support structured function calling — the model outputs a JSON specification of which tool to call and with what arguments.
+            </p>
+
+            <p>Common tool categories in production agentic systems:</p>
+
+            <ul>
+                <li><strong>Information retrieval</strong> — Web search, RAG over document stores, database queries</li>
+                <li><strong>Code execution</strong> — Python sandboxes, shell commands, notebook environments</li>
+                <li><strong>API interaction</strong> — REST/GraphQL calls to external services</li>
+                <li><strong>File operations</strong> — Reading, writing, and modifying files</li>
+                <li><strong>Communication</strong> — Sending emails, posting to Slack, creating tickets</li>
+            </ul>
+
+            <h2>Prompting Strategies: CoT and ToT</h2>
+
+            <p>
+                Agentic systems rely heavily on advanced prompting to elicit structured reasoning:
+            </p>
+
+            <p>
+                <strong>Chain-of-Thought (CoT)</strong> prompting encourages the model to "think step by step," dramatically improving performance on reasoning tasks. In an agentic context, CoT forms the backbone of the "Thought" step in ReAct-style loops.
+            </p>
+
+            <p>
+                <strong>Tree-of-Thought (ToT)</strong> takes this further by exploring multiple reasoning branches in parallel. The agent generates several possible next steps, evaluates each one, and selects the most promising path. This is particularly effective for tasks requiring creative problem-solving or where the optimal approach isn't immediately obvious.
+            </p>
+
+            <pre><code class="language-python">def tree_of_thought(problem, breadth=3, depth=3):
+    """Simplified Tree-of-Thought reasoning."""
+    candidates = [{"thought": "", "score": 0}]
+
+    for level in range(depth):
+        new_candidates = []
+        for candidate in candidates:
+            # Generate multiple next thoughts
+            branches = llm.generate_n(
+                prompt=f"{problem}\n{candidate['thought']}\nNext step:",
+                n=breadth
+            )
+            for branch in branches:
+                # Evaluate each branch
+                score = llm.evaluate(
+                    f"Rate this reasoning (1-10): {branch}"
+                )
+                new_candidates.append({
+                    "thought": candidate["thought"] + "\n" + branch,
+                    "score": score
+                })
+
+        # Keep top candidates
+        candidates = sorted(
+            new_candidates, key=lambda x: x["score"], reverse=True
+        )[:breadth]
+
+    return candidates[0]["thought"]</code></pre>
+
+            <h2>Memory Systems</h2>
+
+            <p>
+                Effective agents need memory at multiple time scales:
+            </p>
+
+            <ul>
+                <li><strong>Short-term (working) memory</strong> — The current context window. This includes the conversation history, tool results, and reasoning traces from the current task.</li>
+                <li><strong>Long-term (episodic) memory</strong> — Stored in vector databases (Pinecone, Weaviate, Redis). The agent can retrieve relevant past experiences, facts, and patterns to inform current decisions.</li>
+                <li><strong>Procedural memory</strong> — Learned skills and strategies, often encoded as refined prompts or fine-tuned model weights.</li>
+            </ul>
+
+            <p>
+                In practice, I've found that a well-designed RAG pipeline — combining semantic search over a vector store with intelligent context window management — provides the most practical memory architecture for production agents.
+            </p>
+
+            <h2>Multi-Agent Systems</h2>
+
+            <p>
+                As tasks grow in complexity, single agents hit their limits. Multi-agent architectures address this by decomposing problems across specialized agents:
+            </p>
+
+            <ul>
+                <li><strong>Orchestrator pattern</strong> — A central agent delegates subtasks to specialized workers (researcher, coder, reviewer) and synthesizes their outputs.</li>
+                <li><strong>Debate pattern</strong> — Multiple agents argue different perspectives, with a judge agent selecting the best answer. This reduces hallucination and improves accuracy on contentious or nuanced questions.</li>
+                <li><strong>Pipeline pattern</strong> — Agents are chained sequentially, each transforming the output of the previous one. Well-suited for data processing workflows.</li>
+            </ul>
+
+            <h2>Challenges and Looking Ahead</h2>
+
+            <p>
+                Despite the excitement, agentic AI faces real challenges in production:
+            </p>
+
+            <ul>
+                <li><strong>Reliability</strong> — Agents can enter loops, hallucinate tool calls, or make confidently wrong decisions. Robust error handling and human-in-the-loop checkpoints are essential.</li>
+                <li><strong>Cost</strong> — Multi-step agentic workflows can consume 10-100x more tokens than a single prompt. SLMs (Small Language Models) for simpler subtasks and caching strategies become critical.</li>
+                <li><strong>Safety</strong> — An agent with tool access can take real-world actions. Sandboxing, permission systems, and action confirmation patterns are non-negotiable.</li>
+                <li><strong>Evaluation</strong> — Measuring agentic system quality is harder than evaluating single responses. End-to-end task completion metrics, step-level accuracy, and cost-per-task are all important signals.</li>
+            </ul>
+
+            <blockquote>
+                <p>The future of AI is not a single, monolithic model answering questions — it's an ecosystem of specialized agents collaborating to solve problems we couldn't approach before.</p>
+            </blockquote>
+
+            <p>
+                As these patterns mature, I believe we'll see agentic AI move from developer tools and coding assistants into every domain — scientific research, healthcare workflows, financial analysis, and creative production. The foundations are being laid now, and it's an extraordinary time to be building in this space.
+            </p>
+        </div>
+
+        <div class="post__tags">
+            <span class="tag">Agentic AI</span>
+            <span class="tag tag--secondary">LLMs</span>
+            <span class="tag tag--accent">ReAct</span>
+            <span class="tag">Chain-of-Thought</span>
+            <span class="tag tag--secondary">Multi-Agent</span>
+            <span class="tag tag--accent">Tool Use</span>
+        </div>
+
+        <div class="post__nav">
+            <a href="index.html" class="btn btn--outline btn--sm"><i class="fas fa-arrow-left"></i> All Articles</a>
+            <a href="small-language-models.html" class="btn btn--outline btn--sm">Next: Small Language Models <i class="fas fa-arrow-right"></i></a>
+        </div>
+    </article>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer__content">
+                <div class="footer__brand"><span class="navbar__logo-mark">N</span><p>Principal GenAI / LLM Architect<br>Bengaluru, India</p></div>
+                <div class="footer__nav"><a href="../index.html">Home</a><a href="../journey.html">Journey</a><a href="../work.html">Work</a><a href="index.html">Blog</a><a href="../index.html#contact">Contact</a></div>
+                <div class="footer__social"><a href="mailto:navneet1083@gmail.com"><i class="fas fa-envelope"></i></a><a href="https://linkedin.com/in/navneet1083" target="_blank"><i class="fab fa-linkedin"></i></a><a href="https://github.com/navneet1083" target="_blank"><i class="fab fa-github"></i></a></div>
+            </div>
+            <div class="footer__bottom"><p>&copy; 2026 Navneet Singh. Crafted with two decades of passion.</p></div>
+        </div>
+    </footer>
+
+    <script defer src="../js/theme.js"></script>
+    <script defer src="../js/navigation.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.Portfolio && window.Portfolio.initNavigation) window.Portfolio.initNavigation();
+        });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XMRetriever: When Smarter Retrieval Beats Larger Prompts — Navneet Singh</title>
+    <meta name="description" content="XMRetriever — a cross-modal retrieval system that uses dual-head projection and neighbor-aware sampling to achieve 75% token reduction and higher accuracy for vision-language document table extraction.">
+
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/sections.css">
+    <link rel="stylesheet" href="../css/animations.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+
+    <!-- Syntax highlighting for code blocks -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+
+    <style>
+        .post { max-width: 780px; margin: 0 auto; padding: calc(var(--nav-height) + var(--space-2xl)) var(--space-lg) var(--space-3xl); }
+        .post__header { margin-bottom: var(--space-2xl); }
+        .post__category { font-size: var(--text-sm); font-weight: 600; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.05em; }
+        .post__title { font-size: var(--text-3xl); font-weight: 800; margin: var(--space-sm) 0; }
+        .post__meta { display: flex; gap: var(--space-lg); font-size: var(--text-sm); color: var(--color-text-light); flex-wrap: wrap; }
+        .post__body { line-height: 1.85; }
+        .post__body h2 { font-size: var(--text-2xl); margin: var(--space-2xl) 0 var(--space-md); }
+        .post__body h3 { font-size: var(--text-xl); margin: var(--space-xl) 0 var(--space-md); }
+        .post__body p { margin-bottom: var(--space-md); color: var(--color-text); }
+        .post__body ul, .post__body ol { margin: 0 0 var(--space-md) var(--space-xl); color: var(--color-text); }
+        .post__body li { margin-bottom: var(--space-sm); line-height: 1.7; }
+        .post__body blockquote { border-left: 3px solid var(--color-primary); padding: var(--space-md) var(--space-lg); margin: var(--space-lg) 0; background: var(--color-bg-alt); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
+        .post__body blockquote p { color: var(--color-text-muted); margin: 0; font-style: italic; }
+        .post__body img { border-radius: var(--radius-md); margin: var(--space-lg) 0; }
+        .post__tags { display: flex; flex-wrap: wrap; gap: var(--space-sm); margin-top: var(--space-2xl); padding-top: var(--space-xl); border-top: 1px solid rgba(0,0,0,0.06); }
+        .post__nav { display: flex; justify-content: space-between; margin-top: var(--space-2xl); }
+        .info-box { background: rgba(79, 70, 229, 0.05); border: 1px solid rgba(79, 70, 229, 0.15); border-radius: var(--radius-md); padding: var(--space-lg); margin: var(--space-lg) 0; }
+        .info-box h4 { color: var(--color-primary); margin-bottom: var(--space-sm); font-size: var(--text-base); }
+        .diagram-container { margin: var(--space-xl) 0; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: var(--radius-md); padding: var(--space-lg); overflow-x: auto; }
+        .diagram-container svg { display: block; margin: 0 auto; }
+        .diagram-caption { text-align: center; font-size: var(--text-sm); color: var(--color-text-light); margin-top: var(--space-sm); font-style: italic; }
+        .results-table { width: 100%; border-collapse: collapse; margin: var(--space-lg) 0; font-size: var(--text-sm); }
+        .results-table th, .results-table td { padding: 10px 14px; text-align: left; border-bottom: 1px solid #e2e8f0; }
+        .results-table th { background: #f1f5f9; font-weight: 600; color: #334155; }
+        .results-table tr:hover { background: #f8fafc; }
+        .results-table .highlight { color: #0d9488; font-weight: 600; }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar--scrolled" id="navbar">
+        <div class="container navbar__container">
+            <a href="../index.html" class="navbar__logo"><span class="navbar__logo-mark">N</span><span class="navbar__logo-text">Navneet</span></a>
+            <ul class="navbar__links">
+                <li><a href="../index.html" class="navbar__link">Home</a></li>
+                <li><a href="../journey.html" class="navbar__link">Journey</a></li>
+                <li><a href="../research.html" class="navbar__link">Research</a></li>
+                <li><a href="index.html" class="navbar__link navbar__link--active">Blog</a></li>
+                <li><a href="../index.html#contact" class="navbar__link">Contact</a></li>
+            </ul>
+            <a href="https://drive.google.com/file/d/18Cal1KKLT0yNRQb4aXkJiduLd1hAJITM/view" target="_blank" class="btn btn--primary btn--sm navbar__cta"><i class="fas fa-file-alt"></i> Resume</a>
+            <button class="navbar__hamburger" id="hamburger" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+        <div class="navbar__mobile" id="mobileMenu">
+            <ul class="navbar__mobile-links">
+                <li><a href="../index.html" class="navbar__link">Home</a></li>
+                <li><a href="../journey.html" class="navbar__link">Journey</a></li>
+                <li><a href="../research.html" class="navbar__link">Research</a></li>
+                <li><a href="index.html" class="navbar__link navbar__link--active">Blog</a></li>
+                <li><a href="../index.html#contact" class="navbar__link">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Article -->
+    <article class="post">
+        <header class="post__header">
+            <span class="post__category">Research / Document AI</span>
+            <h1 class="post__title">XMRetriever: When Smarter Retrieval Beats Larger Prompts</h1>
+            <div class="post__meta">
+                <span><i class="fas fa-calendar"></i> November 2025</span>
+                <span><i class="fas fa-clock"></i> 12 min read</span>
+                <span><i class="fas fa-user"></i> Navneet Singh</span>
+            </div>
+        </header>
+
+        <div class="post__body">
+
+            <p>
+                Large Vision-Language Models (VLMs) like GPT-4o have transformed document understanding. Feed them an image of a complex table alongside a few annotated examples, and they can extract structured data with impressive accuracy. But there is a catch: <strong>the cost of those "few-shot" examples adds up fast</strong>. For documents with dense, heterogeneous tables -- the kind found in healthcare benefit summaries, legal contracts, and financial filings -- naive static prompting can balloon to ~80,000 tokens per page. That is expensive, slow, and increasingly prone to hallucination as context windows fill up.
+            </p>
+
+            <p>
+                XMRetriever is a cross-modal retrieval system born from a practical question: <em>What if, instead of throwing more examples at the model, we found the right examples for each page?</em> The result is a lightweight retrieval layer that sits in front of any VLM, dynamically selecting the most relevant few-shot exemplars while respecting a strict token budget. It cuts tokens by 75%, latency by 53%, and actually <em>improves</em> extraction accuracy.
+            </p>
+
+            <blockquote>
+                <p>The best prompt is not the longest one -- it is the most relevant one.</p>
+            </blockquote>
+
+            <h2>The Problem: Static Prompting Does Not Scale</h2>
+
+            <p>
+                Consider the task of extracting structured data from complex document tables -- benefit schedules, coverage matrices, formulary grids. These documents present a unique challenge:
+            </p>
+
+            <ul>
+                <li><strong>Visual heterogeneity</strong> -- Tables vary wildly in layout: merged cells, nested headers, footnote references, spanning columns, color-coded rows.</li>
+                <li><strong>Semantic density</strong> -- A single cell may encode conditional logic ("$30 copay after deductible, in-network only; 40% coinsurance out-of-network").</li>
+                <li><strong>Page-count variation</strong> -- A 2-page summary document looks nothing like a 40-page comprehensive schedule, yet both need accurate extraction.</li>
+            </ul>
+
+            <p>
+                The standard approach is <strong>static few-shot prompting</strong>: attach 20-30 annotated examples to every VLM call, regardless of what the input page actually looks like. This has three problems:
+            </p>
+
+            <ol>
+                <li><strong>Token bloat</strong> -- 20-30 examples at ~3,000 tokens each yields ~80k tokens/page. At GPT-4o pricing, this becomes prohibitively expensive at scale.</li>
+                <li><strong>Signal dilution</strong> -- Most of those examples are irrelevant to the current page. The model wastes attention on dissimilar layouts, reducing effective context for the actual task.</li>
+                <li><strong>Hallucination risk</strong> -- Overcrowded contexts increase the probability of the model "blending" information from unrelated examples into its output. With static prompting, hallucination rates of 8-9% are common.</li>
+            </ol>
+
+            <h2>The Insight: Cross-Modal Retrieval as Context Curation</h2>
+
+            <p>
+                XMRetriever reframes the problem: instead of engineering a better prompt, <strong>engineer a better retrieval system</strong> that automatically selects the right prompt for each page. The key insight is that document pages have both textual and visual identity, and effective retrieval must capture both modalities.
+            </p>
+
+            <p>
+                A page with a 3-column coverage table looks visually similar to other 3-column tables, but may be semantically about dental benefits vs. pharmacy benefits. Conversely, two pages about pharmacy benefits may use completely different visual layouts. XMRetriever learns a shared embedding space that captures both dimensions simultaneously.
+            </p>
+
+            <h2>Architecture: Dual-Head Projection into Shared Space</h2>
+
+            <p>
+                The architecture is deliberately simple. Rather than training an end-to-end cross-modal model from scratch (expensive, fragile, data-hungry), XMRetriever builds lightweight projection heads on top of pre-computed embeddings from existing foundation models.
+            </p>
+
+            <!-- ===== DIAGRAM 1: Architecture ===== -->
+            <div class="diagram-container">
+                <svg viewBox="0 0 820 440" xmlns="http://www.w3.org/2000/svg" width="100%" style="max-width:820px; font-family: 'Inter', Arial, sans-serif;">
+                    <!-- Background -->
+                    <rect width="820" height="440" fill="#f8fafc" rx="8"/>
+
+                    <!-- Title -->
+                    <text x="410" y="30" text-anchor="middle" font-size="15" font-weight="700" fill="#1e293b">XMRetriever Architecture</text>
+
+                    <!-- PDF Page (source) -->
+                    <rect x="20" y="60" width="90" height="110" rx="6" fill="#fff" stroke="#94a3b8" stroke-width="1.5"/>
+                    <rect x="30" y="75" width="70" height="6" rx="2" fill="#cbd5e1"/>
+                    <rect x="30" y="87" width="70" height="6" rx="2" fill="#cbd5e1"/>
+                    <rect x="30" y="99" width="50" height="6" rx="2" fill="#cbd5e1"/>
+                    <rect x="30" y="115" width="70" height="40" rx="3" fill="#e2e8f0" stroke="#94a3b8" stroke-width="0.5"/>
+                    <line x1="30" y1="125" x2="100" y2="125" stroke="#94a3b8" stroke-width="0.5"/>
+                    <line x1="30" y1="135" x2="100" y2="135" stroke="#94a3b8" stroke-width="0.5"/>
+                    <line x1="30" y1="145" x2="100" y2="145" stroke="#94a3b8" stroke-width="0.5"/>
+                    <line x1="65" y1="115" x2="65" y2="155" stroke="#94a3b8" stroke-width="0.5"/>
+                    <text x="65" y="185" text-anchor="middle" font-size="11" font-weight="600" fill="#475569">PDF Page</text>
+
+                    <!-- Arrow from PDF to two paths -->
+                    <line x1="110" y1="105" x2="145" y2="105" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrowGray)"/>
+
+                    <!-- Fork point -->
+                    <line x1="145" y1="105" x2="145" y2="85" stroke="#94a3b8" stroke-width="1.5"/>
+                    <line x1="145" y1="105" x2="145" y2="135" stroke="#94a3b8" stroke-width="1.5"/>
+
+                    <!-- === TEXT PIPELINE (top) === -->
+                    <!-- Text Extraction -->
+                    <rect x="160" y="55" width="110" height="36" rx="6" fill="#4338ca" opacity="0.1" stroke="#4338ca" stroke-width="1.5"/>
+                    <text x="215" y="77" text-anchor="middle" font-size="10" font-weight="600" fill="#4338ca">Text Extraction</text>
+
+                    <line x1="270" y1="73" x2="295" y2="73" stroke="#4338ca" stroke-width="1.5" marker-end="url(#arrowIndigo)"/>
+
+                    <!-- OpenAI Embedding -->
+                    <rect x="295" y="55" width="130" height="36" rx="6" fill="#4338ca" opacity="0.15" stroke="#4338ca" stroke-width="1.5"/>
+                    <text x="360" y="71" text-anchor="middle" font-size="10" font-weight="600" fill="#4338ca">OpenAI Embedding</text>
+                    <text x="360" y="83" text-anchor="middle" font-size="9" fill="#6366f1">(1536-d)</text>
+
+                    <line x1="425" y1="73" x2="455" y2="73" stroke="#4338ca" stroke-width="1.5" marker-end="url(#arrowIndigo)"/>
+
+                    <!-- Text Projection Head -->
+                    <rect x="455" y="50" width="125" height="46" rx="6" fill="#4338ca" stroke="#4338ca" stroke-width="1.5"/>
+                    <text x="517" y="70" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">Text Proj. Head</text>
+                    <text x="517" y="84" text-anchor="middle" font-size="9" fill="#c7d2fe">3-layer MLP -> 512-d</text>
+
+                    <!-- === VISION PIPELINE (bottom) === -->
+                    <!-- Rasterize -->
+                    <rect x="160" y="117" width="110" height="36" rx="6" fill="#0d9488" opacity="0.1" stroke="#0d9488" stroke-width="1.5"/>
+                    <text x="215" y="139" text-anchor="middle" font-size="10" font-weight="600" fill="#0d9488">Page -> Image</text>
+
+                    <line x1="270" y1="135" x2="295" y2="135" stroke="#0d9488" stroke-width="1.5" marker-end="url(#arrowTeal)"/>
+
+                    <!-- ViT Embedding -->
+                    <rect x="295" y="117" width="130" height="36" rx="6" fill="#0d9488" opacity="0.15" stroke="#0d9488" stroke-width="1.5"/>
+                    <text x="360" y="133" text-anchor="middle" font-size="10" font-weight="600" fill="#0d9488">ViT Embedding</text>
+                    <text x="360" y="145" text-anchor="middle" font-size="9" fill="#14b8a6">(768-d)</text>
+
+                    <line x1="425" y1="135" x2="455" y2="135" stroke="#0d9488" stroke-width="1.5" marker-end="url(#arrowTeal)"/>
+
+                    <!-- Vision Projection Head -->
+                    <rect x="455" y="112" width="125" height="46" rx="6" fill="#0d9488" stroke="#0d9488" stroke-width="1.5"/>
+                    <text x="517" y="132" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">Vision Proj. Head</text>
+                    <text x="517" y="146" text-anchor="middle" font-size="9" fill="#99f6e4">3-layer MLP -> 512-d</text>
+
+                    <!-- Concatenation -->
+                    <line x1="580" y1="73" x2="610" y2="105" stroke="#4338ca" stroke-width="1.5"/>
+                    <line x1="580" y1="135" x2="610" y2="105" stroke="#0d9488" stroke-width="1.5"/>
+
+                    <rect x="610" y="82" width="70" height="46" rx="23" fill="linear-gradient(135deg, #4338ca, #0d9488)" stroke="none"/>
+                    <rect x="610" y="82" width="70" height="46" rx="23" fill="#4338ca" opacity="0.85"/>
+                    <text x="645" y="101" text-anchor="middle" font-size="9" font-weight="700" fill="#fff">Concat</text>
+                    <text x="645" y="117" text-anchor="middle" font-size="10" font-weight="700" fill="#c7d2fe">1024-d</text>
+
+                    <!-- Arrow to FAISS -->
+                    <line x1="680" y1="105" x2="710" y2="105" stroke="#4338ca" stroke-width="1.5" marker-end="url(#arrowIndigo)"/>
+
+                    <!-- FAISS Index -->
+                    <rect x="710" y="78" width="90" height="54" rx="6" fill="#f59e0b" opacity="0.15" stroke="#f59e0b" stroke-width="1.5"/>
+                    <text x="755" y="101" text-anchor="middle" font-size="11" font-weight="700" fill="#b45309">FAISS</text>
+                    <text x="755" y="115" text-anchor="middle" font-size="9" fill="#d97706">Index</text>
+
+                    <!-- === SECOND ROW: Retrieval -> Prompt -> GPT-4o === -->
+                    <!-- Arrow down from FAISS -->
+                    <line x1="755" y1="132" x2="755" y2="175" stroke="#b45309" stroke-width="1.5" marker-end="url(#arrowAmber)"/>
+
+                    <!-- Top-K Retrieval -->
+                    <rect x="680" y="175" width="140" height="42" rx="6" fill="#f59e0b" opacity="0.1" stroke="#f59e0b" stroke-width="1.5"/>
+                    <text x="750" y="193" text-anchor="middle" font-size="10" font-weight="600" fill="#b45309">Top-K Retrieval</text>
+                    <text x="750" y="207" text-anchor="middle" font-size="9" fill="#d97706">+ MMR Diversity</text>
+
+                    <!-- Arrow left to Token Budget -->
+                    <line x1="680" y1="196" x2="600" y2="196" stroke="#b45309" stroke-width="1.5" marker-end="url(#arrowAmberLeft)"/>
+
+                    <!-- Token-Budgeted Prompt -->
+                    <rect x="420" y="175" width="180" height="42" rx="6" fill="#7c3aed" opacity="0.1" stroke="#7c3aed" stroke-width="1.5"/>
+                    <text x="510" y="193" text-anchor="middle" font-size="10" font-weight="600" fill="#7c3aed">Token-Budgeted Prompt</text>
+                    <text x="510" y="207" text-anchor="middle" font-size="9" fill="#8b5cf6">20k tokens/page budget</text>
+
+                    <!-- Arrow left to GPT-4o -->
+                    <line x1="420" y1="196" x2="350" y2="196" stroke="#7c3aed" stroke-width="1.5" marker-end="url(#arrowViolet)"/>
+
+                    <!-- GPT-4o -->
+                    <rect x="230" y="172" width="120" height="48" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
+                    <text x="290" y="195" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">GPT-4o</text>
+                    <text x="290" y="210" text-anchor="middle" font-size="9" fill="#94a3b8">Structured Output</text>
+
+                    <!-- Arrow down to JSON output -->
+                    <line x1="290" y1="220" x2="290" y2="250" stroke="#334155" stroke-width="1.5" marker-end="url(#arrowDark)"/>
+
+                    <!-- JSON Output -->
+                    <rect x="240" y="250" width="100" height="32" rx="6" fill="#10b981" opacity="0.15" stroke="#10b981" stroke-width="1.5"/>
+                    <text x="290" y="271" text-anchor="middle" font-size="10" font-weight="600" fill="#059669">JSON Output</text>
+
+                    <!-- Legend -->
+                    <rect x="20" y="310" width="780" height="115" rx="8" fill="#fff" stroke="#e2e8f0" stroke-width="1"/>
+                    <text x="410" y="332" text-anchor="middle" font-size="11" font-weight="600" fill="#475569">Model Parameters</text>
+
+                    <rect x="40" y="348" width="12" height="12" rx="2" fill="#4338ca"/>
+                    <text x="58" y="359" font-size="10" fill="#475569">Text pipeline (OpenAI text-embedding-3-small: 1536-d)</text>
+
+                    <rect x="40" y="370" width="12" height="12" rx="2" fill="#0d9488"/>
+                    <text x="58" y="381" font-size="10" fill="#475569">Vision pipeline (ViT-B/16: 768-d)</text>
+
+                    <rect x="40" y="392" width="12" height="12" rx="2" fill="#f59e0b"/>
+                    <text x="58" y="403" font-size="10" fill="#475569">FAISS IVF-PQ index for approximate nearest neighbor search</text>
+
+                    <rect x="420" y="348" width="12" height="12" rx="2" fill="#7c3aed"/>
+                    <text x="438" y="359" font-size="10" fill="#475569">Projection heads: 3-layer MLPs, &lt;5M params total</text>
+
+                    <rect x="420" y="370" width="12" height="12" rx="2" fill="#1e293b"/>
+                    <text x="438" y="381" font-size="10" fill="#475569">Frozen VLM (GPT-4o) -- zero fine-tuning required</text>
+
+                    <rect x="420" y="392" width="12" height="12" rx="2" fill="#10b981"/>
+                    <text x="438" y="403" font-size="10" fill="#475569">Output: structured JSON with extracted table data</text>
+
+                    <!-- Arrow markers -->
+                    <defs>
+                        <marker id="arrowGray" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6Z" fill="#94a3b8"/></marker>
+                        <marker id="arrowIndigo" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6Z" fill="#4338ca"/></marker>
+                        <marker id="arrowTeal" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6Z" fill="#0d9488"/></marker>
+                        <marker id="arrowAmber" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6Z" fill="#b45309"/></marker>
+                        <marker id="arrowAmberLeft" markerWidth="8" markerHeight="6" refX="0" refY="3" orient="auto-start-reverse"><path d="M0,0 L8,3 L0,6Z" fill="#b45309"/></marker>
+                        <marker id="arrowViolet" markerWidth="8" markerHeight="6" refX="0" refY="3" orient="auto-start-reverse"><path d="M0,0 L8,3 L0,6Z" fill="#7c3aed"/></marker>
+                        <marker id="arrowDark" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6Z" fill="#334155"/></marker>
+                    </defs>
+                </svg>
+                <p class="diagram-caption">Figure 1: XMRetriever architecture -- dual-head projection maps text and vision embeddings into a shared 512-d space, concatenated into a 1024-d vector for FAISS retrieval, feeding a token-budgeted prompt to GPT-4o.</p>
+            </div>
+
+            <p>
+                Here is how each component works:
+            </p>
+
+            <h3>1. Embedding Extraction (Frozen)</h3>
+
+            <p>
+                For each page in the exemplar library, we compute two embeddings using off-the-shelf models -- no fine-tuning required:
+            </p>
+
+            <ul>
+                <li><strong>Text embedding</strong> -- The page text is extracted (OCR or native PDF text) and encoded with OpenAI's <code>text-embedding-3-small</code>, producing a 1536-dimensional vector.</li>
+                <li><strong>Vision embedding</strong> -- The page is rasterized to an image and encoded with ViT-B/16 (the CLS token), producing a 768-dimensional vector.</li>
+            </ul>
+
+            <h3>2. Dual-Head Projection (Trainable)</h3>
+
+            <p>
+                The core trainable component is remarkably small: two 3-layer MLP projection heads that map heterogeneous embeddings into a shared 512-dimensional space. Each head uses BatchNorm, GELU activation, and dropout for regularization.
+            </p>
+
+            <pre><code class="language-python">import torch
+import torch.nn as nn
+
+
+class ProjectionHead(nn.Module):
+    """Lightweight 3-layer MLP projection head.
+
+    Maps pre-computed embeddings from a foundation model
+    into a shared cross-modal space.
+
+    Args:
+        input_dim: Dimension of source embeddings
+                   (1536 for text, 768 for vision).
+        hidden_dim: Internal hidden layer width.
+        output_dim: Shared projection space (512-d).
+        dropout: Dropout probability for regularization.
+    """
+
+    def __init__(
+        self,
+        input_dim: int,
+        hidden_dim: int = 1024,
+        output_dim: int = 512,
+        dropout: float = 0.1,
+    ):
+        super().__init__()
+        self.net = nn.Sequential(
+            nn.Linear(input_dim, hidden_dim),
+            nn.BatchNorm1d(hidden_dim),
+            nn.GELU(),
+            nn.Dropout(dropout),
+
+            nn.Linear(hidden_dim, hidden_dim),
+            nn.BatchNorm1d(hidden_dim),
+            nn.GELU(),
+            nn.Dropout(dropout),
+
+            nn.Linear(hidden_dim, output_dim),
+        )
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        projected = self.net(x)
+        # L2-normalize for cosine similarity in FAISS
+        return nn.functional.normalize(projected, p=2, dim=-1)
+
+
+class XMRetriever(nn.Module):
+    """Cross-Modal Retriever with dual projection heads."""
+
+    def __init__(self):
+        super().__init__()
+        self.text_head = ProjectionHead(input_dim=1536)
+        self.vision_head = ProjectionHead(input_dim=768)
+
+    def forward(self, text_emb, vision_emb):
+        text_proj = self.text_head(text_emb)     # (B, 512)
+        vis_proj = self.vision_head(vision_emb)  # (B, 512)
+        # Concatenate for joint representation
+        return torch.cat([text_proj, vis_proj], dim=-1)  # (B, 1024)</code></pre>
+
+            <p>
+                The total parameter count is under 5 million -- small enough to train on a laptop. The entire training pipeline runs in under 3 hours on an Apple M4 chip with consumer-grade hardware. This is a deliberate design choice: simplicity as a feature.
+            </p>
+
+            <h3>3. Concatenation and Indexing</h3>
+
+            <p>
+                The two 512-d projections are concatenated into a single 1024-dimensional vector and indexed in a FAISS IVF-PQ index. At query time, the same dual-head projection is applied to the incoming page, and FAISS returns the top-K nearest neighbors from the exemplar library.
+            </p>
+
+            <h2>Neighbor-Aware Sampling: The Secret Sauce</h2>
+
+            <p>
+                The most impactful contribution is the <strong>neighbor-aware negative sampling strategy</strong>. Standard contrastive learning samples random negatives from the full dataset. But document retrieval has a unique structure: pages from documents with similar page counts tend to share structural characteristics. A 4-page summary looks fundamentally different from a 35-page comprehensive schedule.
+            </p>
+
+            <!-- ===== DIAGRAM 2: Neighbor-Aware Sampling ===== -->
+            <div class="diagram-container">
+                <svg viewBox="0 0 780 380" xmlns="http://www.w3.org/2000/svg" width="100%" style="max-width:780px; font-family: 'Inter', Arial, sans-serif;">
+                    <rect width="780" height="380" fill="#f8fafc" rx="8"/>
+
+                    <!-- Title -->
+                    <text x="390" y="30" text-anchor="middle" font-size="15" font-weight="700" fill="#1e293b">Neighbor-Aware Negative Sampling</text>
+
+                    <!-- Group g-1 -->
+                    <rect x="40" y="60" width="200" height="200" rx="10" fill="#4338ca" opacity="0.06" stroke="#4338ca" stroke-width="1.5" stroke-dasharray="6,3"/>
+                    <text x="140" y="85" text-anchor="middle" font-size="13" font-weight="700" fill="#4338ca">g - 1</text>
+                    <text x="140" y="100" text-anchor="middle" font-size="10" fill="#6366f1">Adjacent group</text>
+
+                    <!-- Folder icon g-1 -->
+                    <rect x="70" y="112" width="50" height="40" rx="4" fill="#4338ca" opacity="0.12"/>
+                    <rect x="70" y="106" width="25" height="10" rx="3" fill="#4338ca" opacity="0.2"/>
+                    <text x="95" y="138" text-anchor="middle" font-size="8" fill="#4338ca">2-4 pg</text>
+
+                    <!-- Negative dots in g-1 -->
+                    <circle cx="160" cy="135" r="7" fill="#ef4444" opacity="0.8"/>
+                    <circle cx="185" cy="155" r="7" fill="#ef4444" opacity="0.8"/>
+                    <circle cx="155" cy="170" r="7" fill="#ef4444" opacity="0.6"/>
+                    <circle cx="100" cy="190" r="7" fill="#ef4444" opacity="0.5"/>
+                    <circle cx="130" cy="210" r="7" fill="#ef4444" opacity="0.5"/>
+
+                    <!-- Sampling probability for g-1 -->
+                    <rect x="70" y="230" width="140" height="22" rx="4" fill="#ef4444" opacity="0.1"/>
+                    <text x="140" y="245" text-anchor="middle" font-size="10" font-weight="600" fill="#ef4444">P(sample) = 0.15</text>
+
+                    <!-- Group g (center, main) -->
+                    <rect x="280" y="60" width="220" height="200" rx="10" fill="#0d9488" opacity="0.08" stroke="#0d9488" stroke-width="2"/>
+                    <text x="390" y="85" text-anchor="middle" font-size="13" font-weight="700" fill="#0d9488">g</text>
+                    <text x="390" y="100" text-anchor="middle" font-size="10" fill="#14b8a6">Anchor group</text>
+
+                    <!-- Folder icon g -->
+                    <rect x="310" y="112" width="50" height="40" rx="4" fill="#0d9488" opacity="0.12"/>
+                    <rect x="310" y="106" width="25" height="10" rx="3" fill="#0d9488" opacity="0.2"/>
+                    <text x="335" y="138" text-anchor="middle" font-size="8" fill="#0d9488">5-8 pg</text>
+
+                    <!-- Anchor dot (blue) -->
+                    <circle cx="400" cy="140" r="10" fill="#4338ca" stroke="#fff" stroke-width="2"/>
+                    <text x="400" y="144" text-anchor="middle" font-size="8" font-weight="700" fill="#fff">A</text>
+
+                    <!-- Positive dot (green) -->
+                    <circle cx="430" cy="165" r="10" fill="#10b981" stroke="#fff" stroke-width="2"/>
+                    <text x="430" y="169" text-anchor="middle" font-size="8" font-weight="700" fill="#fff">P</text>
+
+                    <!-- Dashed line anchor to positive -->
+                    <line x1="407" y1="148" x2="423" y2="158" stroke="#10b981" stroke-width="1.5" stroke-dasharray="4,2"/>
+
+                    <!-- Negative dots in g -->
+                    <circle cx="350" cy="175" r="7" fill="#ef4444" opacity="0.8"/>
+                    <circle cx="460" cy="135" r="7" fill="#ef4444" opacity="0.8"/>
+                    <circle cx="470" cy="190" r="7" fill="#ef4444" opacity="0.8"/>
+                    <circle cx="320" cy="210" r="7" fill="#ef4444" opacity="0.6"/>
+                    <circle cx="380" cy="220" r="7" fill="#ef4444" opacity="0.6"/>
+                    <circle cx="440" cy="220" r="7" fill="#ef4444" opacity="0.6"/>
+
+                    <!-- Sampling probability for g -->
+                    <rect x="315" y="230" width="150" height="22" rx="4" fill="#ef4444" opacity="0.1"/>
+                    <text x="390" y="245" text-anchor="middle" font-size="10" font-weight="600" fill="#ef4444">P(sample) = 0.70</text>
+
+                    <!-- Group g+1 -->
+                    <rect x="540" y="60" width="200" height="200" rx="10" fill="#4338ca" opacity="0.06" stroke="#4338ca" stroke-width="1.5" stroke-dasharray="6,3"/>
+                    <text x="640" y="85" text-anchor="middle" font-size="13" font-weight="700" fill="#4338ca">g + 1</text>
+                    <text x="640" y="100" text-anchor="middle" font-size="10" fill="#6366f1">Adjacent group</text>
+
+                    <!-- Folder icon g+1 -->
+                    <rect x="570" y="112" width="50" height="40" rx="4" fill="#4338ca" opacity="0.12"/>
+                    <rect x="570" y="106" width="25" height="10" rx="3" fill="#4338ca" opacity="0.2"/>
+                    <text x="595" y="138" text-anchor="middle" font-size="8" fill="#4338ca">9-15 pg</text>
+
+                    <!-- Negative dots in g+1 -->
+                    <circle cx="655" cy="135" r="7" fill="#ef4444" opacity="0.8"/>
+                    <circle cx="680" cy="160" r="7" fill="#ef4444" opacity="0.8"/>
+                    <circle cx="640" cy="180" r="7" fill="#ef4444" opacity="0.6"/>
+                    <circle cx="600" cy="200" r="7" fill="#ef4444" opacity="0.5"/>
+                    <circle cx="670" cy="210" r="7" fill="#ef4444" opacity="0.5"/>
+
+                    <!-- Sampling probability for g+1 -->
+                    <rect x="570" y="230" width="140" height="22" rx="4" fill="#ef4444" opacity="0.1"/>
+                    <text x="640" y="245" text-anchor="middle" font-size="10" font-weight="600" fill="#ef4444">P(sample) = 0.15</text>
+
+                    <!-- Legend -->
+                    <rect x="140" y="280" width="500" height="85" rx="8" fill="#fff" stroke="#e2e8f0" stroke-width="1"/>
+
+                    <circle cx="175" cy="305" r="8" fill="#4338ca" stroke="#fff" stroke-width="1.5"/>
+                    <text x="175" y="309" text-anchor="middle" font-size="7" font-weight="700" fill="#fff">A</text>
+                    <text x="192" y="309" font-size="10" fill="#475569">Anchor (query page text embedding)</text>
+
+                    <circle cx="175" cy="330" r="8" fill="#10b981" stroke="#fff" stroke-width="1.5"/>
+                    <text x="175" y="334" text-anchor="middle" font-size="7" font-weight="700" fill="#fff">P</text>
+                    <text x="192" y="334" font-size="10" fill="#475569">Positive (same page vision embedding)</text>
+
+                    <circle cx="445" cy="305" r="7" fill="#ef4444" opacity="0.8"/>
+                    <text x="460" y="309" font-size="10" fill="#475569">Negatives (different pages)</text>
+
+                    <text x="445" y="334" font-size="10" fill="#475569">In-batch hard-negative mining: beta = 0.3</text>
+                    <rect x="432" y="324" width="8" height="8" rx="2" fill="#f59e0b"/>
+
+                    <text x="250" y="355" text-anchor="middle" font-size="10" font-weight="600" fill="#0d9488">alpha = 0.70 same group</text>
+                    <text x="500" y="355" text-anchor="middle" font-size="10" font-weight="600" fill="#4338ca">0.15 each adjacent group</text>
+                </svg>
+                <p class="diagram-caption">Figure 2: Neighbor-aware negative sampling -- negatives are drawn primarily from the same page-count group (alpha=0.70), with 15% each from adjacent groups g-1 and g+1 to build robustness against distribution shifts.</p>
+            </div>
+
+            <p>
+                The sampling strategy works as follows:
+            </p>
+
+            <ul>
+                <li><strong>Anchor</strong> -- The text embedding of a given page.</li>
+                <li><strong>Positive</strong> -- The vision embedding of the <em>same</em> page (cross-modal pairing).</li>
+                <li><strong>Negatives</strong> -- Drawn with a structured distribution:
+                    <ul>
+                        <li><strong>70% (alpha = 0.7)</strong> from the same page-count group <em>g</em> -- these are the hardest negatives, forcing the model to learn fine-grained distinctions between similar documents.</li>
+                        <li><strong>15% each</strong> from adjacent groups <em>g-1</em> and <em>g+1</em> -- these teach the model to handle the fuzzy boundaries between document types.</li>
+                    </ul>
+                </li>
+                <li><strong>In-batch hard-negative mining (beta = 0.3)</strong> -- Within each mini-batch, the hardest negatives (highest similarity to anchor) are upweighted with probability beta.</li>
+            </ul>
+
+            <p>
+                This strategy is critical for real-world robustness. Without it, the model overfits to clean group boundaries and fails when it encounters documents that fall between categories -- a 6-page document that looks like a summary but has the density of a comprehensive schedule.
+            </p>
+
+            <pre><code class="language-python">def neighbor_aware_triplet_loss(
+    anchor,          # (B, D) text projections
+    positive,        # (B, D) vision projections (same page)
+    negatives,       # (N, D) candidate negatives
+    neg_groups,      # group label for each negative
+    anchor_group,    # group label for anchor
+    margin=0.3,
+    alpha=0.7,       # same-group sampling weight
+    beta=0.3,        # hard-negative mining probability
+):
+    """Triplet loss with neighbor-aware negative sampling.
+
+    Samples negatives preferentially from:
+      - Same group g         (probability alpha)
+      - Adjacent groups g+-1 (probability (1-alpha)/2 each)
+    Then applies in-batch hard-negative mining.
+    """
+    # --- Step 1: Neighbor-aware negative selection ---
+    same_group = (neg_groups == anchor_group)
+    adj_group = (
+        (neg_groups == anchor_group - 1) |
+        (neg_groups == anchor_group + 1)
+    )
+
+    # Build sampling weights
+    weights = torch.zeros(len(negatives))
+    weights[same_group] = alpha
+    weights[adj_group] = (1 - alpha) / 2
+    weights = weights / weights.sum()  # normalize
+
+    # Sample K negatives per anchor
+    K = min(64, len(negatives))
+    indices = torch.multinomial(weights, K, replacement=False)
+    sampled_neg = negatives[indices]  # (K, D)
+
+    # --- Step 2: Hard-negative mining within batch ---
+    # Compute similarity to anchor
+    sim = torch.mm(anchor, sampled_neg.T)  # (B, K)
+
+    # With probability beta, select hardest negative
+    # Otherwise, use random from sampled set
+    if torch.rand(1).item() < beta:
+        hard_idx = sim.argmax(dim=-1)  # hardest per anchor
+        negative = sampled_neg[hard_idx]  # (B, D)
+    else:
+        rand_idx = torch.randint(0, K, (anchor.size(0),))
+        negative = sampled_neg[rand_idx]
+
+    # --- Step 3: Triplet margin loss ---
+    d_pos = (anchor - positive).pow(2).sum(dim=-1)
+    d_neg = (anchor - negative).pow(2).sum(dim=-1)
+    loss = torch.clamp(d_pos - d_neg + margin, min=0.0)
+
+    return loss.mean()</code></pre>
+
+            <h2>Token-Budgeted Prompt Assembly</h2>
+
+            <p>
+                Retrieval alone is not enough. Once XMRetriever returns the top-K most relevant exemplars, they need to be assembled into a prompt that fits within a strict token budget. This is where the <strong>token-budgeted prompt assembly</strong> pipeline takes over:
+            </p>
+
+            <ol>
+                <li><strong>MMR diversity filtering</strong> -- Maximal Marginal Relevance ensures the selected exemplars are not just relevant but also diverse. If the top 3 results are all nearly identical pharmacy tables, MMR swaps in a dental or vision table that is still relevant but adds coverage.</li>
+                <li><strong>Greedy budget allocation</strong> -- Each exemplar is assigned a token cost (the length of its annotated JSON + the base64-encoded image). Exemplars are greedily added to the prompt until the 20k token budget is reached.</li>
+                <li><strong>Result</strong> -- Instead of 20-30 static examples, the system selects 4-8 highly relevant, diverse exemplars that fit within budget.</li>
+            </ol>
+
+            <div class="info-box">
+                <h4>Why 20k tokens per page?</h4>
+                <p>This budget was empirically determined through ablation. Below 15k, accuracy drops as too few exemplars can be included. Above 25k, diminishing returns set in with marginal accuracy gains. 20k hits the sweet spot: enough room for 4-8 exemplars with their annotations, while keeping costs manageable at scale.</p>
+            </div>
+
+            <h2>Results: Less Is More</h2>
+
+            <p>
+                The evaluation was conducted on a dataset of complex document tables spanning multiple domains -- healthcare benefit summaries, coverage schedules, and formulary documents -- with heterogeneous layouts, nested headers, and conditional logic in cells. All numbers compare XMRetriever against the Static-All baseline (the standard approach of including all available few-shot examples).
+            </p>
+
+            <!-- ===== DIAGRAM 3: Results Comparison ===== -->
+            <div class="diagram-container">
+                <svg viewBox="0 0 780 340" xmlns="http://www.w3.org/2000/svg" width="100%" style="max-width:780px; font-family: 'Inter', Arial, sans-serif;">
+                    <rect width="780" height="340" fill="#f8fafc" rx="8"/>
+
+                    <!-- Title -->
+                    <text x="390" y="30" text-anchor="middle" font-size="15" font-weight="700" fill="#1e293b">XMRetriever vs. Static-All Baseline</text>
+
+                    <!-- === LEFT CHART: Tokens per Page === -->
+                    <text x="200" y="60" text-anchor="middle" font-size="12" font-weight="600" fill="#475569">Avg. Tokens / Page</text>
+
+                    <!-- Y axis -->
+                    <line x1="80" y1="80" x2="80" y2="240" stroke="#cbd5e1" stroke-width="1"/>
+                    <!-- Y labels -->
+                    <text x="72" y="85" text-anchor="end" font-size="9" fill="#94a3b8">80k</text>
+                    <line x1="77" y1="82" x2="80" y2="82" stroke="#cbd5e1" stroke-width="1"/>
+                    <text x="72" y="125" text-anchor="end" font-size="9" fill="#94a3b8">60k</text>
+                    <line x1="77" y1="122" x2="80" y2="122" stroke="#cbd5e1" stroke-width="1"/>
+                    <text x="72" y="165" text-anchor="end" font-size="9" fill="#94a3b8">40k</text>
+                    <line x1="77" y1="162" x2="80" y2="162" stroke="#cbd5e1" stroke-width="1"/>
+                    <text x="72" y="205" text-anchor="end" font-size="9" fill="#94a3b8">20k</text>
+                    <line x1="77" y1="202" x2="80" y2="202" stroke="#cbd5e1" stroke-width="1"/>
+                    <text x="72" y="243" text-anchor="end" font-size="9" fill="#94a3b8">0</text>
+
+                    <!-- X axis -->
+                    <line x1="80" y1="240" x2="320" y2="240" stroke="#cbd5e1" stroke-width="1"/>
+
+                    <!-- Static-All bar (80k) -->
+                    <rect x="120" y="82" width="60" height="158" rx="4" fill="#4338ca" opacity="0.7"/>
+                    <text x="150" y="76" text-anchor="middle" font-size="11" font-weight="700" fill="#4338ca">80k</text>
+                    <text x="150" y="260" text-anchor="middle" font-size="10" font-weight="500" fill="#475569">Static-All</text>
+
+                    <!-- XMRetriever bar (18k) ~= height 36 from bottom 240) -->
+                    <rect x="220" y="204" width="60" height="36" rx="4" fill="#0d9488" opacity="0.85"/>
+                    <text x="250" y="198" text-anchor="middle" font-size="11" font-weight="700" fill="#0d9488">18k</text>
+                    <text x="250" y="260" text-anchor="middle" font-size="10" font-weight="500" fill="#475569">XMRetriever</text>
+
+                    <!-- Reduction annotation -->
+                    <line x1="300" y1="82" x2="300" y2="204" stroke="#ef4444" stroke-width="1" stroke-dasharray="4,2"/>
+                    <text x="335" y="146" text-anchor="middle" font-size="11" font-weight="700" fill="#ef4444">-75%</text>
+
+                    <!-- === RIGHT CHART: Exact Match === -->
+                    <text x="580" y="60" text-anchor="middle" font-size="12" font-weight="600" fill="#475569">Exact Match Accuracy (%)</text>
+
+                    <!-- Y axis -->
+                    <line x1="460" y1="80" x2="460" y2="240" stroke="#cbd5e1" stroke-width="1"/>
+                    <!-- Y labels (0-100) -->
+                    <text x="452" y="85" text-anchor="end" font-size="9" fill="#94a3b8">100</text>
+                    <line x1="457" y1="82" x2="460" y2="82" stroke="#cbd5e1" stroke-width="1"/>
+                    <text x="452" y="125" text-anchor="end" font-size="9" fill="#94a3b8">80</text>
+                    <line x1="457" y1="122" x2="460" y2="122" stroke="#cbd5e1" stroke-width="1"/>
+                    <text x="452" y="165" text-anchor="end" font-size="9" fill="#94a3b8">60</text>
+                    <line x1="457" y1="162" x2="460" y2="162" stroke="#cbd5e1" stroke-width="1"/>
+                    <text x="452" y="205" text-anchor="end" font-size="9" fill="#94a3b8">40</text>
+                    <line x1="457" y1="202" x2="460" y2="202" stroke="#cbd5e1" stroke-width="1"/>
+                    <text x="452" y="243" text-anchor="end" font-size="9" fill="#94a3b8">0</text>
+
+                    <!-- X axis -->
+                    <line x1="460" y1="240" x2="700" y2="240" stroke="#cbd5e1" stroke-width="1"/>
+
+                    <!-- Static-All bar (72%) -- height: 72% of 158 = 113.76 -> y: 240-113.76 = 126.24 -->
+                    <rect x="500" y="126" width="60" height="114" rx="4" fill="#4338ca" opacity="0.7"/>
+                    <text x="530" y="120" text-anchor="middle" font-size="11" font-weight="700" fill="#4338ca">72.0%</text>
+                    <text x="530" y="260" text-anchor="middle" font-size="10" font-weight="500" fill="#475569">Static-All</text>
+
+                    <!-- XMRetriever bar (79.4%) -- height: 79.4% of 158 = 125.45 -> y: 240-125.45 = 114.55 -->
+                    <rect x="600" y="114" width="60" height="126" rx="4" fill="#0d9488" opacity="0.85"/>
+                    <text x="630" y="108" text-anchor="middle" font-size="11" font-weight="700" fill="#0d9488">79.4%</text>
+                    <text x="630" y="260" text-anchor="middle" font-size="10" font-weight="500" fill="#475569">XMRetriever</text>
+
+                    <!-- Improvement annotation -->
+                    <line x1="680" y1="126" x2="680" y2="114" stroke="#10b981" stroke-width="1" stroke-dasharray="4,2"/>
+                    <text x="720" y="122" text-anchor="middle" font-size="11" font-weight="700" fill="#10b981">+7.4pp</text>
+
+                    <!-- Bottom summary bar -->
+                    <rect x="40" y="280" width="700" height="45" rx="8" fill="#fff" stroke="#e2e8f0" stroke-width="1"/>
+                    <text x="140" y="307" text-anchor="middle" font-size="10" font-weight="600" fill="#0d9488">75% fewer tokens</text>
+                    <line x1="240" y1="290" x2="240" y2="315" stroke="#e2e8f0" stroke-width="1"/>
+                    <text x="330" y="307" text-anchor="middle" font-size="10" font-weight="600" fill="#0d9488">53% lower latency</text>
+                    <line x1="420" y1="290" x2="420" y2="315" stroke="#e2e8f0" stroke-width="1"/>
+                    <text x="510" y="307" text-anchor="middle" font-size="10" font-weight="600" fill="#0d9488">1.2% hallucination</text>
+                    <line x1="600" y1="290" x2="600" y2="315" stroke="#e2e8f0" stroke-width="1"/>
+                    <text x="680" y="307" text-anchor="middle" font-size="10" font-weight="600" fill="#0d9488">4.2x throughput</text>
+                </svg>
+                <p class="diagram-caption">Figure 3: Head-to-head comparison -- XMRetriever achieves higher extraction accuracy with 75% fewer tokens by selecting relevant exemplars instead of including all of them.</p>
+            </div>
+
+            <table class="results-table">
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Static-All</th>
+                        <th>XMRetriever</th>
+                        <th>Change</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Tokens / page</td>
+                        <td>~80,000</td>
+                        <td class="highlight">~18,000</td>
+                        <td class="highlight">-75%</td>
+                    </tr>
+                    <tr>
+                        <td>Latency / document</td>
+                        <td>210 s</td>
+                        <td class="highlight">98 s</td>
+                        <td class="highlight">-53%</td>
+                    </tr>
+                    <tr>
+                        <td>Exact Match (EM)</td>
+                        <td>72.0%</td>
+                        <td class="highlight">79.4%</td>
+                        <td class="highlight">+7.4 pp</td>
+                    </tr>
+                    <tr>
+                        <td>Hallucination rate</td>
+                        <td>8.6%</td>
+                        <td class="highlight">1.2%</td>
+                        <td class="highlight">-7.4 pp</td>
+                    </tr>
+                    <tr>
+                        <td>Throughput (docs/hour)</td>
+                        <td>1x (baseline)</td>
+                        <td class="highlight">4.2x</td>
+                        <td class="highlight">+320%</td>
+                    </tr>
+                    <tr>
+                        <td>Exemplars / prompt</td>
+                        <td>20-30</td>
+                        <td class="highlight">4-8</td>
+                        <td>Dynamic</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>
+                The most surprising result is that <strong>accuracy improved alongside token reduction</strong>. This is counterintuitive -- you might expect fewer examples to mean less information for the model. But the opposite is true: irrelevant examples actively hurt performance by confusing the model's attention. Removing them is not just cheaper; it is better.
+            </p>
+
+            <p>
+                The hallucination reduction from 8.6% to 1.2% is equally significant. In domains like healthcare and finance, a hallucinated value in an extracted table can have downstream consequences -- incorrect benefit limits, wrong copay amounts, misquoted coverage terms. Reducing hallucinations by 7x has direct business impact.
+            </p>
+
+            <h2>Ablation Studies: What Actually Matters</h2>
+
+            <p>
+                To understand which components contribute most to performance, we conducted systematic ablation studies across three dimensions.
+            </p>
+
+            <h3>1. Neighbor-Aware Sampling</h3>
+
+            <p>
+                Removing the g+/-1 neighbor sampling and using only random negatives drops Precision@5 from <strong>0.82 to 0.77</strong> -- a significant degradation. The adjacent-group negatives are what teach the model to handle the fuzzy boundaries between document categories. Without them, the model struggles with edge cases: a 7-page document that could belong to either the "short" or "medium" group.
+            </p>
+
+            <h3>2. Loss Function</h3>
+
+            <p>
+                We compared three contrastive loss functions:
+            </p>
+
+            <ul>
+                <li><strong>Triplet loss with margin</strong> (used in XMRetriever) -- Best overall performance. The explicit margin parameter provides direct control over the desired separation between positives and negatives.</li>
+                <li><strong>InfoNCE</strong> -- Competitive but slightly worse (-0.02 P@5). InfoNCE treats all negatives equally within a batch, missing the structured sampling that triplet loss leverages.</li>
+                <li><strong>MSE regression</strong> -- Significantly worse (-0.08 P@5). Regressing to a similarity score loses the ranking structure entirely.</li>
+            </ul>
+
+            <h3>3. Projection Head Depth</h3>
+
+            <p>
+                The 3-layer architecture was empirically optimal:
+            </p>
+
+            <ul>
+                <li><strong>2-layer heads</strong> -- Underperform by -0.03 P@5. Insufficient capacity to learn the non-linear mapping between heterogeneous embedding spaces.</li>
+                <li><strong>3-layer heads</strong> -- Optimal. Enough depth to learn complex mappings without overfitting.</li>
+                <li><strong>6-layer heads</strong> -- No improvement over 3-layer, but 2x the parameters and training time. Classic diminishing returns.</li>
+            </ul>
+
+            <div class="info-box">
+                <h4>Key takeaway from ablations</h4>
+                <p>The neighbor-aware sampling strategy contributes more to performance than architectural complexity. A simple 3-layer MLP with smart training beats a deeper network with naive training. <strong>How you train matters more than what you train.</strong></p>
+            </div>
+
+            <h2>Why Simplicity Is a Feature</h2>
+
+            <p>
+                XMRetriever deliberately avoids end-to-end training of cross-modal encoders. This is not a limitation -- it is a design principle with several practical advantages:
+            </p>
+
+            <ul>
+                <li><strong>Foundation model agnosticism</strong> -- When a better text or vision encoder is released, swap it in and retrain just the projection heads in a few hours. No need to rebuild the entire pipeline.</li>
+                <li><strong>Training efficiency</strong> -- Under 5M trainable parameters means the entire system trains on consumer hardware (Apple M4) in under 3 hours. No GPU clusters required.</li>
+                <li><strong>Deployment simplicity</strong> -- The projection heads are tiny PyTorch models that can be serialized and loaded anywhere. FAISS indexes are standard and well-supported. No custom infrastructure needed.</li>
+                <li><strong>Debuggability</strong> -- When retrieval quality drops, you can inspect the projected embeddings, visualize the FAISS neighborhood, and diagnose issues. The system is not a black box.</li>
+            </ul>
+
+            <blockquote>
+                <p>Lightweight heads on pre-computed embeddings beat complex end-to-end models when the task is retrieval, not generation. Let foundation models do what they are good at -- encoding -- and invest your trainable parameters where they matter most: learning the cross-modal alignment.</p>
+            </blockquote>
+
+            <h2>Beyond Document Tables: Domain-Agnostic Applications</h2>
+
+            <p>
+                While XMRetriever was developed and evaluated on healthcare document table extraction, the architecture is domain-agnostic. The same dual-head projection + neighbor-aware sampling approach applies wherever you have:
+            </p>
+
+            <ul>
+                <li><strong>Legal documents</strong> -- Contract clause extraction, where table layouts vary between law firms and document types.</li>
+                <li><strong>Financial reports</strong> -- Balance sheets, income statements, and regulatory filings with heterogeneous table formats across institutions.</li>
+                <li><strong>Scientific papers</strong> -- Results tables with varying structures across journals, disciplines, and formatting conventions.</li>
+                <li><strong>Government forms</strong> -- Tax forms, permit applications, and compliance documents with agency-specific layouts.</li>
+            </ul>
+
+            <p>
+                The only requirements are: (1) a labeled exemplar library, (2) pre-computed text and vision embeddings, and (3) a downstream VLM for extraction. The projection heads can be retrained for a new domain in hours.
+            </p>
+
+            <h2>Implementation Notes</h2>
+
+            <p>
+                A few practical considerations for anyone looking to implement a similar system:
+            </p>
+
+            <ul>
+                <li><strong>Page-count groups</strong> -- We define groups by page-count ranges (e.g., 1-3, 4-7, 8-15, 16-30, 31+). The exact boundaries should be tuned per domain based on where natural structural breaks occur in your document corpus.</li>
+                <li><strong>FAISS index type</strong> -- IVF-PQ with 256 centroids and 64 sub-quantizers works well for exemplar libraries up to ~50k pages. For larger libraries, consider IVF-HNSW.</li>
+                <li><strong>Token counting</strong> -- Use tiktoken (cl100k_base encoding) for accurate token estimation during budget allocation. Approximate token counts lead to budget overruns or underutilization.</li>
+                <li><strong>Embedding caching</strong> -- Pre-compute and cache all embeddings. The OpenAI API call for text embeddings and the ViT forward pass for vision embeddings are the most expensive parts of indexing -- do them once.</li>
+            </ul>
+
+            <h2>Conclusion</h2>
+
+            <p>
+                XMRetriever demonstrates a principle that applies broadly across AI engineering: <strong>smarter retrieval beats larger prompts</strong>. By investing in a lightweight cross-modal retrieval layer -- just two 3-layer MLPs trained with a carefully designed sampling strategy -- we achieved simultaneous improvements across every metric that matters: cost, latency, accuracy, and reliability.
+            </p>
+
+            <p>
+                The key insight is that in a few-shot VLM pipeline, the quality of examples matters far more than the quantity. A well-chosen set of 4-8 exemplars, dynamically selected based on both textual and visual similarity, outperforms a brute-force approach of 20-30 static examples. And it does so at a fraction of the cost.
+            </p>
+
+            <p>
+                As document AI systems are deployed at scale across healthcare, legal, financial, and government domains, the economics of VLM inference will increasingly favor systems like XMRetriever -- systems that are intelligent about what they put in the prompt, not just how they process what comes out.
+            </p>
+
+            <blockquote>
+                <p>The most expensive token is the one that confuses the model. The cheapest optimization is removing it.</p>
+            </blockquote>
+
+        </div>
+
+        <div class="post__tags">
+            <span class="tag">Document AI</span>
+            <span class="tag tag--secondary">Cross-Modal Retrieval</span>
+            <span class="tag tag--accent">VLMs</span>
+            <span class="tag">Contrastive Learning</span>
+            <span class="tag tag--secondary">FAISS</span>
+            <span class="tag tag--accent">Healthcare AI</span>
+            <span class="tag">Few-Shot Learning</span>
+        </div>
+
+        <div class="post__nav">
+            <a href="index.html" class="btn btn--outline btn--sm"><i class="fas fa-arrow-left"></i> All Articles</a>
+        </div>
+    </article>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer__content">
+                <div class="footer__brand"><span class="navbar__logo-mark">N</span><p>Principal GenAI / LLM Architect<br>Bengaluru, India</p></div>
+                <div class="footer__nav"><a href="../index.html">Home</a><a href="../journey.html">Journey</a><a href="../research.html">Research</a><a href="index.html">Blog</a><a href="../index.html#contact">Contact</a></div>
+                <div class="footer__social"><a href="mailto:navneet1083@gmail.com"><i class="fas fa-envelope"></i></a><a href="https://linkedin.com/in/navneet1083" target="_blank"><i class="fab fa-linkedin"></i></a><a href="https://github.com/navneet1083" target="_blank"><i class="fab fa-github"></i></a></div>
+            </div>
+            <div class="footer__bottom"><p>&copy; 2026 Navneet Singh. Crafted with two decades of passion.</p></div>
+        </div>
+    </footer>
+
+    <script defer src="../js/theme.js"></script>
+    <script defer src="../js/navigation.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.Portfolio && window.Portfolio.initNavigation) window.Portfolio.initNavigation();
+        });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+</body>
+</html>

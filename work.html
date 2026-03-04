@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Work & Case Studies — Navneet Singh</title>
+    <meta name="description" content="Detailed case studies from two decades of building enterprise AI — from web crawlers to GenAI platforms.">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/sections.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+    <nav class="navbar navbar--scrolled" id="navbar">
+        <div class="container navbar__container">
+            <a href="index.html" class="navbar__logo"><span class="navbar__logo-mark">N</span><span class="navbar__logo-text">Navneet</span></a>
+            <ul class="navbar__links">
+                <li><a href="index.html" class="navbar__link">Home</a></li>
+                <li><a href="journey.html" class="navbar__link">Journey</a></li>
+                <li><a href="work.html" class="navbar__link navbar__link--active">Work</a></li>
+                <li><a href="blog/index.html" class="navbar__link">Blog</a></li>
+                <li><a href="index.html#contact" class="navbar__link">Contact</a></li>
+            </ul>
+            <a href="https://drive.google.com/file/d/18Cal1KKLT0yNRQb4aXkJiduLd1hAJITM/view" target="_blank" class="btn btn--primary btn--sm navbar__cta"><i class="fas fa-file-alt"></i> Resume</a>
+            <button class="navbar__hamburger" id="hamburger" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+        <div class="navbar__mobile" id="mobileMenu">
+            <ul class="navbar__mobile-links">
+                <li><a href="index.html" class="navbar__link">Home</a></li>
+                <li><a href="journey.html" class="navbar__link">Journey</a></li>
+                <li><a href="work.html" class="navbar__link navbar__link--active">Work</a></li>
+                <li><a href="blog/index.html" class="navbar__link">Blog</a></li>
+                <li><a href="index.html#contact" class="navbar__link">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Page Hero -->
+    <section class="page-hero">
+        <div class="container">
+            <span class="page-hero__label">Case Studies</span>
+            <h1 class="page-hero__title">Work That Matters</h1>
+            <p class="page-hero__desc">Enterprise systems serving millions, research prototypes pushing boundaries, and everything in between. Each project tells a story of technical challenges met with creative solutions.</p>
+        </div>
+    </section>
+
+    <!-- Case Studies -->
+    <section class="section">
+        <div class="container">
+
+            <!-- Case Study 1: Cigna — Project Genius -->
+            <div class="case-study glass-card animate-on-scroll" style="--case-color:var(--era-genai)">
+                <div class="case-study__header">
+                    <div><span class="case-study__company">Cigna — AI Center of Excellence</span></div>
+                    <span class="case-study__period">2023 — Present</span>
+                </div>
+                <h2 class="case-study__title">Project Genius — Enterprise GenAI Platform</h2>
+                <div class="case-study__role"><i class="fas fa-user-tie"></i> ML Advisor / Principal GenAI Architect</div>
+                <div class="case-study__body">
+                    <div class="case-study__narrative">
+                        <p><strong>The Challenge:</strong> Cigna's healthcare operations involve millions of complex documents — insurance claims, medical records, provider contracts — with intricate table structures that traditional OCR and rule-based extraction cannot handle reliably. Manual processing was expensive, error-prone, and slow.</p>
+                        <p><strong>The Approach:</strong> Designed an end-to-end GenAI pipeline combining prompt engineering with few-shot retrieval. Built custom fine-tuned models using embedding + CNN architectures specifically for complex table extraction. The system uses FAISS for vector search to find similar historical extractions, feeds them as few-shot examples to the LLM, and validates output through multi-stage evaluation gates.</p>
+                        <p><strong>Key Decisions:</strong> Implemented LLM guardrails for safety, PII/data controls for HIPAA compliance, and established cost/latency SLOs. Chose LoRA fine-tuning over full fine-tuning for cost efficiency. Deployed with vLLM for high-throughput serving. Security-by-design was non-negotiable in healthcare.</p>
+                        <p><strong>Impact:</strong> Established as the reference architecture for all GenAI initiatives across Cigna's AI CoE. Serving as the ML Advisor setting standards for the organization's GenAI roadmap.</p>
+                    </div>
+                    <div class="case-study__sidebar">
+                        <div class="case-study__metrics-grid">
+                            <div class="case-study__metric"><div class="case-study__metric-value">Enterprise</div><div class="case-study__metric-label">Scale</div></div>
+                            <div class="case-study__metric"><div class="case-study__metric-value">HIPAA</div><div class="case-study__metric-label">Compliant</div></div>
+                            <div class="case-study__metric"><div class="case-study__metric-value">Ref Arch</div><div class="case-study__metric-label">For AI CoE</div></div>
+                            <div class="case-study__metric"><div class="case-study__metric-value">Multi-stage</div><div class="case-study__metric-label">Eval Gates</div></div>
+                        </div>
+                        <div class="case-study__tech">
+                            <h4>Tech Stack</h4>
+                            <div class="case-study__tech-tags">
+                                <span class="tag">GPT-4o</span><span class="tag">Llama</span><span class="tag tag--secondary">FAISS</span><span class="tag tag--secondary">LoRA</span><span class="tag tag--accent">vLLM</span><span class="tag">LangChain</span><span class="tag">RAG</span><span class="tag">RLHF</span><span class="tag">AWS</span><span class="tag">Docker</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Case Study 2: VW — legalAI -->
+            <div class="case-study glass-card animate-on-scroll" style="--case-color:var(--era-genai)">
+                <div class="case-study__header">
+                    <div><span class="case-study__company">Hexad GmbH / Volkswagen</span></div>
+                    <span class="case-study__period">2022 — 2023</span>
+                </div>
+                <h2 class="case-study__title">legalAI — Document Intelligence Platform</h2>
+                <div class="case-study__role"><i class="fas fa-drafting-compass"></i> NLP Architect</div>
+                <div class="case-study__body">
+                    <div class="case-study__narrative">
+                        <p><strong>The Challenge:</strong> Volkswagen's legal department needed to process thousands of complex legal documents — contracts, regulatory filings, compliance reports — with intricate layouts, nested tables, and multi-column formatting. Existing PDF extraction tools produced garbled output on these documents, requiring extensive manual correction.</p>
+                        <p><strong>The Approach:</strong> Developed a novel pipeline combining computer vision-based layout analysis with semantic merging and entity logic. The CV component identified structural elements (headers, paragraphs, tables, lists) using layout detection models. The semantic merging layer then reconstructed logical reading order across multi-column layouts and split/merged cells.</p>
+                        <p><strong>Key Innovation:</strong> The entity logic layer used named entity recognition to validate extracted fields against known legal entity types, catching extraction errors that pure layout analysis would miss. This hybrid approach — CV for structure, NLP for semantics — doubled throughput and improved extraction accuracy by 37%.</p>
+                    </div>
+                    <div class="case-study__sidebar">
+                        <div class="case-study__metrics-grid">
+                            <div class="case-study__metric"><div class="case-study__metric-value">2x</div><div class="case-study__metric-label">Throughput</div></div>
+                            <div class="case-study__metric"><div class="case-study__metric-value">+37%</div><div class="case-study__metric-label">Accuracy</div></div>
+                            <div class="case-study__metric"><div class="case-study__metric-value">Hybrid</div><div class="case-study__metric-label">CV + NLP</div></div>
+                            <div class="case-study__metric"><div class="case-study__metric-value">1000s</div><div class="case-study__metric-label">Docs / month</div></div>
+                        </div>
+                        <div class="case-study__tech">
+                            <h4>Tech Stack</h4>
+                            <div class="case-study__tech-tags">
+                                <span class="tag">Document AI</span><span class="tag">Layout Analysis</span><span class="tag tag--secondary">SpaCy</span><span class="tag tag--secondary">NER</span><span class="tag tag--accent">OpenCV</span><span class="tag">Python</span><span class="tag">REST APIs</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Case Study 3: VW — QAM -->
+            <div class="case-study glass-card animate-on-scroll" style="--case-color:#06b6d4">
+                <div class="case-study__header">
+                    <div><span class="case-study__company">Hexad GmbH / Volkswagen</span></div>
+                    <span class="case-study__period">2022 — 2023</span>
+                </div>
+                <h2 class="case-study__title">QAM — Hardware Knowledge Question Answering</h2>
+                <div class="case-study__role"><i class="fas fa-drafting-compass"></i> NLP Architect</div>
+                <div class="case-study__body">
+                    <div class="case-study__narrative">
+                        <p><strong>The Challenge:</strong> VW's engineering teams needed instant access to technical knowledge spread across thousands of hardware specification documents. Engineers spent hours searching through manuals, datasheets, and internal wikis for specific technical details.</p>
+                        <p><strong>The Approach:</strong> Built a RAG-based Question Answering Machine using FLAN-T5 as the generation backbone with VectorDB for semantic retrieval. Ingested and chunked the hardware knowledge base, generated embeddings for semantic search, and built a retrieval pipeline that surfaces the most relevant document passages for any engineering query.</p>
+                        <p><strong>Key Design:</strong> Implemented a two-stage retrieval — first coarse retrieval via vector similarity, then re-ranking using cross-encoder scoring for precision. The system handles ambiguous queries through query expansion and provides source attribution for every answer, enabling engineers to verify and drill deeper.</p>
+                    </div>
+                    <div class="case-study__sidebar">
+                        <div class="case-study__metrics-grid">
+                            <div class="case-study__metric"><div class="case-study__metric-value">RAG</div><div class="case-study__metric-label">Architecture</div></div>
+                            <div class="case-study__metric"><div class="case-study__metric-value">1000s</div><div class="case-study__metric-label">Docs indexed</div></div>
+                            <div class="case-study__metric"><div class="case-study__metric-value">2-stage</div><div class="case-study__metric-label">Retrieval</div></div>
+                            <div class="case-study__metric"><div class="case-study__metric-value">Instant</div><div class="case-study__metric-label">Answers</div></div>
+                        </div>
+                        <div class="case-study__tech">
+                            <h4>Tech Stack</h4>
+                            <div class="case-study__tech-tags">
+                                <span class="tag">FLAN-T5</span><span class="tag tag--secondary">VectorDB</span><span class="tag tag--secondary">FAISS</span><span class="tag tag--accent">Transformers</span><span class="tag">Cross-Encoder</span><span class="tag">Python</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Case Study 4: TIVA -->
+            <div class="case-study glass-card animate-on-scroll" style="--case-color:var(--era-deeplearning)">
+                <div class="case-study__header">
+                    <div><span class="case-study__company">Trigyn Technologies</span></div>
+                    <span class="case-study__period">2020 — 2022</span>
+                </div>
+                <h2 class="case-study__title">TIVA — Real-Time Video Analytics at Scale</h2>
+                <div class="case-study__role"><i class="fas fa-users-cog"></i> Practice Lead — CV & IoT</div>
+                <div class="case-study__body">
+                    <div class="case-study__narrative">
+                        <p><strong>The Challenge:</strong> Surveillance and industrial monitoring systems generated thousands of video streams but lacked intelligent analysis. False alarm rates were astronomically high (often 90%+), making the systems unusable for real-time decision making. Edge devices had severe compute constraints, and cloud-only processing introduced unacceptable latency.</p>
+                        <p><strong>The Approach:</strong> Built TIVA — Trigyn Intelligent Video Analytics — an end-to-end platform covering object detection, intrusion detection, people counting, ANPR (Automatic Number Plate Recognition), and anomaly detection. Designed a hybrid edge-cloud architecture where lightweight models run on Jetson Nano/TX2 for real-time inference, while heavier analytics run in the cloud.</p>
+                        <p><strong>Key Innovations:</strong> Applied model pruning and quantization strategies to fit production-grade detection models within 4GB edge device memory. Developed a custom post-processing pipeline with temporal filtering and zone-based logic that slashed false alarms by 75%. Introduced model versioning and A/B testing to continuously improve accuracy in the field.</p>
+                        <p><strong>Leadership:</strong> Managed a cross-functional team of 12 — embedded engineers, backend developers, frontend designers, and data scientists — establishing code review practices, sprint workflows, and model evaluation benchmarks.</p>
+                    </div>
+                    <div class="case-study__sidebar">
+                        <div class="case-study__metrics-grid">
+                            <div class="case-study__metric"><div class="case-study__metric-value">75%</div><div class="case-study__metric-label">Fewer false alarms</div></div>
+                            <div class="case-study__metric"><div class="case-study__metric-value">1000s</div><div class="case-study__metric-label">Video streams</div></div>
+                            <div class="case-study__metric"><div class="case-study__metric-value">17-20%</div><div class="case-study__metric-label">Cost reduction</div></div>
+                            <div class="case-study__metric"><div class="case-study__metric-value">35%</div><div class="case-study__metric-label">FP improvement</div></div>
+                        </div>
+                        <div class="case-study__tech">
+                            <h4>Tech Stack</h4>
+                            <div class="case-study__tech-tags">
+                                <span class="tag">PyTorch</span><span class="tag">TensorRT</span><span class="tag tag--secondary">ONNX</span><span class="tag tag--secondary">Jetson Nano/TX2</span><span class="tag tag--accent">CUDA</span><span class="tag">OpenCV</span><span class="tag">GStreamer</span><span class="tag">Docker</span><span class="tag">Flask</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Case Study 5: Inkers CV Work -->
+            <div class="case-study glass-card animate-on-scroll" style="--case-color:var(--era-deeplearning)">
+                <div class="case-study__header">
+                    <div><span class="case-study__company">Inkers Technologies</span></div>
+                    <span class="case-study__period">2016 — 2018</span>
+                </div>
+                <h2 class="case-study__title">Retail Computer Vision Suite</h2>
+                <div class="case-study__role"><i class="fas fa-microscope"></i> Data Science Lead</div>
+                <div class="case-study__body">
+                    <div class="case-study__narrative">
+                        <p><strong>The Challenge:</strong> Retail clients needed intelligent customer analytics — understanding who enters their stores, how many people visit, and demographic patterns — without requiring expensive dedicated hardware or manual counting.</p>
+                        <p><strong>The Approach:</strong> Built a suite of computer vision models: face recognition for customer identification using ArcFace embeddings with triplet loss training, crowd counting algorithms using density estimation for footfall analysis, and age/gender classification for demographic profiling.</p>
+                        <p><strong>Key Technical Decisions:</strong> Chose transfer learning with pretrained ResNet backbones over training from scratch, dramatically reducing data requirements. Implemented real-time inference optimization to run on commodity hardware (standard IP cameras + consumer GPUs), making the solution accessible to retail clients without expensive infrastructure upgrades.</p>
+                    </div>
+                    <div class="case-study__sidebar">
+                        <div class="case-study__metrics-grid">
+                            <div class="case-study__metric"><div class="case-study__metric-value">5+</div><div class="case-study__metric-label">Models shipped</div></div>
+                            <div class="case-study__metric"><div class="case-study__metric-value">Real-time</div><div class="case-study__metric-label">Inference</div></div>
+                            <div class="case-study__metric"><div class="case-study__metric-value">Commodity</div><div class="case-study__metric-label">Hardware</div></div>
+                            <div class="case-study__metric"><div class="case-study__metric-value">Multi</div><div class="case-study__metric-label">Model suite</div></div>
+                        </div>
+                        <div class="case-study__tech">
+                            <h4>Tech Stack</h4>
+                            <div class="case-study__tech-tags">
+                                <span class="tag">PyTorch</span><span class="tag">OpenCV</span><span class="tag tag--secondary">ResNet</span><span class="tag tag--secondary">ArcFace</span><span class="tag tag--accent">Transfer Learning</span><span class="tag">Python</span><span class="tag">Flask</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Case Study 6: SERT / AmEx -->
+            <div class="case-study glass-card animate-on-scroll" style="--case-color:var(--era-bigdata)">
+                <div class="case-study__header">
+                    <div><span class="case-study__company">Impetus Technologies / American Express</span></div>
+                    <span class="case-study__period">2012 — 2016</span>
+                </div>
+                <h2 class="case-study__title">SERT — Merchant Engagement & Relevance</h2>
+                <div class="case-study__role"><i class="fas fa-database"></i> Module Lead — Big Data</div>
+                <div class="case-study__body">
+                    <div class="case-study__narrative">
+                        <p><strong>The Challenge:</strong> American Express needed to understand and score open-card merchant engagement across millions of transactions. Which merchants are most relevant to which cardholders? How do you surface the right offers at the right time? The data was massive, heterogeneous, and arriving in near-real-time.</p>
+                        <p><strong>The Approach:</strong> Architected SERT — Speed, Engagement, and Relevance Tool — using Hadoop for batch processing of historical transaction patterns, HBase for low-latency merchant profile lookups, and Elasticsearch for full-text search across millions of merchant descriptions and categories. Built collaborative filtering-based recommendation engines on the processed data.</p>
+                        <p><strong>Architecture Decisions:</strong> Designed the ETL pipeline using Oozie for workflow orchestration, Hive for SQL-accessible data warehousing, and custom MapReduce jobs for the heavy-lifting transformations. The system needed to handle data quality issues at scale — missing fields, duplicate records, format inconsistencies across partner data feeds — so built a robust data validation and reconciliation layer.</p>
+                    </div>
+                    <div class="case-study__sidebar">
+                        <div class="case-study__metrics-grid">
+                            <div class="case-study__metric"><div class="case-study__metric-value">TB+</div><div class="case-study__metric-label">Data processed</div></div>
+                            <div class="case-study__metric"><div class="case-study__metric-value">M+</div><div class="case-study__metric-label">Merchants</div></div>
+                            <div class="case-study__metric"><div class="case-study__metric-value">Real-time</div><div class="case-study__metric-label">Scoring</div></div>
+                            <div class="case-study__metric"><div class="case-study__metric-value">4 years</div><div class="case-study__metric-label">Continuous dev</div></div>
+                        </div>
+                        <div class="case-study__tech">
+                            <h4>Tech Stack</h4>
+                            <div class="case-study__tech-tags">
+                                <span class="tag">Hadoop</span><span class="tag">Hive</span><span class="tag tag--secondary">HBase</span><span class="tag tag--secondary">Elasticsearch</span><span class="tag tag--accent">MapReduce</span><span class="tag">Oozie</span><span class="tag">Java</span><span class="tag">HDFS</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="section section--alt">
+        <div class="container" style="text-align:center;max-width:650px">
+            <h2 class="section__title">Want the Full Story?</h2>
+            <p style="font-size:var(--text-lg);color:var(--color-text-muted);margin-bottom:var(--space-2xl)">Each project built on the one before it. The journey from web crawlers to GenAI platforms wasn't random — it was a deliberate evolution. Read about how each era shaped the next.</p>
+            <div style="display:flex;gap:var(--space-md);justify-content:center;flex-wrap:wrap">
+                <a href="journey.html" class="btn btn--primary btn--lg"><i class="fas fa-route"></i> Explore My Journey</a>
+                <a href="index.html#contact" class="btn btn--outline btn--lg"><i class="fas fa-envelope"></i> Let's Collaborate</a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer__content">
+                <div class="footer__brand"><span class="navbar__logo-mark">N</span><p>Principal GenAI / LLM Architect<br>Bengaluru, India</p></div>
+                <div class="footer__nav"><a href="index.html">Home</a><a href="journey.html">Journey</a><a href="work.html">Work</a><a href="blog/index.html">Blog</a><a href="index.html#contact">Contact</a></div>
+                <div class="footer__social"><a href="mailto:navneet1083@gmail.com"><i class="fas fa-envelope"></i></a><a href="https://linkedin.com/in/navneet1083" target="_blank"><i class="fab fa-linkedin"></i></a><a href="https://github.com/navneet1083" target="_blank"><i class="fab fa-github"></i></a></div>
+            </div>
+            <div class="footer__bottom"><p>&copy; 2026 Navneet Singh. Crafted with two decades of passion.</p></div>
+        </div>
+    </footer>
+    <script defer src="js/theme.js"></script>
+    <script defer src="js/navigation.js"></script>
+    <script defer src="js/animations.js"></script>
+    <script defer src="js/main.js"></script>
+</body>
+</html>
