@@ -1,0 +1,236 @@
+/* ============================================
+   Responsive Breakpoints
+   1024px / 768px / 480px
+   ============================================ */
+
+
+/* ===========================
+   BREAKPOINT: 1024px (Tablet landscape)
+   =========================== */
+
+@media (max-width: 1024px) {
+
+    /* Navbar: show hamburger, hide desktop links */
+    .navbar__links,
+    .navbar__cta {
+        display: none;
+    }
+
+    .navbar__hamburger {
+        display: flex;
+    }
+
+    .navbar__mobile {
+        display: block;
+    }
+
+    /* Eras: single column */
+    .eras {
+        grid-template-columns: 1fr;
+    }
+
+    /* Impact: 2 columns */
+    .impact-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* Expertise: single column */
+    .expertise-domains {
+        grid-template-columns: 1fr;
+    }
+
+    /* Credentials: single column */
+    .credentials-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Contact: single column */
+    .contact__grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Case study body: single column */
+    .case-study__body {
+        grid-template-columns: 1fr;
+    }
+
+    /* Journey timeline: single column, line at left */
+    .journey-timeline::before {
+        left: 20px;
+        transform: none;
+    }
+
+    .journey-entry,
+    .journey-entry:nth-child(odd),
+    .journey-entry:nth-child(even) {
+        width: 100%;
+        left: 0;
+        padding-left: 52px;
+        padding-right: 0;
+        text-align: left;
+    }
+
+    .journey-entry:nth-child(odd) .journey-entry__dot,
+    .journey-entry:nth-child(even) .journey-entry__dot {
+        left: 11px;
+        right: auto;
+    }
+
+    /* Blog grid */
+    .blog__grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+/* ===========================
+   BREAKPOINT: 768px (Tablet portrait)
+   =========================== */
+
+@media (max-width: 768px) {
+
+    /* Reduce section padding */
+    .section {
+        padding: var(--space-3xl) 0;
+    }
+
+    /* Hero metrics stack */
+    .hero__metrics {
+        flex-direction: column;
+        gap: var(--space-md);
+    }
+
+    .metric__divider {
+        width: 60px;
+        height: 1px;
+        align-self: center;
+    }
+
+    /* Hide scroll cue on smaller screens */
+    .hero__scroll-cue {
+        display: none;
+    }
+
+    /* Footer content: column layout */
+    .footer__content {
+        flex-direction: column;
+        gap: var(--space-xl);
+        align-items: center;
+        text-align: center;
+    }
+
+    .footer__nav {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    /* Page hero title: smaller */
+    .page-hero__title {
+        font-size: var(--text-3xl);
+    }
+
+    /* Case study header */
+    .case-study__header {
+        flex-direction: column;
+    }
+
+    .case-study__metrics-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    /* Research stats: wrap */
+    .research-stats {
+        flex-wrap: wrap;
+        gap: var(--space-xl);
+    }
+}
+
+
+/* ===========================
+   BREAKPOINT: 480px (Mobile)
+   =========================== */
+
+@media (max-width: 480px) {
+
+    /* Container: smaller padding */
+    .container {
+        padding: 0 var(--space-md);
+    }
+
+    .container--narrow {
+        padding: 0 var(--space-md);
+    }
+
+    /* Hero content */
+    .hero__content {
+        padding: var(--space-lg) var(--space-md);
+    }
+
+    .hero__title-big {
+        font-size: var(--text-3xl);
+    }
+
+    /* Buttons: full width */
+    .hero__actions {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .hero__actions .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* Hide particles on mobile */
+    .hero__particles {
+        display: none;
+    }
+
+    /* Impact grid: single column */
+    .impact-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Glass card: smaller padding */
+    .glass-card {
+        padding: var(--space-lg);
+    }
+
+    /* Era impact: column */
+    .era__impact {
+        flex-direction: column;
+        gap: var(--space-sm);
+    }
+
+    /* Work card metrics: column */
+    .work-card__metrics {
+        flex-direction: column;
+        gap: var(--space-sm);
+    }
+
+    /* Case study */
+    .case-study {
+        padding: var(--space-lg);
+    }
+
+    .case-study__metrics-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Blog grid: single column */
+    .blog__grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Section header: smaller margin */
+    .section__header {
+        margin-bottom: var(--space-2xl);
+    }
+
+    /* Research stats: column */
+    .research-stats {
+        flex-direction: column;
+        align-items: center;
+        gap: var(--space-lg);
+    }
+}

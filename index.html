@@ -1,4 +1,266 @@
----
-layout: home
-author_profile: true
----
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navneet Singh — Principal GenAI / LLM Architect</title>
+    <meta name="description" content="16+ years building enterprise AI. From software engineering to Big Data to Deep Learning to Generative AI — architecting the future of intelligent systems.">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/sections.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="container navbar__container">
+            <a href="#" class="navbar__logo"><span class="navbar__logo-mark">N</span><span class="navbar__logo-text">Navneet</span></a>
+            <ul class="navbar__links">
+                <li><a href="#" class="navbar__link navbar__link--active">Home</a></li>
+                <li><a href="journey.html" class="navbar__link">Journey</a></li>
+                <li><a href="work.html" class="navbar__link">Work</a></li>
+                <li><a href="blog/index.html" class="navbar__link">Blog</a></li>
+                <li><a href="#contact" class="navbar__link">Contact</a></li>
+            </ul>
+            <a href="https://drive.google.com/file/d/18Cal1KKLT0yNRQb4aXkJiduLd1hAJITM/view" target="_blank" class="btn btn--primary btn--sm navbar__cta"><i class="fas fa-file-alt"></i> Resume</a>
+            <button class="navbar__hamburger" id="hamburger" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+        <div class="navbar__mobile" id="mobileMenu">
+            <ul class="navbar__mobile-links">
+                <li><a href="#" class="navbar__link">Home</a></li>
+                <li><a href="journey.html" class="navbar__link">Journey</a></li>
+                <li><a href="work.html" class="navbar__link">Work</a></li>
+                <li><a href="blog/index.html" class="navbar__link">Blog</a></li>
+                <li><a href="#contact" class="navbar__link">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+    <div class="scroll-progress" id="scrollProgress"></div>
+
+    <!-- HERO -->
+    <section class="hero" id="hero">
+        <div class="hero__mesh"></div>
+        <canvas class="hero__particles" id="particlesCanvas"></canvas>
+        <div class="hero__content">
+            <div class="hero__badge animate-on-scroll"><span class="hero__badge-dot"></span> Available for Architecture & Advisory roles</div>
+            <h1 class="hero__title animate-on-scroll">
+                <span class="hero__title-small">I'm Navneet Singh</span>
+                <span class="hero__title-big">I architect <span class="hero__title-accent" id="typewriter"></span><span class="hero__cursor">|</span></span>
+            </h1>
+            <p class="hero__narrative animate-on-scroll">From building <strong>web crawlers</strong> serving 80 newspapers, to designing <strong>Big Data architectures</strong> at American Express, to leading <strong>Deep Learning teams</strong> deploying on edge devices — to now shaping <strong>enterprise GenAI platforms</strong> at Cigna. Two decades of evolution, one constant: making machines understand.</p>
+            <div class="hero__metrics animate-on-scroll">
+                <div class="metric"><span class="metric__value" data-target="16">0</span><span class="metric__suffix">+</span><span class="metric__label">Years Building AI</span></div>
+                <div class="metric__divider"></div>
+                <div class="metric"><span class="metric__value" data-target="5">0</span><span class="metric__label">Companies Transformed</span></div>
+                <div class="metric__divider"></div>
+                <div class="metric"><span class="metric__value" data-target="4">0</span><span class="metric__label">Technology Eras Mastered</span></div>
+            </div>
+            <div class="hero__actions animate-on-scroll">
+                <a href="journey.html" class="btn btn--primary btn--lg"><i class="fas fa-route"></i> Explore My Journey</a>
+                <a href="work.html" class="btn btn--outline btn--lg"><i class="fas fa-briefcase"></i> View My Work</a>
+            </div>
+        </div>
+        <div class="hero__scroll-cue"><div class="hero__scroll-text">Scroll to discover</div><div class="hero__scroll-line"></div></div>
+    </section>
+
+    <!-- FOUR ERAS -->
+    <section class="section evolution" id="evolution">
+        <div class="container">
+            <div class="section__header">
+                <span class="section__label">The Arc</span>
+                <h2 class="section__title">Four Eras of Evolution</h2>
+                <p class="section__subtitle">Each era didn't replace the last — it built on it. The foundation engineer became the data architect, who became the deep learning lead, who became the GenAI architect.</p>
+            </div>
+            <div class="eras">
+                <div class="era glass-card animate-on-scroll" style="--era-color:var(--era-foundation)">
+                    <div class="era__number">01</div><div class="era__period">2006 — 2012</div>
+                    <h3 class="era__title">The Foundation</h3>
+                    <p class="era__role">Senior Software Engineer @ Eterno Infotech</p>
+                    <p class="era__desc">Built DailyHunt's backend — web crawlers aggregating news from 80 publishers across rich, XML, HTML, JSON feeds. Learned to think at scale when millions of mobile users depended on your code.</p>
+                    <div class="era__badge"><i class="fas fa-code"></i> Java &middot; Servlets &middot; Web Crawlers</div>
+                </div>
+                <div class="era glass-card animate-on-scroll" style="--era-color:var(--era-bigdata)">
+                    <div class="era__number">02</div><div class="era__period">2012 — 2016</div>
+                    <h3 class="era__title">The Data Era</h3>
+                    <p class="era__role">Module Lead @ Impetus (American Express)</p>
+                    <p class="era__desc">Architected SERT — the Speed Engagement and Relevance Tool for Amex open card merchants. Processed terabytes of transactional data. Discovered that data, not code, is the real product.</p>
+                    <div class="era__badge"><i class="fas fa-database"></i> Hadoop &middot; Hive &middot; HBase &middot; Elasticsearch</div>
+                </div>
+                <div class="era glass-card animate-on-scroll" style="--era-color:var(--era-deeplearning)">
+                    <div class="era__number">03</div><div class="era__period">2016 — 2022</div>
+                    <h3 class="era__title">The Deep Learning Era</h3>
+                    <p class="era__role">DS Lead @ Inkers → Practice Lead @ Trigyn</p>
+                    <p class="era__desc">Led CV teams building face recognition, video analytics across 1000s of streams, edge deployment on Jetson Nano. Made machines see.</p>
+                    <div class="era__impact"><span><strong>75%</strong> fewer false alarms</span><span><strong>35%</strong> FP improvement</span><span><strong>20%</strong> cost reduction</span></div>
+                    <div class="era__badge"><i class="fas fa-eye"></i> PyTorch &middot; OpenCV &middot; Edge AI &middot; CUDA</div>
+                </div>
+                <div class="era glass-card animate-on-scroll era--current" style="--era-color:var(--era-genai)">
+                    <div class="era__number">04</div><div class="era__period">2022 — Present</div>
+                    <h3 class="era__title">The GenAI Era</h3>
+                    <p class="era__role">NLP Architect @ Hexad (VW) → ML Advisor @ Cigna</p>
+                    <p class="era__desc">Designing enterprise GenAI platforms — RAG pipelines, LLM guardrails, document intelligence. Making machines understand and reason.</p>
+                    <div class="era__impact"><span><strong>2x</strong> throughput</span><span><strong>+37%</strong> accuracy</span><span><strong>Enterprise</strong> scale</span></div>
+                    <div class="era__badge"><i class="fas fa-brain"></i> LLMs &middot; RAG &middot; LoRA &middot; vLLM &middot; RLHF</div>
+                </div>
+            </div>
+            <div style="text-align:center;margin-top:var(--space-2xl)"><a href="journey.html" class="btn btn--outline"><i class="fas fa-route"></i> Deep Dive into My Journey</a></div>
+        </div>
+    </section>
+
+    <!-- IMPACT -->
+    <section class="section section--dark impact-section" id="impact">
+        <div class="container">
+            <div class="section__header">
+                <span class="section__label" style="color:var(--color-secondary)">By the Numbers</span>
+                <h2 class="section__title" style="color:var(--color-text-inverse)">Impact That Matters</h2>
+            </div>
+            <div class="impact-grid">
+                <div class="impact-card"><div class="impact-card__icon"><i class="fas fa-shield-halved"></i></div><div class="impact-card__value" data-target="75">0</div><div class="impact-card__unit">%</div><div class="impact-card__label">False alarm reduction across 1000s of video streams</div></div>
+                <div class="impact-card"><div class="impact-card__icon"><i class="fas fa-bolt"></i></div><div class="impact-card__value" data-target="2">0</div><div class="impact-card__unit">x</div><div class="impact-card__label">Throughput in legalAI document processing at VW</div></div>
+                <div class="impact-card"><div class="impact-card__icon"><i class="fas fa-bullseye"></i></div><div class="impact-card__value" data-target="37">0</div><div class="impact-card__unit">%</div><div class="impact-card__label">Extraction accuracy via semantic merging + entity logic</div></div>
+                <div class="impact-card"><div class="impact-card__icon"><i class="fas fa-microchip"></i></div><div class="impact-card__value" data-target="20">0</div><div class="impact-card__unit">%</div><div class="impact-card__label">Deployment cost reduction through edge optimization</div></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- EXPERTISE -->
+    <section class="section" id="expertise">
+        <div class="container">
+            <div class="section__header"><span class="section__label">What I Bring</span><h2 class="section__title">Expertise</h2></div>
+            <div class="expertise-domains">
+                <div class="domain glass-card animate-on-scroll">
+                    <div class="domain__icon" style="background:var(--gradient-primary)"><i class="fas fa-brain"></i></div>
+                    <h3 class="domain__title">Generative AI & LLMs</h3>
+                    <p class="domain__desc">Enterprise GenAI platforms, RAG with VectorDB/FAISS, prompt engineering (CoT, ToT, few-shot), LLM guardrails, PII safety, evaluation gates, vLLM serving</p>
+                    <div class="domain__tools"><span>GPT-4o</span><span>Llama</span><span>FLAN-T5</span><span>BLOOM</span><span>BERT</span><span>LangChain</span><span>ROUGE/BLEU</span></div>
+                </div>
+                <div class="domain glass-card animate-on-scroll">
+                    <div class="domain__icon" style="background:var(--gradient-secondary)"><i class="fas fa-eye"></i></div>
+                    <h3 class="domain__title">Deep Learning & Vision</h3>
+                    <p class="domain__desc">Object detection, face recognition, medical imaging (MRI/X-Ray), video analytics, model pruning, quantization, edge deployment on Jetson</p>
+                    <div class="domain__tools"><span>PyTorch</span><span>OpenCV</span><span>ResNet</span><span>MobileNet</span><span>EfficientNet</span><span>U-Net</span><span>Grad-CAM</span></div>
+                </div>
+                <div class="domain glass-card animate-on-scroll">
+                    <div class="domain__icon" style="background:linear-gradient(135deg,var(--color-accent),var(--color-accent-rose))"><i class="fas fa-sliders-h"></i></div>
+                    <h3 class="domain__title">Model Optimization & Serving</h3>
+                    <p class="domain__desc">LoRA/QLoRA fine-tuning, RLHF alignment, knowledge distillation, DDP/FSDP distributed training, ZeRO, FlashAttention, GPU performance at scale</p>
+                    <div class="domain__tools"><span>PEFT</span><span>CUDA</span><span>vLLM</span><span>ONNX</span><span>TensorRT</span><span>wandb</span><span>DDP/FSDP</span></div>
+                </div>
+                <div class="domain glass-card animate-on-scroll">
+                    <div class="domain__icon" style="background:linear-gradient(135deg,var(--color-accent-warm),var(--color-accent-rose))"><i class="fas fa-users-cog"></i></div>
+                    <h3 class="domain__title">Leadership & Architecture</h3>
+                    <p class="domain__desc">Team building, architecture standards, cost/latency SLOs, security-by-design, experiment tracking, release discipline, stakeholder management</p>
+                    <div class="domain__tools"><span>Docker</span><span>K8s</span><span>AWS</span><span>GCP</span><span>CI/CD</span><span>JIRA</span><span>GitLab</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FEATURED WORK -->
+    <section class="section section--alt" id="featured-work">
+        <div class="container">
+            <div class="section__header"><span class="section__label">Selected Work</span><h2 class="section__title">What I've Built</h2><p class="section__subtitle">Enterprise systems, research prototypes, and everything in between</p></div>
+            <div class="work-showcase">
+                <div class="work-card glass-card animate-on-scroll">
+                    <div class="work-card__header"><span class="work-card__company">Cigna AICoE</span><span class="work-card__year">2023 — Present</span></div>
+                    <h3 class="work-card__title">Project Genius — Enterprise GenAI Platform</h3>
+                    <p class="work-card__desc">Designed the architecture for Cigna's enterprise GenAI pipeline — prompt + few-shot retrieval from custom fine-tuned models (embed+CNN) for complex table extraction. Built with FAISS, LLM guardrails, PII/data controls, evaluation gates.</p>
+                    <div class="work-card__tags"><span class="tag">Architecture Lead</span><span class="tag tag--secondary">RAG</span><span class="tag tag--accent">LoRA</span><span class="tag">vLLM</span></div>
+                </div>
+                <div class="work-card glass-card animate-on-scroll">
+                    <div class="work-card__header"><span class="work-card__company">Hexad / Volkswagen</span><span class="work-card__year">2022 — 2023</span></div>
+                    <h3 class="work-card__title">legalAI — Document Intelligence Platform</h3>
+                    <p class="work-card__desc">Built PDF parsing using CV-based layout understanding with semantic merging + entity logic. Improved throughput 2x and extraction accuracy by +37%. Also delivered QAM for hardware knowledge using FLAN-T5 and VectorDB.</p>
+                    <div class="work-card__metrics"><span><strong>2x</strong> throughput</span><span><strong>+37%</strong> accuracy</span></div>
+                    <div class="work-card__tags"><span class="tag">NLP Architect</span><span class="tag tag--secondary">Document AI</span><span class="tag tag--accent">FLAN-T5</span></div>
+                </div>
+                <div class="work-card glass-card animate-on-scroll">
+                    <div class="work-card__header"><span class="work-card__company">Trigyn Technologies</span><span class="work-card__year">2020 — 2022</span></div>
+                    <h3 class="work-card__title">TIVA — Video Analytics at Scale</h3>
+                    <p class="work-card__desc">Led end-to-end platform for real-time analytics across 1000s of video streams and edge devices (Jetson Nano/TX2). Managed multi-skill team spanning embedded, backend, dashboard, and data science.</p>
+                    <div class="work-card__metrics"><span><strong>75%</strong> fewer false alarms</span><span><strong>17-20%</strong> cost reduction</span></div>
+                    <div class="work-card__tags"><span class="tag">Practice Lead</span><span class="tag tag--secondary">Edge AI</span><span class="tag tag--accent">Jetson</span></div>
+                </div>
+            </div>
+            <div style="text-align:center;margin-top:var(--space-2xl)"><a href="work.html" class="btn btn--outline"><i class="fas fa-briefcase"></i> All Work & Case Studies</a></div>
+        </div>
+    </section>
+
+    <!-- EDUCATION -->
+    <section class="section" id="education">
+        <div class="container">
+            <div class="section__header"><span class="section__label">Credentials</span><h2 class="section__title">Education & Certifications</h2></div>
+            <div class="credentials-grid">
+                <div class="credentials-col">
+                    <h3 class="credentials__heading"><i class="fas fa-graduation-cap"></i> Education</h3>
+                    <div class="credential-card glass-card animate-on-scroll"><div class="credential-card__year">2023 — 2025</div><h4 class="credential-card__title">M.Tech — AI & Machine Learning</h4><p class="credential-card__org">BITS Pilani, India</p><p class="credential-card__detail">Deep Neural Networks, Deep Reinforcement Learning, NLP, Statistics, Information Retrieval</p></div>
+                    <div class="credential-card glass-card animate-on-scroll"><div class="credential-card__year">2001 — 2005</div><h4 class="credential-card__title">B.E. — Computer Science & Engineering</h4><p class="credential-card__org">VTU, India — First Class</p><p class="credential-card__detail">Operating Systems, Computer Networks, Parallel Programming, Algorithms & Data Structures</p></div>
+                </div>
+                <div class="credentials-col">
+                    <h3 class="credentials__heading"><i class="fas fa-certificate"></i> Certifications</h3>
+                    <div class="credential-card glass-card animate-on-scroll"><div class="credential-card__badge udacity">Udacity</div><h4 class="credential-card__title">Nano Degree — Self Driving Car</h4><p class="credential-card__detail">Vehicle Detection & Tracking, Traffic Sign Classification</p></div>
+                    <div class="credential-card glass-card animate-on-scroll"><div class="credential-card__badge udacity">Udacity</div><h4 class="credential-card__title">Nano Degree — NLP</h4><p class="credential-card__detail">PoS Tagging (HMM), Machine Translation (DNN), Speech Recognition</p></div>
+                    <div class="credential-card glass-card animate-on-scroll"><div class="credential-card__badge coursera">Coursera</div><h4 class="credential-card__title">14+ Verified Certificates</h4><p class="credential-card__detail">Generative AI with LLM, Neural Networks & DL, CNNs, AI for Medical Prognosis, Hyperparameter Tuning, and more</p></div>
+                    <div class="credential-card glass-card animate-on-scroll"><div class="credential-card__badge sun">Sun/Oracle</div><h4 class="credential-card__title">SCJP & SCWCD</h4><p class="credential-card__detail">Sun Certified Java Programmer, Sun Certified Web Component Developer</p></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- BLOG PREVIEW -->
+    <section class="section section--alt" id="blog-preview">
+        <div class="container">
+            <div class="section__header"><span class="section__label">Thinking Out Loud</span><h2 class="section__title">Latest from the Blog</h2></div>
+            <div class="blog__grid">
+                <a href="blog/agentic-ai.html" class="glass-card blog-card animate-on-scroll"><div class="blog-card__meta"><span class="blog-card__category">Generative AI</span><span>March 2026</span><span>8 min</span></div><h3 class="blog-card__title">The Rise of Agentic AI: Building Autonomous Systems</h3><p class="blog-card__excerpt">How agentic patterns — ReAct, Plan-and-Execute, Reflexion — are transforming AI from question-answering to goal-directed problem solving.</p><span class="blog-card__link">Read <i class="fas fa-arrow-right"></i></span></a>
+                <a href="blog/small-language-models.html" class="glass-card blog-card animate-on-scroll"><div class="blog-card__meta"><span class="blog-card__category">Edge AI</span><span>February 2026</span><span>7 min</span></div><h3 class="blog-card__title">Small Language Models: When Less is More</h3><p class="blog-card__excerpt">Why fine-tuning a 3B model often outperforms prompting a 70B one — at 25x lower cost and 10x lower latency.</p><span class="blog-card__link">Read <i class="fas fa-arrow-right"></i></span></a>
+            </div>
+            <div style="text-align:center;margin-top:var(--space-2xl)"><a href="blog/index.html" class="btn btn--outline"><i class="fas fa-book-open"></i> All Articles</a></div>
+        </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="section" id="contact">
+        <div class="container">
+            <div class="section__header"><span class="section__label">Let's Connect</span><h2 class="section__title">Get in Touch</h2><p class="section__subtitle">Open to architecture consulting, advisory roles, and research collaborations</p></div>
+            <div class="contact__grid">
+                <div class="contact__channels animate-on-scroll">
+                    <a href="mailto:navneet1083@gmail.com" class="contact-link glass-card"><i class="fas fa-envelope"></i><div><strong>Email</strong><span>navneet1083@gmail.com</span></div></a>
+                    <a href="https://linkedin.com/in/navneet1083" target="_blank" class="contact-link glass-card"><i class="fab fa-linkedin"></i><div><strong>LinkedIn</strong><span>/in/navneet1083</span></div></a>
+                    <a href="https://github.com/navneet1083" target="_blank" class="contact-link glass-card"><i class="fab fa-github"></i><div><strong>GitHub</strong><span>/navneet1083</span></div></a>
+                    <a href="tel:+919880391422" class="contact-link glass-card"><i class="fas fa-phone"></i><div><strong>Phone</strong><span>+91 9880 391422</span></div></a>
+                    <div class="contact-link glass-card"><i class="fas fa-map-marker-alt"></i><div><strong>Location</strong><span>Bengaluru, India</span></div></div>
+                </div>
+                <form class="glass-card contact__form animate-on-scroll" id="contactForm">
+                    <h3 style="margin-bottom:var(--space-lg);font-size:var(--text-xl)">Send a Message</h3>
+                    <div class="form__group"><label class="form__label" for="name">Name</label><input class="form__input" type="text" id="name" placeholder="Your name" required></div>
+                    <div class="form__group"><label class="form__label" for="email">Email</label><input class="form__input" type="email" id="email" placeholder="your@email.com" required></div>
+                    <div class="form__group"><label class="form__label" for="message">Message</label><textarea class="form__textarea" id="message" placeholder="Tell me about your project..." required></textarea></div>
+                    <button type="submit" class="btn btn--primary" style="width:100%;justify-content:center"><i class="fas fa-paper-plane"></i> Send Message</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer__content">
+                <div class="footer__brand"><span class="navbar__logo-mark">N</span><p>Principal GenAI / LLM Architect<br>Bengaluru, India</p></div>
+                <div class="footer__nav"><a href="journey.html">Journey</a><a href="work.html">Work</a><a href="blog/index.html">Blog</a><a href="#contact">Contact</a></div>
+                <div class="footer__social"><a href="mailto:navneet1083@gmail.com"><i class="fas fa-envelope"></i></a><a href="https://linkedin.com/in/navneet1083" target="_blank"><i class="fab fa-linkedin"></i></a><a href="https://github.com/navneet1083" target="_blank"><i class="fab fa-github"></i></a></div>
+            </div>
+            <div class="footer__bottom"><p>&copy; 2026 Navneet Singh. Crafted with two decades of passion.</p></div>
+        </div>
+    </footer>
+    <script defer src="js/theme.js"></script>
+    <script defer src="js/navigation.js"></script>
+    <script defer src="js/animations.js"></script>
+    <script defer src="js/main.js"></script>
+</body>
+</html>
