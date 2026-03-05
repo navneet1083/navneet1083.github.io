@@ -10,7 +10,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <link rel="stylesheet" href="../css/variables.css">
@@ -29,7 +29,7 @@
             <ul class="navbar__links">
                 <li><a href="../index.html" class="navbar__link">Home</a></li>
                 <li><a href="../journey.html" class="navbar__link">Journey</a></li>
-                <li><a href="../work.html" class="navbar__link">Work</a></li>
+                <li><a href="../research.html" class="navbar__link">Research</a></li>
                 <li><a href="index.html" class="navbar__link navbar__link--active">Blog</a></li>
                 <li><a href="../index.html#contact" class="navbar__link">Contact</a></li>
             </ul>
@@ -40,7 +40,7 @@
             <ul class="navbar__mobile-links">
                 <li><a href="../index.html" class="navbar__link">Home</a></li>
                 <li><a href="../journey.html" class="navbar__link">Journey</a></li>
-                <li><a href="../work.html" class="navbar__link">Work</a></li>
+                <li><a href="../research.html" class="navbar__link">Research</a></li>
                 <li><a href="index.html" class="navbar__link navbar__link--active">Blog</a></li>
                 <li><a href="../index.html#contact" class="navbar__link">Contact</a></li>
             </ul>
@@ -61,14 +61,29 @@
             <!-- Filter -->
             <div class="filter-pills" style="margin-bottom: var(--space-2xl);">
                 <button class="filter-pill filter-pill--active" data-filter="all">All</button>
+                <button class="filter-pill" data-filter="research">Research</button>
                 <button class="filter-pill" data-filter="genai">Generative AI</button>
                 <button class="filter-pill" data-filter="edge">Edge AI</button>
-                <button class="filter-pill" data-filter="healthcare">Healthcare</button>
+                <button class="filter-pill" data-filter="medical">Medical AI</button>
                 <button class="filter-pill" data-filter="cv">Computer Vision</button>
             </div>
 
             <!-- Blog Grid -->
             <div class="blog__grid" style="grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));">
+
+                <!-- XMRetriever (Featured) -->
+                <a href="xmretriever.html" class="glass-card blog-card animate-on-scroll" data-category="research">
+                    <div class="blog-card__meta">
+                        <span class="blog-card__category">Research</span>
+                        <span>May 2025</span>
+                        <span>12 min read</span>
+                    </div>
+                    <h3 class="blog-card__title">XMRetriever: Token-Efficient Vision-Language Inference</h3>
+                    <p class="blog-card__excerpt">
+                        Cross-modal retrieval with dual-head projections and neighbor-aware sampling. 75% token reduction while improving accuracy.
+                    </p>
+                    <span class="blog-card__link">Read Article <i class="fas fa-arrow-right"></i></span>
+                </a>
 
                 <!-- Agentic AI -->
                 <a href="agentic-ai.html" class="glass-card blog-card animate-on-scroll" data-category="genai">
@@ -79,7 +94,7 @@
                     </div>
                     <h3 class="blog-card__title">The Rise of Agentic AI: Building Autonomous Systems</h3>
                     <p class="blog-card__excerpt">
-                        Exploring how agentic patterns — ReAct, Plan-and-Execute, and Reflexion — are transforming how we build AI systems that can reason, plan, and act autonomously.
+                        How agentic patterns are transforming AI from question-answering to goal-directed problem solving.
                     </p>
                     <span class="blog-card__link">Read Article <i class="fas fa-arrow-right"></i></span>
                 </a>
@@ -93,17 +108,17 @@
                     </div>
                     <h3 class="blog-card__title">Small Language Models: When Less is More</h3>
                     <p class="blog-card__excerpt">
-                        Why SLMs like Phi, Gemma, and Llama-3.2 small variants are revolutionizing edge deployment, and how fine-tuning them often outperforms prompting larger models.
+                        Why fine-tuning a 3B model often outperforms prompting a 70B one — at 25x lower cost.
                     </p>
                     <span class="blog-card__link">Read Article <i class="fas fa-arrow-right"></i></span>
                 </a>
 
                 <!-- Medical Prognosis -->
-                <a href="medical-prognosis.html" class="glass-card blog-card animate-on-scroll" data-category="healthcare">
+                <a href="#" class="glass-card blog-card animate-on-scroll" data-category="medical">
                     <div class="blog-card__meta">
-                        <span class="blog-card__category">Healthcare AI</span>
+                        <span class="blog-card__category">Medical AI</span>
                         <span>March 2020</span>
-                        <span>10 min read</span>
+                        <span>6 min read</span>
                     </div>
                     <h3 class="blog-card__title">Medical Prognosis: Predicting Patient Outcomes with AI</h3>
                     <p class="blog-card__excerpt">
@@ -113,11 +128,11 @@
                 </a>
 
                 <!-- Medical Diagnosis -->
-                <a href="medical-diagnosis.html" class="glass-card blog-card animate-on-scroll" data-category="healthcare">
+                <a href="#" class="glass-card blog-card animate-on-scroll" data-category="medical">
                     <div class="blog-card__meta">
-                        <span class="blog-card__category">Healthcare AI</span>
+                        <span class="blog-card__category">Medical AI</span>
                         <span>April 2020</span>
-                        <span>9 min read</span>
+                        <span>5 min read</span>
                     </div>
                     <h3 class="blog-card__title">Medical Diagnosis: Sensitivity, Specificity & Beyond</h3>
                     <p class="blog-card__excerpt">
@@ -127,11 +142,11 @@
                 </a>
 
                 <!-- OpenCV -->
-                <a href="python-opencv.html" class="glass-card blog-card animate-on-scroll" data-category="cv">
+                <a href="#" class="glass-card blog-card animate-on-scroll" data-category="cv">
                     <div class="blog-card__meta">
                         <span class="blog-card__category">Computer Vision</span>
                         <span>January 2018</span>
-                        <span>5 min read</span>
+                        <span>4 min read</span>
                     </div>
                     <h3 class="blog-card__title">Python OpenCV: Image Processing Essentials</h3>
                     <p class="blog-card__excerpt">
@@ -139,7 +154,6 @@
                     </p>
                     <span class="blog-card__link">Read Article <i class="fas fa-arrow-right"></i></span>
                 </a>
-
             </div>
         </div>
     </section>
@@ -149,7 +163,7 @@
         <div class="container">
             <div class="footer__content">
                 <div class="footer__brand"><span class="navbar__logo-mark">N</span><p>Principal GenAI / LLM Architect<br>Bengaluru, India</p></div>
-                <div class="footer__nav"><a href="../index.html">Home</a><a href="../journey.html">Journey</a><a href="../work.html">Work</a><a href="index.html">Blog</a><a href="../index.html#contact">Contact</a></div>
+                <div class="footer__nav"><a href="../journey.html">Journey</a><a href="../research.html">Research</a><a href="index.html">Blog</a><a href="../index.html#contact">Contact</a></div>
                 <div class="footer__social"><a href="mailto:navneet1083@gmail.com"><i class="fas fa-envelope"></i></a><a href="https://linkedin.com/in/navneet1083" target="_blank"><i class="fab fa-linkedin"></i></a><a href="https://github.com/navneet1083" target="_blank"><i class="fab fa-github"></i></a></div>
             </div>
             <div class="footer__bottom"><p>&copy; 2026 Navneet Singh. Crafted with two decades of passion.</p></div>

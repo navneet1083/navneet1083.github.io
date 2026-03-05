@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Journey — Navneet Singh</title>
-    <meta name="description" content="Two decades of evolution — from Java servlets to GenAI platforms. The complete career story of Navneet Singh.">
+    <title>Journey — Navneet Singh | Two Decades of Building Intelligence</title>
+    <meta name="description" content="From web crawlers serving millions to enterprise GenAI platforms — the career evolution of Navneet Singh across four technology eras.">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,169 +16,446 @@
     <link rel="stylesheet" href="css/sections.css">
     <link rel="stylesheet" href="css/animations.css">
     <link rel="stylesheet" href="css/responsive.css">
+    <style>
+        /* Page Hero */
+        .page-hero {
+            padding: calc(var(--space-4xl) + 80px) 0 var(--space-4xl);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .page-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 50% 0%, rgba(99, 102, 241, 0.08) 0%, transparent 60%);
+            pointer-events: none;
+        }
+        .page-hero .section__label {
+            display: inline-block;
+            margin-bottom: var(--space-md);
+        }
+        .page-hero__title {
+            font-size: clamp(2.2rem, 5vw, 3.5rem);
+            font-weight: 800;
+            line-height: 1.15;
+            margin-bottom: var(--space-lg);
+            color: var(--color-text-primary);
+        }
+        .page-hero__subtitle {
+            font-size: var(--text-lg);
+            color: var(--color-text-secondary);
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        /* Journey Timeline */
+        .journey-timeline {
+            position: relative;
+            padding: var(--space-3xl) 0;
+        }
+        .journey-timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            transform: translateX(-50%);
+            background: linear-gradient(
+                to bottom,
+                var(--era-foundation),
+                var(--era-bigdata),
+                var(--era-deeplearning),
+                var(--era-genai)
+            );
+            border-radius: 2px;
+            opacity: 0.5;
+        }
+
+        .journey-entry {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: var(--space-3xl);
+            position: relative;
+        }
+        .journey-entry:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Alternating layout */
+        .journey-entry:nth-child(odd) {
+            flex-direction: row;
+        }
+        .journey-entry:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+        .journey-entry:nth-child(odd) .journey-entry__content {
+            margin-right: auto;
+            padding-right: var(--space-2xl);
+            text-align: right;
+        }
+        .journey-entry:nth-child(even) .journey-entry__content {
+            margin-left: auto;
+            padding-left: var(--space-2xl);
+            text-align: left;
+        }
+        .journey-entry__content {
+            width: calc(50% - 30px);
+        }
+
+        .journey-entry__dot {
+            position: absolute;
+            left: 50%;
+            top: 8px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+            border: 3px solid var(--color-bg-primary);
+            box-shadow: 0 0 0 3px var(--dot-color, var(--era-foundation)), 0 0 20px rgba(99, 102, 241, 0.2);
+            background: var(--dot-color, var(--era-foundation));
+        }
+        .journey-entry--current .journey-entry__dot {
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { box-shadow: 0 0 0 3px var(--dot-color, var(--era-genai)), 0 0 20px rgba(99, 102, 241, 0.2); }
+            50% { box-shadow: 0 0 0 6px var(--dot-color, var(--era-genai)), 0 0 30px rgba(99, 102, 241, 0.4); }
+        }
+
+        .journey-entry__period {
+            font-family: 'JetBrains Mono', 'SF Mono', monospace;
+            font-size: var(--text-sm);
+            font-weight: 600;
+            color: var(--dot-color, var(--era-foundation));
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: var(--space-xs);
+        }
+        .journey-entry__title {
+            font-size: var(--text-2xl);
+            font-weight: 800;
+            margin-bottom: var(--space-xs);
+            color: var(--color-text-primary);
+        }
+        .journey-entry__role {
+            font-size: var(--text-base);
+            font-weight: 500;
+            color: var(--color-text-secondary);
+            margin-bottom: var(--space-sm);
+        }
+        .journey-entry__project {
+            font-size: var(--text-sm);
+            font-weight: 600;
+            color: var(--dot-color, var(--era-foundation));
+            margin-bottom: var(--space-md);
+        }
+        .journey-entry__narrative {
+            font-size: var(--text-base);
+            color: var(--color-text-secondary);
+            line-height: 1.8;
+            margin-bottom: var(--space-md);
+        }
+        .journey-entry__achievements {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-md);
+        }
+        .journey-entry:nth-child(odd) .journey-entry__achievements {
+            justify-content: flex-end;
+        }
+        .journey-entry__achievement {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-xs);
+            padding: var(--space-xs) var(--space-sm);
+            background: rgba(99, 102, 241, 0.08);
+            border-radius: var(--radius-full);
+            font-size: var(--text-sm);
+            font-weight: 600;
+            color: var(--dot-color, var(--era-foundation));
+        }
+        .journey-entry__achievement i {
+            font-size: 0.7em;
+        }
+        .journey-entry__tech {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-xs);
+        }
+        .journey-entry:nth-child(odd) .journey-entry__tech {
+            justify-content: flex-end;
+        }
+        .journey-entry__tech span {
+            display: inline-block;
+            padding: 4px 10px;
+            background: var(--color-bg-tertiary);
+            border-radius: var(--radius-sm);
+            font-size: var(--text-xs);
+            font-weight: 500;
+            color: var(--color-text-secondary);
+            font-family: 'JetBrains Mono', 'SF Mono', monospace;
+        }
+
+        /* Education Brief */
+        .education-brief {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--space-xl);
+            margin-top: var(--space-xl);
+        }
+        .edu-card {
+            padding: var(--space-xl);
+            position: relative;
+        }
+        .edu-card__year {
+            font-family: 'JetBrains Mono', 'SF Mono', monospace;
+            font-size: var(--text-sm);
+            color: var(--color-primary);
+            font-weight: 600;
+            margin-bottom: var(--space-xs);
+        }
+        .edu-card__degree {
+            font-size: var(--text-lg);
+            font-weight: 700;
+            color: var(--color-text-primary);
+            margin-bottom: var(--space-xs);
+        }
+        .edu-card__school {
+            font-size: var(--text-base);
+            color: var(--color-text-secondary);
+        }
+
+        /* CTA Section */
+        .cta-section {
+            text-align: center;
+            padding: var(--space-4xl) 0;
+        }
+        .cta-section__title {
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            font-weight: 800;
+            margin-bottom: var(--space-xl);
+            color: var(--color-text-primary);
+        }
+        .cta-section__actions {
+            display: flex;
+            gap: var(--space-md);
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .journey-timeline::before {
+                left: 20px;
+            }
+            .journey-entry,
+            .journey-entry:nth-child(odd),
+            .journey-entry:nth-child(even) {
+                flex-direction: row !important;
+            }
+            .journey-entry__dot {
+                left: 20px;
+            }
+            .journey-entry__content,
+            .journey-entry:nth-child(odd) .journey-entry__content,
+            .journey-entry:nth-child(even) .journey-entry__content {
+                width: calc(100% - 50px);
+                margin-left: 50px;
+                margin-right: 0;
+                padding-left: 0;
+                padding-right: 0;
+                text-align: left;
+            }
+            .journey-entry:nth-child(odd) .journey-entry__achievements,
+            .journey-entry:nth-child(odd) .journey-entry__tech {
+                justify-content: flex-start;
+            }
+        }
+    </style>
 </head>
 <body>
-    <nav class="navbar navbar--scrolled" id="navbar">
+    <nav class="navbar" id="navbar">
         <div class="container navbar__container">
             <a href="index.html" class="navbar__logo"><span class="navbar__logo-mark">N</span><span class="navbar__logo-text">Navneet</span></a>
             <ul class="navbar__links">
                 <li><a href="index.html" class="navbar__link">Home</a></li>
                 <li><a href="journey.html" class="navbar__link navbar__link--active">Journey</a></li>
-                <li><a href="work.html" class="navbar__link">Work</a></li>
+                <li><a href="research.html" class="navbar__link">Research</a></li>
                 <li><a href="blog/index.html" class="navbar__link">Blog</a></li>
-                <li><a href="index.html#contact" class="navbar__link">Contact</a></li>
+                <li><a href="#contact" class="navbar__link">Contact</a></li>
             </ul>
-            <a href="https://drive.google.com/file/d/18Cal1KKLT0yNRQb4aXkJiduLd1hAJITM/view" target="_blank" class="btn btn--primary btn--sm navbar__cta"><i class="fas fa-file-alt"></i> Resume</a>
+            <a href="https://drive.google.com/file/d/1CPve1-8Bko6HuPHwsdW2--NnyaqQ0Jfb/view" target="_blank" class="btn btn--primary btn--sm navbar__cta"><i class="fas fa-file-alt"></i> Resume</a>
             <button class="navbar__hamburger" id="hamburger" aria-label="Toggle menu"><span></span><span></span><span></span></button>
         </div>
         <div class="navbar__mobile" id="mobileMenu">
             <ul class="navbar__mobile-links">
                 <li><a href="index.html" class="navbar__link">Home</a></li>
                 <li><a href="journey.html" class="navbar__link navbar__link--active">Journey</a></li>
-                <li><a href="work.html" class="navbar__link">Work</a></li>
+                <li><a href="research.html" class="navbar__link">Research</a></li>
                 <li><a href="blog/index.html" class="navbar__link">Blog</a></li>
-                <li><a href="index.html#contact" class="navbar__link">Contact</a></li>
+                <li><a href="#contact" class="navbar__link">Contact</a></li>
             </ul>
         </div>
     </nav>
+    <div class="scroll-progress" id="scrollProgress"></div>
 
-    <!-- Page Hero -->
+    <!-- PAGE HERO -->
     <section class="page-hero">
         <div class="container">
-            <span class="page-hero__label">Career Evolution</span>
-            <h1 class="page-hero__title">The Journey</h1>
-            <p class="page-hero__desc">From writing my first web crawler in 2006 to architecting enterprise GenAI platforms today — every role taught me something the next one demanded. This is the full story.</p>
+            <span class="section__label animate-on-scroll">The Evolution</span>
+            <h1 class="page-hero__title animate-on-scroll">Two Decades of Building Intelligence</h1>
+            <p class="page-hero__subtitle animate-on-scroll">From web crawlers serving millions to enterprise GenAI platforms — every era built on the last</p>
         </div>
     </section>
 
-    <!-- Timeline -->
-    <section class="section">
+    <!-- JOURNEY TIMELINE -->
+    <section class="section" id="journey">
         <div class="container">
             <div class="journey-timeline">
 
-                <!-- Entry 1: Eterno / DailyHunt -->
-                <div class="journey-entry" style="--entry-color:var(--era-foundation)">
+                <!-- Entry 1: The Foundation -->
+                <div class="journey-entry animate-on-scroll" style="--dot-color: var(--era-foundation)">
                     <div class="journey-entry__dot"></div>
-                    <div class="journey-entry__card glass-card">
-                        <div class="journey-entry__era">Era 01 — The Foundation</div>
-                        <span class="journey-entry__year">2006 — 2012</span>
-                        <h3 class="journey-entry__role">Senior Software Engineer</h3>
-                        <p class="journey-entry__company">Eterno Infotech (DailyHunt / Newshunt)</p>
-                        <p class="journey-entry__desc">Started my career building the backend for DailyHunt — then called Newshunt — India's largest regional news aggregator. Designed and implemented a web crawler ecosystem that consumed content from 80+ newspaper publishers in formats ranging from rich XML and HTML to JSON feeds. Built the content ingestion pipeline, deduplication logic, and a metadata tagging engine that powered the app's recommendation layer.</p>
-                        <p class="journey-entry__desc">This was where I learned that software at scale is fundamentally different from software in theory. Millions of mobile users depended on that pipeline running without a hiccup, and that lesson — reliability under pressure — shaped everything that followed.</p>
-                        <div class="journey-entry__metrics">
-                            <div class="journey-entry__metric"><strong>80+</strong> publishers</div>
-                            <div class="journey-entry__metric"><strong>M+</strong> daily users</div>
-                            <div class="journey-entry__metric"><strong>6</strong> years</div>
+                    <div class="journey-entry__content">
+                        <div class="journey-entry__period">2006 — 2012</div>
+                        <h3 class="journey-entry__title">The Foundation</h3>
+                        <p class="journey-entry__role">Senior Software Engineer @ Eterno Infotech (Ver Se' Innovation)</p>
+                        <p class="journey-entry__project"><i class="fas fa-project-diagram"></i> DailyHunt — Mobile News Publishing Platform</p>
+                        <p class="journey-entry__narrative">Built web crawlers aggregating news from 80+ Indian newspapers across RSS, XML, HTML, and JSON feeds. Designed backend systems serving millions of mobile users daily on the DailyHunt platform.</p>
+                        <div class="journey-entry__achievements">
+                            <span class="journey-entry__achievement"><i class="fas fa-check-circle"></i> Built backend serving 80+ newspaper publishers</span>
                         </div>
-                        <div class="domain__tools" style="margin-top:var(--space-sm)">
-                            <span>Java</span><span>J2EE</span><span>Servlets</span><span>REST APIs</span><span>MySQL</span><span>XML Parsing</span><span>Linux</span>
+                        <div class="journey-entry__tech">
+                            <span>Java</span>
+                            <span>Servlets</span>
+                            <span>Web Crawlers</span>
+                            <span>XML/JSON</span>
+                            <span>REST APIs</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Entry 2: Impetus / American Express -->
-                <div class="journey-entry" style="--entry-color:var(--era-bigdata)">
+                <!-- Entry 2: The Data Era -->
+                <div class="journey-entry animate-on-scroll" style="--dot-color: var(--era-bigdata)">
                     <div class="journey-entry__dot"></div>
-                    <div class="journey-entry__card glass-card">
-                        <div class="journey-entry__era">Era 02 — The Data Era</div>
-                        <span class="journey-entry__year">2012 — 2016</span>
-                        <h3 class="journey-entry__role">Module Lead — Big Data</h3>
-                        <p class="journey-entry__company">Impetus Technologies (Client: American Express)</p>
-                        <p class="journey-entry__desc">The pivot point. Moved from traditional software engineering into the Big Data world. Led the development of SERT — the Speed, Engagement, and Relevance Tool — for American Express's open-card merchant ecosystem. Designed Hadoop-based ETL pipelines that processed terabytes of transactional data for merchant recommendations and engagement scoring.</p>
-                        <p class="journey-entry__desc">Built recommendation engines using collaborative filtering on HBase. Introduced Elasticsearch for real-time search across millions of merchant profiles. This is where I discovered that data, not code, is the real product — the code just shapes it. The pivot from writing applications to designing data architectures was the most transformative shift of my career.</p>
-                        <div class="journey-entry__metrics">
-                            <div class="journey-entry__metric"><strong>TB+</strong> data processed</div>
-                            <div class="journey-entry__metric"><strong>M+</strong> merchant profiles</div>
-                            <div class="journey-entry__metric"><strong>4</strong> years</div>
+                    <div class="journey-entry__content">
+                        <div class="journey-entry__period">2012 — 2016</div>
+                        <h3 class="journey-entry__title">The Data Era</h3>
+                        <p class="journey-entry__role">Module Lead @ Impetus Infotech (American Express)</p>
+                        <p class="journey-entry__project"><i class="fas fa-project-diagram"></i> SERT — Speed Engagement and Relevance Tool</p>
+                        <p class="journey-entry__narrative">Architected SERT — the merchant recommender for Amex open card customers. Processed terabytes of transactional data through Hadoop/Hive/HBase pipelines to deliver personalized merchant recommendations at enterprise scale.</p>
+                        <div class="journey-entry__achievements">
+                            <span class="journey-entry__achievement"><i class="fas fa-check-circle"></i> Processed terabytes of transactional data at scale</span>
                         </div>
-                        <div class="domain__tools" style="margin-top:var(--space-sm)">
-                            <span>Hadoop</span><span>Hive</span><span>HBase</span><span>Elasticsearch</span><span>Spark</span><span>Java</span><span>HDFS</span><span>Oozie</span>
+                        <div class="journey-entry__tech">
+                            <span>Hadoop</span>
+                            <span>Hive</span>
+                            <span>HBase</span>
+                            <span>Elasticsearch</span>
+                            <span>MapReduce</span>
+                            <span>SQL/NoSQL</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Entry 3: Inkers — Deep Learning Begins -->
-                <div class="journey-entry" style="--entry-color:var(--era-deeplearning)">
+                <!-- Entry 3: Deep Learning Begins -->
+                <div class="journey-entry animate-on-scroll" style="--dot-color: var(--era-deeplearning)">
                     <div class="journey-entry__dot"></div>
-                    <div class="journey-entry__card glass-card">
-                        <div class="journey-entry__era">Era 03 — Deep Learning Begins</div>
-                        <span class="journey-entry__year">2016 — 2018</span>
-                        <h3 class="journey-entry__role">Data Science Lead</h3>
-                        <p class="journey-entry__company">Inkers Technologies</p>
-                        <p class="journey-entry__desc">Took the leap into Deep Learning. Led a team building computer vision solutions for retail analytics — face recognition systems for customer identification, crowd counting algorithms for footfall analysis, and age/gender estimation models for demographic profiling.</p>
-                        <p class="journey-entry__desc">This was hands-on, research-to-production work: training custom CNNs, implementing face embedding with triplet loss, optimizing inference for real-time on commodity hardware. Simultaneously pursued Udacity's Self-Driving Car and NLP nano degrees, building the theoretical foundation that would power the next phase.</p>
-                        <div class="journey-entry__metrics">
-                            <div class="journey-entry__metric"><strong>5+</strong> CV models shipped</div>
-                            <div class="journey-entry__metric"><strong>Real-time</strong> inference</div>
+                    <div class="journey-entry__content">
+                        <div class="journey-entry__period">2016 — 2020</div>
+                        <h3 class="journey-entry__title">Deep Learning Begins</h3>
+                        <p class="journey-entry__role">Data Science Lead @ Inkers Technologies</p>
+                        <p class="journey-entry__narrative">Built face recognition systems achieving 35% FP improvement with ArcFace embeddings. Established full data lifecycle — collection, annotation, experiment tracking — and mentored a growing CV team.</p>
+                        <div class="journey-entry__achievements">
+                            <span class="journey-entry__achievement"><i class="fas fa-check-circle"></i> 35% FP improvement</span>
+                            <span class="journey-entry__achievement"><i class="fas fa-check-circle"></i> 15% pipeline quality improvement</span>
                         </div>
-                        <div class="domain__tools" style="margin-top:var(--space-sm)">
-                            <span>Python</span><span>PyTorch</span><span>OpenCV</span><span>CNNs</span><span>Face Recognition</span><span>Transfer Learning</span><span>Flask</span>
+                        <div class="journey-entry__tech">
+                            <span>PyTorch</span>
+                            <span>OpenCV</span>
+                            <span>CNN</span>
+                            <span>Face Recognition</span>
+                            <span>wandb</span>
+                            <span>Python</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Entry 4: Trigyn — TIVA Video Analytics -->
-                <div class="journey-entry" style="--entry-color:var(--era-deeplearning)">
+                <!-- Entry 4: Vision at Scale -->
+                <div class="journey-entry animate-on-scroll" style="--dot-color: var(--era-deeplearning)">
                     <div class="journey-entry__dot"></div>
-                    <div class="journey-entry__card glass-card">
-                        <div class="journey-entry__era">Era 03 — Deep Learning at Scale</div>
-                        <span class="journey-entry__year">2020 — 2022</span>
-                        <h3 class="journey-entry__role">Practice Lead — Computer Vision & IoT</h3>
-                        <p class="journey-entry__company">Trigyn Technologies</p>
-                        <p class="journey-entry__desc">Scaled computer vision from single-camera demos to an enterprise platform: TIVA (Trigyn Intelligent Video Analytics). Led end-to-end development for real-time analytics across 1000s of video streams — object detection, intrusion alerts, people counting, ANPR, and anomaly detection — deployed on Jetson Nano/TX2 edge devices.</p>
-                        <p class="journey-entry__desc">Managed a multi-skill team of 12 spanning embedded engineers, backend developers, frontend designers, and data scientists. Introduced model pruning and quantization strategies that cut false alarms by 75% while reducing deployment costs 17-20%. This role taught me that AI leadership is equal parts technical depth and people orchestration.</p>
-                        <div class="journey-entry__metrics">
-                            <div class="journey-entry__metric"><strong>75%</strong> fewer false alarms</div>
-                            <div class="journey-entry__metric"><strong>1000s</strong> of streams</div>
-                            <div class="journey-entry__metric"><strong>17-20%</strong> cost reduction</div>
-                            <div class="journey-entry__metric"><strong>12</strong> person team</div>
+                    <div class="journey-entry__content">
+                        <div class="journey-entry__period">2020 — 2022</div>
+                        <h3 class="journey-entry__title">Vision at Scale</h3>
+                        <p class="journey-entry__role">Practice Lead @ Trigyn Technologies</p>
+                        <p class="journey-entry__project"><i class="fas fa-project-diagram"></i> TIVA Platform — Video Analytics at Scale</p>
+                        <p class="journey-entry__narrative">Led TIVA — a video analytics platform processing 1000s of RTSP streams on edge devices (Jetson Nano/TX2). Reduced false alarms by 75% and deployment cost by 20% through model optimization and cascade filtering.</p>
+                        <div class="journey-entry__achievements">
+                            <span class="journey-entry__achievement"><i class="fas fa-check-circle"></i> 75% false alarm reduction</span>
+                            <span class="journey-entry__achievement"><i class="fas fa-check-circle"></i> 20% cost reduction</span>
+                            <span class="journey-entry__achievement"><i class="fas fa-check-circle"></i> 1000s of streams</span>
                         </div>
-                        <div class="domain__tools" style="margin-top:var(--space-sm)">
-                            <span>PyTorch</span><span>TensorRT</span><span>ONNX</span><span>Jetson Nano/TX2</span><span>CUDA</span><span>OpenCV</span><span>Docker</span><span>GStreamer</span>
+                        <div class="journey-entry__tech">
+                            <span>PyTorch</span>
+                            <span>OpenCV</span>
+                            <span>Edge AI</span>
+                            <span>Jetson Nano/TX2</span>
+                            <span>CUDA</span>
+                            <span>Docker</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Entry 5: Hexad / Volkswagen -->
-                <div class="journey-entry" style="--entry-color:var(--era-genai)">
+                <!-- Entry 5: The GenAI Transition -->
+                <div class="journey-entry animate-on-scroll" style="--dot-color: var(--era-genai)">
                     <div class="journey-entry__dot"></div>
-                    <div class="journey-entry__card glass-card">
-                        <div class="journey-entry__era">Era 04 — The GenAI Transition</div>
-                        <span class="journey-entry__year">2022 — 2023</span>
-                        <h3 class="journey-entry__role">NLP Architect</h3>
-                        <p class="journey-entry__company">Hexad GmbH (Client: Volkswagen)</p>
-                        <p class="journey-entry__desc">The bridge between Deep Learning and Generative AI. At Volkswagen, architected two critical projects. legalAI — a document intelligence platform that parsed complex legal PDFs using CV-based layout analysis combined with semantic merging and entity logic, doubling throughput and improving extraction accuracy by 37%.</p>
-                        <p class="journey-entry__desc">Then QAM — a Question Answering Machine for VW's hardware knowledge base, built on FLAN-T5 with VectorDB retrieval. This was my first production RAG system, and it revealed the immense potential of combining retrieval with generation. The NLP Architect role solidified my understanding that the future wasn't just CV or NLP — it was multimodal intelligence.</p>
-                        <div class="journey-entry__metrics">
-                            <div class="journey-entry__metric"><strong>2x</strong> throughput</div>
-                            <div class="journey-entry__metric"><strong>+37%</strong> accuracy</div>
-                            <div class="journey-entry__metric"><strong>2</strong> major platforms</div>
+                    <div class="journey-entry__content">
+                        <div class="journey-entry__period">2022 — 2023</div>
+                        <h3 class="journey-entry__title">The GenAI Transition</h3>
+                        <p class="journey-entry__role">NLP Architect @ Hexad GmbH (Volkswagen Data:Lab)</p>
+                        <p class="journey-entry__project"><i class="fas fa-project-diagram"></i> legalAI (Document Intelligence) + QAM (RAG + Summarization)</p>
+                        <p class="journey-entry__narrative">Built document intelligence using CV-based layout parsing — 2x throughput, +37% extraction accuracy via semantic merging. Delivered RAG-based QA system using FLAN-T5 with VectorDB retrieval and ROUGE/BLEU evaluation.</p>
+                        <div class="journey-entry__achievements">
+                            <span class="journey-entry__achievement"><i class="fas fa-check-circle"></i> 2x throughput</span>
+                            <span class="journey-entry__achievement"><i class="fas fa-check-circle"></i> +37% accuracy</span>
                         </div>
-                        <div class="domain__tools" style="margin-top:var(--space-sm)">
-                            <span>FLAN-T5</span><span>VectorDB</span><span>FAISS</span><span>Transformers</span><span>SpaCy</span><span>Document AI</span><span>RAG</span><span>Python</span>
+                        <div class="journey-entry__tech">
+                            <span>FLAN-T5</span>
+                            <span>VectorDB</span>
+                            <span>RAG</span>
+                            <span>ROUGE/BLEU</span>
+                            <span>Document AI</span>
+                            <span>Python</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Entry 6: Cigna (Current) -->
-                <div class="journey-entry" style="--entry-color:var(--era-genai)">
-                    <div class="journey-entry__dot" style="box-shadow:0 0 0 4px rgba(168,85,247,0.3),0 0 12px rgba(168,85,247,0.2)"></div>
-                    <div class="journey-entry__card glass-card" style="border-left-color:var(--era-genai);box-shadow:var(--shadow-md),0 0 30px rgba(168,85,247,0.08)">
-                        <div class="journey-entry__era" style="display:flex;align-items:center;gap:var(--space-sm)">Era 04 — GenAI at Enterprise Scale <span style="background:var(--era-genai);color:#fff;padding:0.15rem 0.6rem;border-radius:var(--radius-full);font-size:0.6rem;letter-spacing:0.08em">CURRENT</span></div>
-                        <span class="journey-entry__year">2023 — Present</span>
-                        <h3 class="journey-entry__role">ML Advisor / Principal GenAI Architect</h3>
-                        <p class="journey-entry__company">Cigna — AI Center of Excellence</p>
-                        <p class="journey-entry__desc">Designing the architecture for Cigna's enterprise GenAI pipeline — Project Genius. Building prompt + few-shot retrieval systems using custom fine-tuned models (embedding + CNN) for complex table extraction from healthcare documents. The pipeline integrates FAISS for vector search, LLM guardrails for safety, PII/data controls for HIPAA compliance, and evaluation gates for quality assurance.</p>
-                        <p class="journey-entry__desc">This role brings together everything: the engineering discipline from Era 01, the data architecture from Era 02, the model optimization from Era 03, and the NLP/retrieval expertise from the VW transition. Serving as ML Advisor to the AI CoE, establishing architecture standards, cost/latency SLOs, and security-by-design patterns for the organization's GenAI roadmap.</p>
-                        <p class="journey-entry__desc">Simultaneously completing my M.Tech in AI & Machine Learning from BITS Pilani (2023-2025), deepening the theoretical foundations in Deep Neural Networks, Reinforcement Learning, NLP, and Information Retrieval.</p>
-                        <div class="journey-entry__metrics">
-                            <div class="journey-entry__metric"><strong>Enterprise</strong> scale</div>
-                            <div class="journey-entry__metric"><strong>HIPAA</strong> compliant</div>
-                            <div class="journey-entry__metric"><strong>M.Tech</strong> BITS Pilani</div>
+                <!-- Entry 6: Enterprise GenAI Architect (Current) -->
+                <div class="journey-entry journey-entry--current animate-on-scroll" style="--dot-color: var(--era-genai)">
+                    <div class="journey-entry__dot"></div>
+                    <div class="journey-entry__content">
+                        <div class="journey-entry__period">2023 — Present</div>
+                        <h3 class="journey-entry__title">Enterprise GenAI Architect</h3>
+                        <p class="journey-entry__role">ML Advisor @ Cigna (AICoE)</p>
+                        <p class="journey-entry__project"><i class="fas fa-project-diagram"></i> Project Genius — Enterprise GenAI Platform</p>
+                        <p class="journey-entry__narrative">Designed enterprise GenAI pipeline with few-shot retrieval from custom embed+CNN model for complex table extraction. Published XMRetriever research achieving 75% token reduction. Established LLM guardrails for PII safety and evaluation.</p>
+                        <div class="journey-entry__achievements">
+                            <span class="journey-entry__achievement"><i class="fas fa-check-circle"></i> Published XMRetriever research</span>
+                            <span class="journey-entry__achievement"><i class="fas fa-check-circle"></i> Enterprise GenAI at scale</span>
                         </div>
-                        <div class="domain__tools" style="margin-top:var(--space-sm)">
-                            <span>GPT-4o</span><span>Llama</span><span>FAISS</span><span>LoRA/QLoRA</span><span>vLLM</span><span>LangChain</span><span>RLHF</span><span>RAG</span><span>AWS</span><span>Docker</span>
+                        <div class="journey-entry__tech">
+                            <span>LLMs</span>
+                            <span>RAG</span>
+                            <span>LoRA/QLoRA</span>
+                            <span>vLLM</span>
+                            <span>FAISS</span>
+                            <span>RLHF</span>
+                            <span>PyTorch</span>
                         </div>
                     </div>
                 </div>
@@ -187,65 +464,60 @@
         </div>
     </section>
 
-    <!-- Education & Continuous Learning -->
-    <section class="section section--alt">
+    <!-- EDUCATION -->
+    <section class="section section--alt" id="education">
         <div class="container">
             <div class="section__header">
-                <span class="section__label">Parallel Track</span>
-                <h2 class="section__title">Education & Continuous Learning</h2>
-                <p class="section__subtitle">Every era was fueled by deliberate learning — formal degrees, nano degrees, and 14+ certifications</p>
+                <span class="section__label">Academic Foundation</span>
+                <h2 class="section__title">Education</h2>
             </div>
-            <div class="credentials-grid">
-                <div class="credentials-col">
-                    <h3 class="credentials__heading"><i class="fas fa-graduation-cap"></i> Formal Education</h3>
-                    <div class="credential-card glass-card animate-on-scroll">
-                        <div class="credential-card__year">2023 — 2025</div>
-                        <h4 class="credential-card__title">M.Tech — AI & Machine Learning</h4>
-                        <p class="credential-card__org">BITS Pilani, India</p>
-                        <p class="credential-card__detail">Deep Neural Networks, Deep Reinforcement Learning, NLP, Statistics & Probability, Information Retrieval — pursued while working full-time at Cigna</p>
-                    </div>
-                    <div class="credential-card glass-card animate-on-scroll">
-                        <div class="credential-card__year">2001 — 2005</div>
-                        <h4 class="credential-card__title">B.E. — Computer Science & Engineering</h4>
-                        <p class="credential-card__org">VTU, India — First Class</p>
-                        <p class="credential-card__detail">Operating Systems, Computer Networks, Parallel Programming, Algorithms & Data Structures — the engineering fundamentals</p>
-                    </div>
+            <div class="education-brief">
+                <div class="edu-card glass-card animate-on-scroll">
+                    <div class="edu-card__year">2023 — 2025</div>
+                    <h3 class="edu-card__degree">M.Tech — AI & Machine Learning</h3>
+                    <p class="edu-card__school">BITS Pilani, India</p>
                 </div>
-                <div class="credentials-col">
-                    <h3 class="credentials__heading"><i class="fas fa-certificate"></i> Certifications & Nano Degrees</h3>
-                    <div class="credential-card glass-card animate-on-scroll">
-                        <div class="credential-card__badge udacity">Udacity</div>
-                        <h4 class="credential-card__title">Nano Degree — Self Driving Car Engineer</h4>
-                        <p class="credential-card__detail">Vehicle Detection & Tracking, Traffic Sign Classification, Behavioral Cloning, Sensor Fusion, Path Planning</p>
-                    </div>
-                    <div class="credential-card glass-card animate-on-scroll">
-                        <div class="credential-card__badge udacity">Udacity</div>
-                        <h4 class="credential-card__title">Nano Degree — Natural Language Processing</h4>
-                        <p class="credential-card__detail">PoS Tagging (HMM), Machine Translation (DNN), Speech Recognition (RNN/CTC)</p>
-                    </div>
-                    <div class="credential-card glass-card animate-on-scroll">
-                        <div class="credential-card__badge coursera">Coursera</div>
-                        <h4 class="credential-card__title">14+ Verified Certificates</h4>
-                        <p class="credential-card__detail">Generative AI with LLMs, Neural Networks & DL, CNNs, Sequence Models, AI for Medical Prognosis & Diagnosis, Hyperparameter Tuning, and more</p>
-                    </div>
-                    <div class="credential-card glass-card animate-on-scroll">
-                        <div class="credential-card__badge sun">Sun/Oracle</div>
-                        <h4 class="credential-card__title">SCJP & SCWCD</h4>
-                        <p class="credential-card__detail">Sun Certified Java Programmer &amp; Sun Certified Web Component Developer — the original era credentials</p>
-                    </div>
+                <div class="edu-card glass-card animate-on-scroll">
+                    <div class="edu-card__year">2001 — 2005</div>
+                    <h3 class="edu-card__degree">B.E. — Computer Science & Engineering</h3>
+                    <p class="edu-card__school">VTU, India — First Class</p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- CTA -->
-    <section class="section">
-        <div class="container" style="text-align:center;max-width:650px">
-            <h2 class="section__title">What's Next?</h2>
-            <p style="font-size:var(--text-lg);color:var(--color-text-muted);margin-bottom:var(--space-2xl)">The next era is being written. I'm exploring agentic AI, multi-modal reasoning, and scaling GenAI for regulated industries. Want to build the future together?</p>
-            <div style="display:flex;gap:var(--space-md);justify-content:center;flex-wrap:wrap">
-                <a href="work.html" class="btn btn--primary btn--lg"><i class="fas fa-briefcase"></i> See My Work</a>
-                <a href="index.html#contact" class="btn btn--outline btn--lg"><i class="fas fa-envelope"></i> Get in Touch</a>
+    <section class="section cta-section">
+        <div class="container">
+            <h2 class="cta-section__title animate-on-scroll">Ready to work together?</h2>
+            <div class="cta-section__actions animate-on-scroll">
+                <a href="#contact" class="btn btn--primary btn--lg"><i class="fas fa-envelope"></i> Get in Touch</a>
+                <a href="research.html" class="btn btn--outline btn--lg"><i class="fas fa-flask"></i> View Research</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="section" id="contact">
+        <div class="container">
+            <div class="section__header"><span class="section__label">Let's Connect</span><h2 class="section__title">Get in Touch</h2><p class="section__subtitle">Open to architecture consulting, advisory roles, and research collaborations</p></div>
+            <div class="contact__grid">
+                <div class="contact__channels animate-on-scroll">
+                    <a href="mailto:navneet1083@gmail.com" class="contact-link glass-card"><i class="fas fa-envelope"></i><div><strong>Email</strong><span>navneet1083@gmail.com</span></div></a>
+                    <a href="https://linkedin.com/in/navneet1083" target="_blank" class="contact-link glass-card"><i class="fab fa-linkedin"></i><div><strong>LinkedIn</strong><span>/in/navneet1083</span></div></a>
+                    <a href="https://github.com/navneet1083" target="_blank" class="contact-link glass-card"><i class="fab fa-github"></i><div><strong>GitHub</strong><span>/navneet1083</span></div></a>
+                    <a href="tel:+919880391422" class="contact-link glass-card"><i class="fas fa-phone"></i><div><strong>Phone</strong><span>+91 9880 391422</span></div></a>
+                    <div class="contact-link glass-card"><i class="fas fa-map-marker-alt"></i><div><strong>Location</strong><span>Bengaluru, India</span></div></div>
+                </div>
+                <form class="glass-card contact__form animate-on-scroll" id="contactForm" action="https://formspree.io/f/xpwzgkdl" method="POST">
+                    <h3 style="margin-bottom:var(--space-lg);font-size:var(--text-xl)">Send a Message</h3>
+                    <input type="hidden" name="_subject" value="Portfolio Contact: New Message">
+                    <div class="form__group"><label class="form__label" for="name">Name</label><input class="form__input" type="text" id="name" name="name" placeholder="Your name" required></div>
+                    <div class="form__group"><label class="form__label" for="email">Email</label><input class="form__input" type="email" id="email" name="email" placeholder="your@email.com" required></div>
+                    <div class="form__group"><label class="form__label" for="message">Message</label><textarea class="form__textarea" id="message" name="message" placeholder="Tell me about your project..." required></textarea></div>
+                    <button type="submit" class="btn btn--primary" style="width:100%;justify-content:center"><i class="fas fa-paper-plane"></i> Send Message</button>
+                    <p style="font-size:var(--text-xs);color:var(--color-text-muted);margin-top:var(--space-sm);text-align:center;">Powered by Formspree — your message goes directly to my inbox</p>
+                </form>
             </div>
         </div>
     </section>
@@ -254,7 +526,7 @@
         <div class="container">
             <div class="footer__content">
                 <div class="footer__brand"><span class="navbar__logo-mark">N</span><p>Principal GenAI / LLM Architect<br>Bengaluru, India</p></div>
-                <div class="footer__nav"><a href="index.html">Home</a><a href="journey.html">Journey</a><a href="work.html">Work</a><a href="blog/index.html">Blog</a><a href="index.html#contact">Contact</a></div>
+                <div class="footer__nav"><a href="journey.html" class="footer__link--active">Journey</a><a href="research.html">Research</a><a href="blog/index.html">Blog</a><a href="#contact">Contact</a></div>
                 <div class="footer__social"><a href="mailto:navneet1083@gmail.com"><i class="fas fa-envelope"></i></a><a href="https://linkedin.com/in/navneet1083" target="_blank"><i class="fab fa-linkedin"></i></a><a href="https://github.com/navneet1083" target="_blank"><i class="fab fa-github"></i></a></div>
             </div>
             <div class="footer__bottom"><p>&copy; 2026 Navneet Singh. Crafted with two decades of passion.</p></div>
