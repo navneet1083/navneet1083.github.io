@@ -116,10 +116,24 @@
         f.addEventListener('submit',function(e){
             e.preventDefault();
             var btn=f.querySelector('button[type="submit"]'),orig=btn.innerHTML;
-            btn.innerHTML='<i class="fas fa-check"></i> Message Sent!';
-            btn.style.background='linear-gradient(135deg,var(--color-success),#059669)';
+            btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Sending...';
             btn.disabled=true;
-            setTimeout(function(){btn.innerHTML=orig;btn.style.background='';btn.disabled=false;f.reset()},3000);
+            fetch(f.action,{method:'POST',body:new FormData(f),headers:{'Accept':'application/json'}})
+            .then(function(r){
+                if(r.ok){
+                    btn.innerHTML='<i class="fas fa-check"></i> Message Sent!';
+                    btn.style.background='linear-gradient(135deg,var(--color-success),#059669)';
+                    f.reset();
+                    setTimeout(function(){btn.innerHTML=orig;btn.style.background='';btn.disabled=false},3000);
+                } else {
+                    throw new Error('Form submission failed');
+                }
+            })
+            .catch(function(){
+                btn.innerHTML='<i class="fas fa-exclamation-triangle"></i> Failed — try email';
+                btn.style.background='linear-gradient(135deg,#ef4444,#dc2626)';
+                setTimeout(function(){btn.innerHTML=orig;btn.style.background='';btn.disabled=false},3000);
+            });
         });
     };
 
