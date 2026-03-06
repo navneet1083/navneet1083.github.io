@@ -7,7 +7,7 @@
 
     /* --- Scroll Animations --- */
     window.Portfolio.initAnimations = function(){
-        var els = document.querySelectorAll('.animate-on-scroll, .impact-card, .journey-entry');
+        var els = document.querySelectorAll('.animate-on-scroll, .impact-card, .journey-entry, .jcard');
         if(!els.length) return;
         var obs = new IntersectionObserver(function(entries){
             entries.forEach(function(e){

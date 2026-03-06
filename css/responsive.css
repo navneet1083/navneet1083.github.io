@@ -49,6 +49,11 @@
         grid-template-columns: 1fr;
     }
 
+    /* Connect bar: 2 columns */
+    .connect-bar {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
     /* Case study body: single column */
     .case-study__body {
         grid-template-columns: 1fr;
@@ -151,6 +156,11 @@
    =========================== */
 
 @media (max-width: 480px) {
+
+    /* Connect bar: single column */
+    .connect-bar {
+        grid-template-columns: 1fr;
+    }
 
     /* Container: smaller padding */
     .container {

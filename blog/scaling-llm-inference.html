@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scaling LLM Inference: From Single GPU to Planet-Scale Serving — Navneet Singh</title>
+    <meta name="description" content="Deep technical analysis of LLM inference optimization — KV-cache, PagedAttention, speculative decoding, quantization, and a novel Adaptive Inference Orchestrator framework.">
+
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/sections.css">
+    <link rel="stylesheet" href="../css/animations.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+
+    <style>
+        .post { max-width: 780px; margin: 0 auto; padding: calc(var(--nav-height) + var(--space-2xl)) var(--space-lg) var(--space-3xl); }
+        .post__header { margin-bottom: var(--space-2xl); }
+        .post__category { font-size: var(--text-sm); font-weight: 600; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.05em; }
+        .post__title { font-size: var(--text-3xl); font-weight: 800; margin: var(--space-sm) 0; }
+        .post__meta { display: flex; gap: var(--space-lg); font-size: var(--text-sm); color: var(--color-text-light); flex-wrap: wrap; }
+        .post__body { line-height: 1.85; }
+        .post__body h2 { font-size: var(--text-2xl); margin: var(--space-2xl) 0 var(--space-md); }
+        .post__body h3 { font-size: var(--text-xl); margin: var(--space-xl) 0 var(--space-md); }
+        .post__body p { margin-bottom: var(--space-md); color: var(--color-text); }
+        .post__body ul, .post__body ol { margin: 0 0 var(--space-md) var(--space-xl); color: var(--color-text); }
+        .post__body li { margin-bottom: var(--space-sm); line-height: 1.7; }
+        .post__body blockquote { border-left: 3px solid var(--color-primary); padding: var(--space-md) var(--space-lg); margin: var(--space-lg) 0; background: var(--color-bg-alt); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
+        .post__body blockquote p { color: var(--color-text-muted); margin: 0; font-style: italic; }
+        .post__body img { border-radius: var(--radius-md); margin: var(--space-lg) 0; }
+        .post__tags { display: flex; flex-wrap: wrap; gap: var(--space-sm); margin-top: var(--space-2xl); padding-top: var(--space-xl); border-top: 1px solid rgba(0,0,0,0.06); }
+        .post__nav { display: flex; justify-content: space-between; margin-top: var(--space-2xl); }
+        .info-box { background: rgba(79, 70, 229, 0.05); border: 1px solid rgba(79, 70, 229, 0.15); border-radius: var(--radius-md); padding: var(--space-lg); margin: var(--space-lg) 0; }
+        .info-box h4 { color: var(--color-primary); margin-bottom: var(--space-sm); font-size: var(--text-base); }
+        .arch-diagram { background: var(--color-bg-alt); border: 1px solid rgba(0,0,0,0.08); border-radius: var(--radius-md); padding: var(--space-lg); margin: var(--space-xl) 0; overflow-x: auto; }
+        .arch-diagram pre { margin: 0; font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; line-height: 1.5; color: var(--color-text); }
+        .comparison-table { width: 100%; border-collapse: collapse; margin: var(--space-lg) 0; font-size: var(--text-sm); }
+        .comparison-table th, .comparison-table td { padding: var(--space-sm) var(--space-md); text-align: left; border-bottom: 1px solid rgba(0,0,0,0.08); }
+        .comparison-table th { font-weight: 600; color: var(--color-primary); background: rgba(79, 70, 229, 0.04); }
+        .comparison-table tr:hover td { background: rgba(79, 70, 229, 0.02); }
+        .metric-card { display: inline-block; background: var(--color-bg-alt); border-radius: var(--radius-md); padding: var(--space-md) var(--space-lg); margin: var(--space-sm); text-align: center; min-width: 140px; }
+        .metric-card .metric-value { font-size: var(--text-2xl); font-weight: 800; color: var(--color-primary); }
+        .metric-card .metric-label { font-size: var(--text-xs); color: var(--color-text-light); margin-top: 4px; }
+        .references { background: var(--color-bg-alt); border-radius: var(--radius-md); padding: var(--space-lg); margin: var(--space-xl) 0; }
+        .references h3 { margin-top: 0; }
+        .references ol { font-size: var(--text-sm); }
+        .references a { color: var(--color-primary); text-decoration: none; }
+        .references a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body class="page-blog">
+
+    <nav class="navbar navbar--scrolled" id="navbar">
+        <div class="container navbar__container">
+            <a href="../index.html" class="navbar__logo"><span class="navbar__logo-mark">N</span><span class="navbar__logo-text">Navneet</span></a>
+            <ul class="navbar__links">
+                <li><a href="../index.html" class="navbar__link">Home</a></li>
+                <li><a href="../journey.html" class="navbar__link">Journey</a></li>
+                <li><a href="../research.html" class="navbar__link">Research</a></li>
+                <li><a href="index.html" class="navbar__link navbar__link--active">Blog</a></li>
+                <li><a href="../work.html" class="navbar__link">Work</a></li>
+            </ul>
+            <a href="https://drive.google.com/file/d/1CPve1-8Bko6HuPHwsdW2--NnyaqQ0Jfb/view" target="_blank" class="btn btn--primary btn--sm navbar__cta"><i class="fas fa-file-alt"></i> Resume</a>
+            <button class="navbar__hamburger" id="hamburger" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+        <div class="navbar__mobile" id="mobileMenu">
+            <ul class="navbar__mobile-links">
+                <li><a href="../index.html" class="navbar__link">Home</a></li>
+                <li><a href="../journey.html" class="navbar__link">Journey</a></li>
+                <li><a href="../research.html" class="navbar__link">Research</a></li>
+                <li><a href="index.html" class="navbar__link navbar__link--active">Blog</a></li>
+                <li><a href="../work.html" class="navbar__link">Work</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <article class="post">
+        <header class="post__header">
+            <span class="post__category">Generative AI</span>
+            <h1 class="post__title">Scaling LLM Inference: From Single GPU to Planet-Scale Serving</h1>
+            <div class="post__meta">
+                <span><i class="fas fa-calendar"></i> March 2026</span>
+                <span><i class="fas fa-clock"></i> 18 min read</span>
+                <span><i class="fas fa-user"></i> Navneet Singh</span>
+            </div>
+        </header>
+
+        <div class="post__body">
+
+            <p>
+                Training an LLM is a one-time cost. Inference is a <strong>perpetual tax</strong> on every interaction. A model that costs $2M to train might cost $20M per year to serve. Yet inference optimization remains an afterthought for most teams &mdash; they train a model, wrap it in a Flask API, and wonder why their P99 latency is 12 seconds and their GPU utilization is 15%.
+            </p>
+
+            <p>
+                After architecting inference systems serving 50M+ requests/day across production LLMs ranging from 7B to 405B parameters, I&rsquo;ve learned that the difference between a naive deployment and an optimized one is <strong>10&ndash;50x in throughput</strong> and <strong>3&ndash;5x in cost</strong>. This article covers every technique that matters, from KV-cache mechanics to a novel <strong>Adaptive Inference Orchestrator (AIO)</strong> that routes requests to the cheapest model capable of handling them.
+            </p>
+
+            <div style="text-align: center; margin: var(--space-xl) 0;">
+                <div class="metric-card">
+                    <div class="metric-value">50x</div>
+                    <div class="metric-label">Throughput Gain (Optimized vs Naive)</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">200ms</div>
+                    <div class="metric-label">P99 TTFT (70B Model)</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">65%</div>
+                    <div class="metric-label">Cost Reduction (AIO)</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">95%</div>
+                    <div class="metric-label">GPU Utilization Target</div>
+                </div>
+            </div>
+
+            <!-- ============================================================ -->
+            <h2>1. Anatomy of LLM Inference</h2>
+            <!-- ============================================================ -->
+
+            <p>
+                LLM inference has two fundamentally different phases, each with distinct computational characteristics:
+            </p>
+
+            <div class="arch-diagram">
+                <pre>
+  LLM INFERENCE: TWO-PHASE PIPELINE
+  ====================================
+
+  Phase 1: PREFILL (Prompt Processing)          Phase 2: DECODE (Token Generation)
+  ===================================          ====================================
+
+  Input: "Explain quantum computing"           Input: Previously generated tokens
+                                                      + KV-Cache
+  +----------------------------------+
+  | Tokenize: [Explain, quantum,     |         +----------------------------------+
+  |            computing]             |         | Generate token 1: "Quantum"      |
+  +----------------------------------+         +----------------------------------+
+           |                                            |
+           v                                            v
+  +----------------------------------+         +----------------------------------+
+  | Process ALL tokens in PARALLEL   |         | Process ONE token at a time      |
+  |                                  |         | (autoregressive)                 |
+  | - Self-attention over full       |         |                                  |
+  |   prompt sequence                |         | - Attend to all previous tokens  |
+  | - Compute-bound (matrix-matrix)  |         |   via KV-Cache lookup            |
+  | - High arithmetic intensity      |         | - Memory-bound (matrix-vector)   |
+  | - GPU compute saturated          |         | - Low arithmetic intensity       |
+  +----------------------------------+         | - GPU memory bandwidth limited   |
+           |                                   +----------------------------------+
+           v                                            |
+  +----------------------------------+                  v
+  | Output: KV-Cache for all prompt  |         +----------------------------------+
+  | tokens (stored for decode phase) |         | Output: one token per forward    |
+  +----------------------------------+         | pass, appended to KV-Cache       |
+                                               +----------------------------------+
+                                                        |
+  Characteristics:                                      | (repeat until EOS or max_tokens)
+  - Latency: Time-to-First-Token (TTFT)                |
+  - Scales with prompt length                  Characteristics:
+  - Parallelizable                             - Latency: Inter-Token Latency (ITL)
+  - Typically 10-100ms                         - Scales with output length
+                                               - Sequential (not parallelizable)
+                                               - Typically 20-50ms per token
+                </pre>
+            </div>
+
+            <h3>The KV-Cache: Memory Hog</h3>
+
+            <p>
+                During decode, each new token must attend to <em>all</em> previous tokens. Without caching, this means recomputing every token&rsquo;s key and value projections at every step &mdash; O(n&sup2;) computation. The KV-cache stores these projections, reducing decode to O(n) per step, but at significant memory cost:
+            </p>
+
+            <pre><code class="language-python"># KV-Cache memory calculation
+def kv_cache_memory_gb(
+    num_layers: int,
+    num_kv_heads: int,
+    head_dim: int,
+    max_seq_len: int,
+    batch_size: int,
+    dtype_bytes: int = 2  # FP16
+) -> float:
+    """Calculate KV-cache memory in GB.
+
+    For Llama 3.1 70B:
+      - num_layers = 80, num_kv_heads = 8 (GQA), head_dim = 128
+      - max_seq_len = 8192, batch_size = 32
+
+    KV-cache = 2 * 80 * 8 * 128 * 8192 * 32 * 2 bytes
+             = 2 * 80 * 8 * 128 * 8192 * 32 * 2
+             = ~67 GB  (!!!)
+    """
+    total_bytes = (
+        2 *                  # K and V
+        num_layers *
+        num_kv_heads *
+        head_dim *
+        max_seq_len *
+        batch_size *
+        dtype_bytes
+    )
+    return total_bytes / (1024 ** 3)
+
+# Llama 3.1 70B with batch=32, seq=8192
+mem = kv_cache_memory_gb(80, 8, 128, 8192, 32)
+print(f"KV-Cache: {mem:.1f} GB")  # ~67.1 GB
+# Model weights (FP16): ~140 GB
+# Total: ~207 GB across GPUs — KV-cache is 32% of total!</code></pre>
+
+            <div class="info-box">
+                <h4>The 70/30 Rule</h4>
+                <p>In production LLM serving, roughly <strong>70% of GPU memory</strong> goes to model weights and <strong>30% to KV-cache</strong>. But KV-cache scales with batch size and sequence length, so at high load, it can exceed model weight memory. Every optimization in this article ultimately addresses this memory pressure.</p>
+            </div>
+
+            <!-- ============================================================ -->
+            <h2>2. KV-Cache Optimization</h2>
+            <!-- ============================================================ -->
+
+            <h3>PagedAttention (vLLM)</h3>
+
+            <p>
+                The breakthrough insight from Kwon et al. (2023): treat KV-cache like <strong>virtual memory</strong>. Instead of pre-allocating a contiguous block for each sequence&rsquo;s maximum length, PagedAttention divides the KV-cache into fixed-size <em>pages</em> (blocks) and allocates them on-demand using a page table.
+            </p>
+
+            <div class="arch-diagram">
+                <pre>
+  TRADITIONAL KV-CACHE                    PAGEDATTENTION (vLLM)
+  ====================                    =====================
+
+  Sequence A (len=1024, max=4096)         Sequence A (len=1024)
+  +====+====+====+====+                   Page Table A:
+  |Used|Used|Used|Used|                   [Block 0] -> Physical Block 7
+  |256 |256 |256 |256 |                   [Block 1] -> Physical Block 2
+  +----+----+----+----+                   [Block 2] -> Physical Block 15
+  |    WASTED: 75%    |                   [Block 3] -> Physical Block 9
+  |    (3072 tokens)  |                   (4 blocks * 256 tokens = 1024, no waste)
+  +-------------------+
+                                          Physical Memory Pool:
+  Sequence B (len=512, max=4096)          +---+---+---+---+---+---+---+---+
+  +====+====+----+----+                   | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+  |Used|Used|    |    |                   | B | B |A1 | - |B2 | - | - |A0 |
+  |256 |256 |    |    |                   +---+---+---+---+---+---+---+---+
+  +----+----+----+----+                   | 8 | 9 |10 |11 |12 |13 |14 |15 |
+  |    WASTED: 87.5%  |                   | - |A3 | - | - | - | - | - |A2 |
+  |    (3584 tokens)  |                   +---+---+---+---+---+---+---+---+
+  +-------------------+
+                                          Benefits:
+  Problem:                                - Near-zero internal fragmentation
+  - ~60-80% memory wasted                 - Blocks allocated on demand
+  - Max batch size severely limited       - Blocks freed immediately on completion
+  - Can't serve variable-length well      - 2-4x higher batch size = 2-4x throughput
+                </pre>
+            </div>
+
+            <h3>Grouped-Query Attention (GQA)</h3>
+
+            <p>
+                Multi-Head Attention (MHA) uses separate K/V heads per query head (e.g., 32 Q heads, 32 K heads, 32 V heads). GQA groups multiple query heads to share K/V heads:
+            </p>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Attention Type</th>
+                        <th>Q Heads</th>
+                        <th>K/V Heads</th>
+                        <th>KV-Cache Size (relative)</th>
+                        <th>Quality Impact</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>MHA</strong> (GPT-3)</td>
+                        <td>96</td>
+                        <td>96</td>
+                        <td>1.0x (baseline)</td>
+                        <td>Best</td>
+                    </tr>
+                    <tr>
+                        <td><strong>GQA</strong> (Llama 3)</td>
+                        <td>32</td>
+                        <td>8</td>
+                        <td>0.25x</td>
+                        <td>~Same</td>
+                    </tr>
+                    <tr>
+                        <td><strong>MQA</strong> (Falcon)</td>
+                        <td>64</td>
+                        <td>1</td>
+                        <td>0.016x</td>
+                        <td>Slight degradation</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- ============================================================ -->
+            <h2>3. Batching: The Throughput Multiplier</h2>
+            <!-- ============================================================ -->
+
+            <p>
+                The single biggest throughput lever is batching strategy. A naive static-batch approach wastes enormous GPU cycles; continuous batching can improve throughput by <strong>10&ndash;23x</strong>.
+            </p>
+
+            <div class="arch-diagram">
+                <pre>
+  STATIC BATCHING (Naive)                CONTINUOUS BATCHING (vLLM/TGI)
+  =======================                ==============================
+
+  Time --->                              Time --->
+
+  Batch 1:                               Iteration pool (dynamic):
+  Req A: [====PREFILL====][DDDDDDDDD]   Req A: [==PF==][DDDDDDDDDD]
+  Req B: [====PREFILL====][DDD]------    Req B: [==PF==][DDD]
+  Req C: [====PREFILL====][DDDDDDD]--   Req C:              [=PF=][DDDDDDD]
+                                ^        Req D:         [PF][DDDDD]
+                                |        Req E:                   [PF][DDDD]
+            Wait for LONGEST    |
+            sequence to finish  |        Key: New requests JOIN mid-batch
+            before accepting    |              Completed requests LEAVE immediately
+            new requests        |              GPU always fully utilized
+                                |
+  Batch 2 (delayed):                     Throughput: up to 23x vs static
+  Req D: [====PREFILL====][DDDDD]       Latency: P50 reduced by 5-8x
+  Req E: [====PREFILL====][DDDD]-
+  Req F: [====PREFILL====][DDDDDDDDD]
+
+  GPU util: ~15-30%                      GPU util: ~85-95%
+                </pre>
+            </div>
+
+            <h3>Chunked Prefill (Sarathi)</h3>
+
+            <p>
+                A key challenge: prefill is compute-bound, decode is memory-bound. When a new request arrives and triggers prefill, it can <strong>stall all decode operations</strong> in the batch. Sarathi (Agrawal et al., 2023) solves this by chunking the prefill into smaller pieces and interleaving them with decode iterations:
+            </p>
+
+            <pre><code class="language-python">class ChunkedPrefillScheduler:
+    """Sarathi-style chunked prefill interleaved with decode."""
+
+    def __init__(self, chunk_size: int = 512, max_batch_tokens: int = 8192):
+        self.chunk_size = chunk_size
+        self.max_batch_tokens = max_batch_tokens
+        self.prefill_queue = []    # Requests awaiting prefill
+        self.decode_pool = []      # Requests in decode phase
+        self.pending_chunks = {}   # Partial prefills
+
+    def schedule_iteration(self):
+        """Schedule one forward pass mixing prefill chunks + decodes."""
+        batch = []
+        token_budget = self.max_batch_tokens
+
+        # 1. Always include active decode requests (1 token each)
+        for req in self.decode_pool:
+            if token_budget > 0:
+                batch.append(("decode", req, 1))
+                token_budget -= 1
+
+        # 2. Fill remaining budget with prefill chunks
+        while self.prefill_queue and token_budget >= self.chunk_size:
+            req = self.prefill_queue[0]
+            remaining = req.prompt_len - self.pending_chunks.get(req.id, 0)
+
+            chunk = min(self.chunk_size, remaining, token_budget)
+            batch.append(("prefill_chunk", req, chunk))
+            token_budget -= chunk
+
+            self.pending_chunks[req.id] = self.pending_chunks.get(req.id, 0) + chunk
+
+            # If prefill complete, move to decode pool
+            if self.pending_chunks[req.id] >= req.prompt_len:
+                self.prefill_queue.pop(0)
+                self.decode_pool.append(req)
+                del self.pending_chunks[req.id]
+
+        return batch
+
+    def forward_pass(self, batch):
+        """Execute mixed prefill-chunk + decode batch."""
+        # All tokens in the batch are processed in a single forward pass
+        # Prefill chunks build the KV-cache incrementally
+        # Decode tokens generate the next output token
+        # This eliminates prefill-induced stalls
+        pass</code></pre>
+
+            <!-- ============================================================ -->
+            <h2>4. Speculative Decoding: Breaking the Autoregressive Bottleneck</h2>
+            <!-- ============================================================ -->
+
+            <p>
+                Autoregressive decode generates one token per forward pass through the full model. For a 70B model, each forward pass takes ~30ms. Generating 500 tokens = 15 seconds. Speculative decoding (Leviathan et al., 2022) breaks this bottleneck by using a <strong>small draft model</strong> to generate candidate tokens cheaply, then <strong>verifying them in parallel</strong> with the target model.
+            </p>
+
+            <div class="arch-diagram">
+                <pre>
+  SPECULATIVE DECODING PIPELINE
+  ===============================
+
+  Draft Model (1B, ~2ms/token)          Target Model (70B, ~30ms/token)
+  ==============================         ================================
+
+  Step 1: Draft generates K=5 tokens     Step 2: Target verifies ALL 5 in parallel
+
+  "The capital of France"                "The capital of France"
+        |                                      |
+        v                                      v
+  [is] -> [Paris] -> [,] -> [a] -> [city]    [is] [Paris] [,] [which] [is]
+                                                ^     ^     ^     X
+                                              ACCEPT ACCEPT ACCEPT REJECT
+                                              (matches draft)     |
+                                                                  v
+                                                            Use target's token: "which"
+                                                            Discard "a", "city"
+
+  Result: 4 tokens accepted + 1 from target = 5 tokens in ~32ms
+  Without speculation: 5 tokens * 30ms = 150ms
+  Speedup: ~4.7x
+
+  Acceptance Rate Formula:
+  P(accept token i) = min(1, p_target(x_i) / p_draft(x_i))
+
+  Expected tokens per step = 1/(1-alpha) where alpha = avg acceptance rate
+  For alpha=0.8: ~5 tokens per verification step
+                </pre>
+            </div>
+
+            <pre><code class="language-python">import torch
+from typing import List, Tuple
+
+class SpeculativeDecoder:
+    """Speculative decoding with draft + target model."""
+
+    def __init__(self, draft_model, target_model, tokenizer, num_speculative: int = 5):
+        self.draft = draft_model
+        self.target = target_model
+        self.tokenizer = tokenizer
+        self.K = num_speculative
+
+    @torch.no_grad()
+    def generate(self, prompt_ids: torch.Tensor, max_new_tokens: int = 256) -> List[int]:
+        generated = prompt_ids.clone()
+        tokens_generated = 0
+
+        while tokens_generated < max_new_tokens:
+            # Phase 1: Draft model generates K candidate tokens
+            draft_tokens, draft_probs = self._draft_generate(generated, self.K)
+
+            # Phase 2: Target model scores ALL candidates in ONE forward pass
+            target_probs = self._target_verify(generated, draft_tokens)
+
+            # Phase 3: Accept/reject using modified rejection sampling
+            accepted, bonus_token = self._speculative_sample(
+                draft_tokens, draft_probs, target_probs
+            )
+
+            # Append accepted tokens + bonus token from target
+            generated = torch.cat([generated, accepted, bonus_token.unsqueeze(0)], dim=-1)
+            tokens_generated += len(accepted) + 1
+
+            if bonus_token.item() == self.tokenizer.eos_token_id:
+                break
+
+        return generated
+
+    def _draft_generate(self, context, k):
+        """Generate k tokens with the draft model, storing probabilities."""
+        tokens = []
+        probs = []
+        current = context
+
+        for _ in range(k):
+            logits = self.draft(current).logits[:, -1, :]
+            p = torch.softmax(logits, dim=-1)
+            token = torch.multinomial(p, 1)
+            tokens.append(token.item())
+            probs.append(p[0, token.item()].item())
+            current = torch.cat([current, token], dim=-1)
+
+        return torch.tensor(tokens), torch.tensor(probs)
+
+    def _target_verify(self, context, draft_tokens):
+        """Verify all draft tokens in a single target model forward pass."""
+        # Concatenate context + draft tokens
+        full_seq = torch.cat([context, draft_tokens.unsqueeze(0)], dim=-1)
+        logits = self.target(full_seq).logits
+
+        # Extract probabilities at positions corresponding to draft tokens
+        start = context.shape[-1] - 1
+        target_probs = []
+        for i, token in enumerate(draft_tokens):
+            p = torch.softmax(logits[0, start + i, :], dim=-1)
+            target_probs.append(p[token].item())
+
+        return torch.tensor(target_probs)
+
+    def _speculative_sample(self, draft_tokens, draft_probs, target_probs):
+        """Modified rejection sampling for speculative decoding."""
+        accepted = []
+
+        for i in range(len(draft_tokens)):
+            # Accept with probability min(1, p_target / p_draft)
+            acceptance_prob = min(1.0, target_probs[i].item() / max(draft_probs[i].item(), 1e-10))
+
+            if torch.rand(1).item() < acceptance_prob:
+                accepted.append(draft_tokens[i])
+            else:
+                # Sample from adjusted distribution: max(0, p_target - p_draft)
+                # In practice, sample from target's distribution at this position
+                bonus = draft_tokens[i]  # Simplified; real impl samples from residual
+                return torch.tensor(accepted), torch.tensor(bonus)
+
+        # All K tokens accepted; bonus token from target's next prediction
+        bonus = draft_tokens[-1]  # Simplified
+        return torch.tensor(accepted), torch.tensor(bonus)</code></pre>
+
+            <div class="info-box">
+                <h4>Draft Model Selection Strategy</h4>
+                <p>The draft model must be <strong>fast</strong> (small enough for negligible latency) and <strong>similar</strong> (high acceptance rate). Best pairs: Llama-3.1-8B drafting for Llama-3.1-70B (acceptance rate ~75&ndash;85%); Phi-3-mini drafting for Mixtral-8x22B (~65&ndash;75%). The draft model should be from the same family or fine-tuned on the same data for highest acceptance rates.</p>
+            </div>
+
+            <!-- ============================================================ -->
+            <h2>5. Quantization for Inference</h2>
+            <!-- ============================================================ -->
+
+            <p>
+                Quantization reduces weight precision from FP16 (2 bytes) to INT8 (1 byte) or INT4 (0.5 bytes), directly halving or quartering memory requirements and improving throughput via reduced memory bandwidth.
+            </p>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Method</th>
+                        <th>Precision</th>
+                        <th>Memory Reduction</th>
+                        <th>Quality Loss (MMLU)</th>
+                        <th>Throughput Gain</th>
+                        <th>Calibration Needed</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>FP16</strong> (baseline)</td>
+                        <td>16-bit</td>
+                        <td>1.0x</td>
+                        <td>0%</td>
+                        <td>1.0x</td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <td><strong>SmoothQuant</strong></td>
+                        <td>W8A8</td>
+                        <td>2.0x</td>
+                        <td>&lt;0.5%</td>
+                        <td>1.5&ndash;1.8x</td>
+                        <td>Yes (128 samples)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>GPTQ</strong></td>
+                        <td>W4A16</td>
+                        <td>3.5&ndash;4.0x</td>
+                        <td>0.5&ndash;2%</td>
+                        <td>2.5&ndash;3.0x</td>
+                        <td>Yes (calibration set)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>AWQ</strong></td>
+                        <td>W4A16</td>
+                        <td>3.5&ndash;4.0x</td>
+                        <td>0.3&ndash;1.5%</td>
+                        <td>2.5&ndash;3.2x</td>
+                        <td>Yes (activation-aware)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>FP8</strong> (H100)</td>
+                        <td>E4M3/E5M2</td>
+                        <td>2.0x</td>
+                        <td>&lt;0.2%</td>
+                        <td>1.8&ndash;2.0x</td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <td><strong>GGUF Q4_K_M</strong></td>
+                        <td>Mixed 4-6 bit</td>
+                        <td>3.0&ndash;3.5x</td>
+                        <td>0.5&ndash;2%</td>
+                        <td>2.0&ndash;2.5x (CPU)</td>
+                        <td>No (weight-only)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <blockquote>
+                <p>For production GPU serving, <strong>AWQ INT4</strong> is the current sweet spot &mdash; near-FP16 quality with 3&ndash;4x memory reduction. For H100 deployments, <strong>FP8</strong> offers the best quality-to-throughput ratio with zero calibration overhead. For CPU/edge deployment, <strong>GGUF Q4_K_M</strong> via llama.cpp remains unmatched.</p>
+            </blockquote>
+
+            <!-- ============================================================ -->
+            <h2>6. Distributed Inference Patterns</h2>
+            <!-- ============================================================ -->
+
+            <div class="arch-diagram">
+                <pre>
+  TENSOR PARALLELISM (TP)                    PIPELINE PARALLELISM (PP)
+  =======================                    =========================
+
+  Single layer split across GPUs:            Different layers on different GPUs:
+
+  GPU 0        GPU 1        GPU 2            GPU 0: Layers 0-19
+  +--------+  +--------+  +--------+        +------------------+
+  | W[:,0:d]|  |W[:,d:2d]|  |W[:,2d:3d]|        | Layers 0-19      |
+  | (1/3)  |  | (1/3)  |  | (1/3)  |        | Forward -> send  |
+  +--------+  +--------+  +--------+        +--------+---------+
+       \          |          /                        |
+        \         |         /                         v
+     [AllReduce across GPUs]                 GPU 1: Layers 20-39
+        /         |         \                +------------------+
+       v          v          v               | Layers 20-39     |
+  Output concatenated/summed                 | Forward -> send  |
+                                             +--------+---------+
+  Pros: Low latency (all GPUs active)                 |
+  Cons: AllReduce comm overhead                       v
+  Best for: Single-node multi-GPU            GPU 2: Layers 40-59
+                                             +------------------+
+                                             | Layers 40-59     |
+                                             | Forward -> send  |
+                                             +--------+---------+
+                                                      |
+                                                      v
+                                             GPU 3: Layers 60-79
+                                             +------------------+
+                                             | Layers 60-79     |
+                                             | Output           |
+                                             +------------------+
+
+                                             Pros: No AllReduce, scales across nodes
+                                             Cons: Pipeline bubbles, higher latency
+                                             Best for: Multi-node, very large models
+                </pre>
+            </div>
+
+            <pre><code class="language-python"># Tensor Parallel inference with vLLM
+from vllm import LLM, SamplingParams
+
+# vLLM handles TP automatically
+llm = LLM(
+    model="meta-llama/Llama-3.1-70B-Instruct",
+    tensor_parallel_size=4,          # Split across 4 GPUs
+    gpu_memory_utilization=0.90,     # Use 90% of GPU memory
+    max_model_len=8192,
+    quantization="awq",              # AWQ INT4 quantization
+    enable_chunked_prefill=True,     # Sarathi-style chunked prefill
+    max_num_batched_tokens=8192,     # Token budget per iteration
+)
+
+# Batch inference
+prompts = ["Explain quantum computing", "Summarize this contract: ..."]
+params = SamplingParams(
+    temperature=0.7,
+    top_p=0.9,
+    max_tokens=512,
+    min_tokens=10,
+)
+
+outputs = llm.generate(prompts, params)
+for output in outputs:
+    print(output.outputs[0].text)</code></pre>
+
+            <!-- ============================================================ -->
+            <h2>7. Novel Framework: Adaptive Inference Orchestrator (AIO)</h2>
+            <!-- ============================================================ -->
+
+            <p>
+                Here&rsquo;s the production insight that most teams miss: <strong>not every request needs the same model</strong>. A simple factual lookup (&ldquo;What is the capital of France?&rdquo;) doesn&rsquo;t need a 70B model. A complex multi-step reasoning task does. Routing every request to the largest model wastes 60&ndash;70% of compute budget.
+            </p>
+
+            <p>
+                The <strong>Adaptive Inference Orchestrator (AIO)</strong> classifies incoming requests by complexity and routes them to the cheapest model capable of handling them:
+            </p>
+
+            <div class="arch-diagram">
+                <pre>
+  ADAPTIVE INFERENCE ORCHESTRATOR (AIO)
+  ======================================
+
+  Incoming Request
+       |
+       v
+  +---------------------------+
+  | Complexity Classifier     |
+  | (Lightweight BERT/DistilBERT model)
+  | Trained on: (query, difficulty_label) pairs
+  |                           |
+  | Features:                 |
+  | - Query length            |
+  | - Entity count            |
+  | - Reasoning keyword detection
+  | - Domain classification   |
+  | - Historical accuracy per tier
+  +------+------+------+------+
+         |      |      |      |
+    Tier 1  Tier 2  Tier 3  Tier 4
+    Simple  Medium  Complex Expert
+         |      |      |      |
+         v      v      v      v
+  +--------+ +--------+ +----------+ +-----------+
+  | SLM    | | SLM    | | LLM      | | LLM       |
+  | 3B     | | 8B     | | 70B      | | 70B +     |
+  | INT4   | | INT4   | | AWQ INT4 | | Speculative|
+  | (CPU)  | | (1 GPU)| | (4 GPU)  | | + CoT     |
+  +--------+ +--------+ +----------+ +-----------+
+  Cost/req:  Cost/req:  Cost/req:    Cost/req:
+  $0.0001   $0.0005    $0.003       $0.01
+
+  Traffic Split (typical enterprise):
+  [====60%====][==20%==][==15%=][=5%=]
+
+  Weighted avg cost: 60%*0.0001 + 20%*0.0005 + 15%*0.003 + 5%*0.01
+                   = $0.00061 per request
+  vs. All-70B:     = $0.003 per request
+  Savings:         = 80% cost reduction
+
+  +---------------------------+
+  | Quality Monitor           |
+  | - Sample 5% of Tier 1/2  |
+  |   responses, verify with  |
+  |   Tier 4 model            |
+  | - Auto-promote queries    |
+  |   if quality drops        |
+  | - Retrain classifier      |
+  |   weekly on new data      |
+  +---------------------------+
+                </pre>
+            </div>
+
+            <pre><code class="language-python">from dataclasses import dataclass
+from enum import Enum
+import numpy as np
+from typing import Optional
+
+class ComplexityTier(Enum):
+    SIMPLE = 1      # Factual, lookup, simple Q&A
+    MEDIUM = 2      # Moderate reasoning, summarization
+    COMPLEX = 3     # Multi-step reasoning, analysis
+    EXPERT = 4      # Chain-of-thought, complex generation
+
+@dataclass
+class InferenceEndpoint:
+    tier: ComplexityTier
+    model_name: str
+    base_url: str
+    cost_per_token: float
+    avg_latency_ms: float
+    max_tokens: int
+
+class AdaptiveInferenceOrchestrator:
+    """Routes requests to the cheapest capable model."""
+
+    def __init__(self, classifier_model, endpoints: list[InferenceEndpoint]):
+        self.classifier = classifier_model  # Fine-tuned DistilBERT
+        self.endpoints = {e.tier: e for e in endpoints}
+        self.quality_monitor = QualityMonitor()
+
+    def classify_complexity(self, query: str) -> ComplexityTier:
+        """Classify query complexity using lightweight model."""
+        features = self._extract_features(query)
+        logits = self.classifier.predict(features)
+        tier = ComplexityTier(np.argmax(logits) + 1)
+        return tier
+
+    def _extract_features(self, query: str) -> dict:
+        """Extract complexity signals from query."""
+        return {
+            "length": len(query.split()),
+            "has_reasoning_keywords": any(
+                kw in query.lower() for kw in
+                ["analyze", "compare", "explain why", "step by step",
+                 "evaluate", "synthesize", "what would happen if"]
+            ),
+            "entity_count": self._count_entities(query),
+            "question_depth": self._estimate_depth(query),
+            "domain_specificity": self._domain_score(query),
+        }
+
+    async def route_request(self, query: str, context: Optional[str] = None) -> dict:
+        """Route request to appropriate tier and return response."""
+        tier = self.classify_complexity(query)
+        endpoint = self.endpoints[tier]
+
+        # Execute inference
+        response = await self._call_endpoint(endpoint, query, context)
+
+        # Quality monitoring: sample 5% of low-tier responses
+        if tier.value <= 2 and np.random.random() < 0.05:
+            self.quality_monitor.schedule_verification(
+                query=query,
+                response=response,
+                tier=tier,
+                verification_endpoint=self.endpoints[ComplexityTier.EXPERT]
+            )
+
+        return {
+            "response": response,
+            "tier": tier.name,
+            "model": endpoint.model_name,
+            "cost": self._estimate_cost(response, endpoint),
+            "latency_ms": response.latency_ms,
+        }
+
+class QualityMonitor:
+    """Monitors routing quality and auto-adjusts classifier."""
+
+    def __init__(self, quality_threshold: float = 0.85):
+        self.threshold = quality_threshold
+        self.verification_log = []
+
+    async def schedule_verification(self, query, response, tier, verification_endpoint):
+        """Verify low-tier response against expert model."""
+        expert_response = await self._call_endpoint(verification_endpoint, query)
+
+        # Semantic similarity between low-tier and expert response
+        similarity = self._compute_similarity(response.text, expert_response.text)
+
+        self.verification_log.append({
+            "query": query,
+            "tier": tier,
+            "similarity": similarity,
+            "should_upgrade": similarity < self.threshold,
+        })
+
+        # If too many low-quality responses, retrain classifier
+        recent = self.verification_log[-100:]
+        upgrade_rate = sum(1 for v in recent if v["should_upgrade"]) / len(recent)
+
+        if upgrade_rate > 0.15:  # >15% of sampled responses need upgrade
+            self._trigger_classifier_retrain()</code></pre>
+
+            <!-- ============================================================ -->
+            <h2>8. Production Serving Stack Comparison</h2>
+            <!-- ============================================================ -->
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>vLLM</th>
+                        <th>TensorRT-LLM</th>
+                        <th>TGI (HF)</th>
+                        <th>SGLang</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>PagedAttention</strong></td>
+                        <td>Yes (native)</td>
+                        <td>Yes</td>
+                        <td>Yes (via vLLM)</td>
+                        <td>Yes</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Continuous Batching</strong></td>
+                        <td>Yes</td>
+                        <td>Yes</td>
+                        <td>Yes</td>
+                        <td>Yes</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Speculative Decoding</strong></td>
+                        <td>Yes</td>
+                        <td>Yes</td>
+                        <td>Limited</td>
+                        <td>Yes</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Multi-LoRA</strong></td>
+                        <td>Yes (S-LoRA)</td>
+                        <td>Yes</td>
+                        <td>Yes</td>
+                        <td>Yes</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Quantization</strong></td>
+                        <td>AWQ, GPTQ, FP8</td>
+                        <td>All + custom</td>
+                        <td>AWQ, GPTQ, BnB</td>
+                        <td>AWQ, GPTQ, FP8</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Structured Output</strong></td>
+                        <td>Outlines</td>
+                        <td>Limited</td>
+                        <td>Yes</td>
+                        <td>Native (fast)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Best For</strong></td>
+                        <td>General purpose, highest throughput</td>
+                        <td>NVIDIA-optimised, lowest latency</td>
+                        <td>HF ecosystem, easy deployment</td>
+                        <td>Complex prompts, structured output</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- ============================================================ -->
+            <h2>9. Monitoring: The Three Metrics That Matter</h2>
+            <!-- ============================================================ -->
+
+            <p>
+                Production LLM serving requires three key metrics, each capturing a different user experience dimension:
+            </p>
+
+            <ol>
+                <li><strong>TTFT (Time to First Token)</strong>: How long until the user sees the first response character. Dominated by prefill latency. Target: &lt;500ms for interactive, &lt;2s for batch.</li>
+                <li><strong>TPS (Tokens Per Second)</strong>: Decode throughput per request. Determines how fast the response streams. Target: &gt;30 TPS for interactive (readable speed), higher for batch.</li>
+                <li><strong>P99 End-to-End Latency</strong>: The tail latency that determines worst-case user experience. Target: &lt;5x the P50. If your P99/P50 ratio exceeds 10x, you have a scheduling or memory contention problem.</li>
+            </ol>
+
+            <pre><code class="language-python">import time
+from dataclasses import dataclass, field
+from collections import defaultdict
+
+@dataclass
+class InferenceMetrics:
+    """Production inference metrics collector."""
+
+    ttft_samples: list = field(default_factory=list)
+    tps_samples: list = field(default_factory=list)
+    e2e_samples: list = field(default_factory=list)
+    tier_counts: dict = field(default_factory=lambda: defaultdict(int))
+
+    def record_request(self, ttft_ms, total_tokens, total_ms, tier):
+        self.ttft_samples.append(ttft_ms)
+        tps = total_tokens / (total_ms / 1000) if total_ms > 0 else 0
+        self.tps_samples.append(tps)
+        self.e2e_samples.append(total_ms)
+        self.tier_counts[tier] += 1
+
+    def report(self):
+        import numpy as np
+        return {
+            "ttft_p50_ms": np.percentile(self.ttft_samples, 50),
+            "ttft_p99_ms": np.percentile(self.ttft_samples, 99),
+            "tps_mean": np.mean(self.tps_samples),
+            "tps_p50": np.percentile(self.tps_samples, 50),
+            "e2e_p50_ms": np.percentile(self.e2e_samples, 50),
+            "e2e_p99_ms": np.percentile(self.e2e_samples, 99),
+            "p99_p50_ratio": (
+                np.percentile(self.e2e_samples, 99) /
+                max(np.percentile(self.e2e_samples, 50), 1)
+            ),
+            "tier_distribution": dict(self.tier_counts),
+        }</code></pre>
+
+            <!-- ============================================================ -->
+            <h2>Key Takeaways</h2>
+            <!-- ============================================================ -->
+
+            <ol>
+                <li><strong>PagedAttention + Continuous Batching</strong> are table stakes. If you&rsquo;re not using vLLM/TGI/TensorRT-LLM, you&rsquo;re leaving 10&ndash;50x throughput on the table.</li>
+                <li><strong>Speculative decoding</strong> is free throughput for the right use cases &mdash; 2&ndash;5x speedup with zero quality loss.</li>
+                <li><strong>AWQ INT4</strong> is the production quantization sweet spot. FP8 on H100s where available.</li>
+                <li><strong>Route requests by complexity</strong> (AIO pattern). Sending simple queries to large models wastes 60&ndash;80% of your budget.</li>
+                <li><strong>Measure TTFT, TPS, and P99 E2E</strong>. These three metrics tell you everything about user experience and system health.</li>
+            </ol>
+
+            <blockquote>
+                <p>The best inference optimization is the one you don&rsquo;t need &mdash; route simple queries to small models, and only invoke the heavy machinery for tasks that truly require it.</p>
+            </blockquote>
+
+            <!-- ============================================================ -->
+            <h2>References &amp; Resources</h2>
+            <!-- ============================================================ -->
+
+            <div class="references">
+                <h3>Research Papers</h3>
+                <ol>
+                    <li>Kwon, W., et al. <a href="https://arxiv.org/abs/2309.06180" target="_blank">&ldquo;Efficient Memory Management for Large Language Model Serving with PagedAttention&rdquo;</a> (arXiv:2309.06180, 2023)</li>
+                    <li>Leviathan, Y., et al. <a href="https://arxiv.org/abs/2211.17192" target="_blank">&ldquo;Fast Inference from Transformers via Speculative Decoding&rdquo;</a> (arXiv:2211.17192, 2022)</li>
+                    <li>Shazeer, N. <a href="https://arxiv.org/abs/1911.02150" target="_blank">&ldquo;Fast Transformer Decoding: One Write-Head is All You Need&rdquo;</a> (arXiv:1911.02150, 2019)</li>
+                    <li>Ainslie, J., et al. <a href="https://arxiv.org/abs/2305.13245" target="_blank">&ldquo;GQA: Training Generalized Multi-Query Transformer Models from Multi-Head Checkpoints&rdquo;</a> (arXiv:2305.13245, 2023)</li>
+                    <li>Frantar, E., et al. <a href="https://arxiv.org/abs/2210.17323" target="_blank">&ldquo;GPTQ: Accurate Post-Training Quantization for Generative Pre-Trained Transformers&rdquo;</a> (arXiv:2210.17323, 2022)</li>
+                    <li>Lin, J., et al. <a href="https://arxiv.org/abs/2306.00978" target="_blank">&ldquo;AWQ: Activation-aware Weight Quantization for LLM Compression and Acceleration&rdquo;</a> (arXiv:2306.00978, 2023)</li>
+                    <li>Xiao, G., et al. <a href="https://arxiv.org/abs/2211.10438" target="_blank">&ldquo;SmoothQuant: Accurate and Efficient Post-Training Quantization for Large Language Models&rdquo;</a> (arXiv:2211.10438, 2022)</li>
+                    <li>Agrawal, A., et al. <a href="https://arxiv.org/abs/2308.16369" target="_blank">&ldquo;Sarathi: Efficient LLM Inference by Piggybacking Decodes with Chunked Prefills&rdquo;</a> (arXiv:2308.16369, 2023)</li>
+                    <li>Chen, C., et al. <a href="https://arxiv.org/abs/2401.02954" target="_blank">&ldquo;Medusa: Simple LLM Inference Acceleration Framework with Multiple Decoding Heads&rdquo;</a> (arXiv:2401.02954, 2024)</li>
+                    <li>Zheng, L., et al. <a href="https://arxiv.org/abs/2312.07104" target="_blank">&ldquo;SGLang: Efficient Execution of Structured Language Model Programs&rdquo;</a> (arXiv:2312.07104, 2023)</li>
+                </ol>
+                <h3>Frameworks &amp; Tools</h3>
+                <ol>
+                    <li><a href="https://github.com/vllm-project/vllm" target="_blank">vLLM</a> &mdash; High-throughput LLM serving engine</li>
+                    <li><a href="https://github.com/NVIDIA/TensorRT-LLM" target="_blank">TensorRT-LLM</a> &mdash; NVIDIA&rsquo;s optimized inference library</li>
+                    <li><a href="https://github.com/huggingface/text-generation-inference" target="_blank">Text Generation Inference (TGI)</a> &mdash; Hugging Face serving solution</li>
+                    <li><a href="https://github.com/sgl-project/sglang" target="_blank">SGLang</a> &mdash; Structured generation language</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="post__tags">
+            <span class="tag">LLM Inference</span>
+            <span class="tag tag--secondary">vLLM</span>
+            <span class="tag tag--accent">Speculative Decoding</span>
+            <span class="tag">Quantization</span>
+            <span class="tag tag--secondary">KV-Cache</span>
+            <span class="tag tag--accent">Production ML</span>
+        </div>
+
+        <div class="post__nav">
+            <a href="lora-vs-fine-tuning.html" class="btn btn--outline btn--sm"><i class="fas fa-arrow-left"></i> Prev: LoRA vs Fine-Tuning</a>
+            <a href="agentic-ai.html" class="btn btn--outline btn--sm">Next: Agentic AI Systems <i class="fas fa-arrow-right"></i></a>
+        </div>
+    </article>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer__content">
+                <div class="footer__brand"><span class="navbar__logo-mark">N</span><p>Principal GenAI / LLM Architect<br>Bengaluru, India</p></div>
+                <div class="footer__nav"><a href="../journey.html">Journey</a><a href="../research.html">Research</a><a href="index.html">Blog</a><a href="../work.html">Work</a></div>
+                <div class="footer__social"><a href="mailto:navneet1083@gmail.com"><i class="fas fa-envelope"></i></a><a href="https://linkedin.com/in/navneet1083" target="_blank"><i class="fab fa-linkedin"></i></a><a href="https://github.com/navneet1083" target="_blank"><i class="fab fa-github"></i></a></div>
+            </div>
+            <div class="footer__bottom"><p>&copy; 2026 Navneet Singh. Crafted with two decades of passion.</p></div>
+        </div>
+    </footer>
+
+    <script defer src="../js/theme.js"></script>
+    <script defer src="../js/navigation.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.Portfolio && window.Portfolio.initNavigation) window.Portfolio.initNavigation();
+        });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+</body>
+</html>
