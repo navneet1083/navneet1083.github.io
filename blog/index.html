@@ -20,7 +20,7 @@
     <link rel="stylesheet" href="../css/animations.css">
     <link rel="stylesheet" href="../css/responsive.css">
 </head>
-<body>
+<body class="page-blog">
 
     <!-- Navigation -->
     <nav class="navbar navbar--scrolled" id="navbar">
@@ -31,9 +31,9 @@
                 <li><a href="../journey.html" class="navbar__link">Journey</a></li>
                 <li><a href="../research.html" class="navbar__link">Research</a></li>
                 <li><a href="index.html" class="navbar__link navbar__link--active">Blog</a></li>
-                <li><a href="../index.html#contact" class="navbar__link">Contact</a></li>
+                <li><a href="../work.html" class="navbar__link">Work</a></li>
             </ul>
-            <a href="https://drive.google.com/file/d/18Cal1KKLT0yNRQb4aXkJiduLd1hAJITM/view" target="_blank" class="btn btn--primary btn--sm navbar__cta"><i class="fas fa-file-alt"></i> Resume</a>
+            <a href="https://drive.google.com/file/d/1CPve1-8Bko6HuPHwsdW2--NnyaqQ0Jfb/view" target="_blank" class="btn btn--primary btn--sm navbar__cta"><i class="fas fa-file-alt"></i> Resume</a>
             <button class="navbar__hamburger" id="hamburger" aria-label="Toggle menu"><span></span><span></span><span></span></button>
         </div>
         <div class="navbar__mobile" id="mobileMenu">
@@ -42,7 +42,7 @@
                 <li><a href="../journey.html" class="navbar__link">Journey</a></li>
                 <li><a href="../research.html" class="navbar__link">Research</a></li>
                 <li><a href="index.html" class="navbar__link navbar__link--active">Blog</a></li>
-                <li><a href="../index.html#contact" class="navbar__link">Contact</a></li>
+                <li><a href="../work.html" class="navbar__link">Work</a></li>
             </ul>
         </div>
     </nav>
@@ -71,16 +71,16 @@
             <!-- Blog Grid -->
             <div class="blog__grid" style="grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));">
 
-                <!-- XMRetriever (Featured) -->
-                <a href="xmretriever.html" class="glass-card blog-card animate-on-scroll" data-category="research">
+                <!-- Knowledge Graph + LLM (Featured Innovation) -->
+                <a href="knowledge-graph-llm.html" class="glass-card blog-card animate-on-scroll" data-category="genai">
                     <div class="blog-card__meta">
-                        <span class="blog-card__category">Research</span>
-                        <span>May 2025</span>
-                        <span>12 min read</span>
+                        <span class="blog-card__category">Generative AI &middot; Innovation</span>
+                        <span>March 2026</span>
+                        <span>22 min read</span>
                     </div>
-                    <h3 class="blog-card__title">XMRetriever: Token-Efficient Vision-Language Inference</h3>
+                    <h3 class="blog-card__title">Building Nested Knowledge Graphs with LLMs: From Business Logic to Executable Decision Trees</h3>
                     <p class="blog-card__excerpt">
-                        Cross-modal retrieval with dual-head projections and neighbor-aware sampling. 75% token reduction while improving accuracy.
+                        A novel framework (DecisionForge) that extracts business rules into nested KGs, compiles them into modular Python functions, and executes decisions without LLM inference. Build once, run 340x faster.
                     </p>
                     <span class="blog-card__link">Read Article <i class="fas fa-arrow-right"></i></span>
                 </a>
@@ -90,11 +90,53 @@
                     <div class="blog-card__meta">
                         <span class="blog-card__category">Generative AI</span>
                         <span>March 2026</span>
-                        <span>8 min read</span>
+                        <span>20 min read</span>
                     </div>
-                    <h3 class="blog-card__title">The Rise of Agentic AI: Building Autonomous Systems</h3>
+                    <h3 class="blog-card__title">Agentic AI Systems: From ReAct to Self-Evolving Multi-Agent Orchestration</h3>
                     <p class="blog-card__excerpt">
-                        How agentic patterns are transforming AI from question-answering to goal-directed problem solving.
+                        Deep dive into agentic patterns and a novel Cognitive Agent Mesh (CAM) architecture for dynamic multi-agent orchestration with formal contract verification.
+                    </p>
+                    <span class="blog-card__link">Read Article <i class="fas fa-arrow-right"></i></span>
+                </a>
+
+                <!-- Scaling LLM Inference -->
+                <a href="scaling-llm-inference.html" class="glass-card blog-card animate-on-scroll" data-category="genai">
+                    <div class="blog-card__meta">
+                        <span class="blog-card__category">Generative AI</span>
+                        <span>March 2026</span>
+                        <span>18 min read</span>
+                    </div>
+                    <h3 class="blog-card__title">Scaling LLM Inference: From Single GPU to Planet-Scale Serving</h3>
+                    <p class="blog-card__excerpt">
+                        KV-cache optimization, PagedAttention, speculative decoding, quantization, and a novel Adaptive Inference Orchestrator (AIO) for cost-optimal model routing.
+                    </p>
+                    <span class="blog-card__link">Read Article <i class="fas fa-arrow-right"></i></span>
+                </a>
+
+                <!-- LoRA vs Fine-Tuning -->
+                <a href="lora-vs-fine-tuning.html" class="glass-card blog-card animate-on-scroll" data-category="genai">
+                    <div class="blog-card__meta">
+                        <span class="blog-card__category">Generative AI</span>
+                        <span>March 2026</span>
+                        <span>15 min read</span>
+                    </div>
+                    <h3 class="blog-card__title">LoRA vs Full Fine-Tuning: The Architecture Decision That Defines Production LLMs</h3>
+                    <p class="blog-card__excerpt">
+                        Deep technical analysis of LoRA, QLoRA, DoRA with a novel Task-Aware Rank Selection (TARS) framework and production multi-LoRA serving architecture.
+                    </p>
+                    <span class="blog-card__link">Read Article <i class="fas fa-arrow-right"></i></span>
+                </a>
+
+                <!-- XMRetriever -->
+                <a href="xmretriever.html" class="glass-card blog-card animate-on-scroll" data-category="research">
+                    <div class="blog-card__meta">
+                        <span class="blog-card__category">Research</span>
+                        <span>May 2025</span>
+                        <span>12 min read</span>
+                    </div>
+                    <h3 class="blog-card__title">XMRetriever: Token-Efficient Vision-Language Inference</h3>
+                    <p class="blog-card__excerpt">
+                        Cross-modal retrieval with dual-head projections and neighbor-aware sampling. 75% token reduction while improving accuracy.
                     </p>
                     <span class="blog-card__link">Read Article <i class="fas fa-arrow-right"></i></span>
                 </a>
@@ -163,7 +205,7 @@
         <div class="container">
             <div class="footer__content">
                 <div class="footer__brand"><span class="navbar__logo-mark">N</span><p>Principal GenAI / LLM Architect<br>Bengaluru, India</p></div>
-                <div class="footer__nav"><a href="../journey.html">Journey</a><a href="../research.html">Research</a><a href="index.html">Blog</a><a href="../index.html#contact">Contact</a></div>
+                <div class="footer__nav"><a href="../journey.html">Journey</a><a href="../research.html">Research</a><a href="../work.html">Work</a><a href="index.html">Blog</a></div>
                 <div class="footer__social"><a href="mailto:navneet1083@gmail.com"><i class="fas fa-envelope"></i></a><a href="https://linkedin.com/in/navneet1083" target="_blank"><i class="fab fa-linkedin"></i></a><a href="https://github.com/navneet1083" target="_blank"><i class="fab fa-github"></i></a></div>
             </div>
             <div class="footer__bottom"><p>&copy; 2026 Navneet Singh. Crafted with two decades of passion.</p></div>

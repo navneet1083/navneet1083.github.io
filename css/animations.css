@@ -247,6 +247,108 @@
 
 
 /* ===========================
+   INNOVATIVE VISUAL EFFECTS
+   =========================== */
+
+/* Shimmer effect on section titles */
+@keyframes shimmer {
+    0% { background-position: -200% center; }
+    100% { background-position: 200% center; }
+}
+
+.section__title {
+    background: linear-gradient(90deg,
+        var(--color-text) 0%,
+        var(--color-text) 40%,
+        var(--color-primary) 50%,
+        var(--color-text) 60%,
+        var(--color-text) 100%
+    );
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shimmer 6s linear infinite;
+}
+
+/* Dark section title override */
+.section--dark .section__title {
+    background: linear-gradient(90deg,
+        var(--color-text-inverse) 0%,
+        var(--color-text-inverse) 40%,
+        var(--color-secondary-light) 50%,
+        var(--color-text-inverse) 60%,
+        var(--color-text-inverse) 100%
+    );
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shimmer 6s linear infinite;
+}
+
+/* Floating animation for hero badge */
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-8px); }
+}
+
+.hero__badge {
+    animation: float 4s ease-in-out infinite;
+}
+
+/* Staggered reveal for connect cards */
+.connect-bar .connect-card:nth-child(1) { transition-delay: 0s; }
+.connect-bar .connect-card:nth-child(2) { transition-delay: 0.1s; }
+.connect-bar .connect-card:nth-child(3) { transition-delay: 0.2s; }
+.connect-bar .connect-card:nth-child(4) { transition-delay: 0.3s; }
+
+/* Scroll-triggered slide for journey cards */
+.jcard {
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.jcard.visible {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.jcard:nth-child(2) { transition-delay: 0.08s; }
+.jcard:nth-child(3) { transition-delay: 0.12s; }
+.jcard:nth-child(4) { transition-delay: 0.16s; }
+.jcard:nth-child(5) { transition-delay: 0.2s; }
+.jcard:nth-child(6) { transition-delay: 0.24s; }
+
+/* Impact number glow on hover */
+.impact-card__value {
+    text-shadow: 0 0 30px rgba(255, 255, 255, 0.08);
+    transition: text-shadow 0.3s ease;
+}
+
+.impact-card:hover .impact-card__value {
+    text-shadow: 0 0 40px rgba(255, 255, 255, 0.25);
+}
+
+/* Blog card gradient top accent */
+.blog-card::before {
+    content: '';
+    display: block;
+    height: 3px;
+    background: var(--gradient-primary);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    margin: calc(-1 * var(--space-xl)) calc(-1 * var(--space-xl)) var(--space-lg);
+    width: calc(100% + 2 * var(--space-xl));
+}
+
+/* Metric value subtle glow */
+.metric__value {
+    filter: drop-shadow(0 0 8px rgba(67, 56, 202, 0.12));
+}
+
+
+/* ===========================
    REDUCED MOTION
    =========================== */
 
@@ -260,9 +362,22 @@
     }
 
     .animate-on-scroll,
-    .impact-card {
+    .impact-card,
+    .jcard {
         opacity: 1;
         transform: none;
+    }
+
+    .section__title {
+        animation: none;
+        background: none;
+        -webkit-text-fill-color: var(--color-text);
+    }
+
+    .section--dark .section__title {
+        animation: none;
+        background: none;
+        -webkit-text-fill-color: var(--color-text-inverse);
     }
 
     .hero__mesh {

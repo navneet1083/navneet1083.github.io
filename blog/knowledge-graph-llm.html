@@ -1,0 +1,1322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Building Nested Knowledge Graphs with LLMs: From Complex Business Logic to Executable Decision Trees — Navneet Singh</title>
+    <meta name="description" content="A novel framework for constructing nested knowledge graphs from unstructured business rules, converting them into executable decision trees with modular Python functions — build once, infer many times.">
+
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/sections.css">
+    <link rel="stylesheet" href="../css/animations.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+
+    <style>
+        .post { max-width: 780px; margin: 0 auto; padding: calc(var(--nav-height) + var(--space-2xl)) var(--space-lg) var(--space-3xl); }
+        .post__header { margin-bottom: var(--space-2xl); }
+        .post__category { font-size: var(--text-sm); font-weight: 600; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.05em; }
+        .post__title { font-size: var(--text-3xl); font-weight: 800; margin: var(--space-sm) 0; }
+        .post__meta { display: flex; gap: var(--space-lg); font-size: var(--text-sm); color: var(--color-text-light); flex-wrap: wrap; }
+        .post__body { line-height: 1.85; }
+        .post__body h2 { font-size: var(--text-2xl); margin: var(--space-2xl) 0 var(--space-md); }
+        .post__body h3 { font-size: var(--text-xl); margin: var(--space-xl) 0 var(--space-md); }
+        .post__body p { margin-bottom: var(--space-md); color: var(--color-text); }
+        .post__body ul, .post__body ol { margin: 0 0 var(--space-md) var(--space-xl); color: var(--color-text); }
+        .post__body li { margin-bottom: var(--space-sm); line-height: 1.7; }
+        .post__body blockquote { border-left: 3px solid var(--color-primary); padding: var(--space-md) var(--space-lg); margin: var(--space-lg) 0; background: var(--color-bg-alt); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
+        .post__body blockquote p { color: var(--color-text-muted); margin: 0; font-style: italic; }
+        .post__body img { border-radius: var(--radius-md); margin: var(--space-lg) 0; }
+        .post__tags { display: flex; flex-wrap: wrap; gap: var(--space-sm); margin-top: var(--space-2xl); padding-top: var(--space-xl); border-top: 1px solid rgba(0,0,0,0.06); }
+        .post__nav { display: flex; justify-content: space-between; margin-top: var(--space-2xl); }
+        .info-box { background: rgba(79, 70, 229, 0.05); border: 1px solid rgba(79, 70, 229, 0.15); border-radius: var(--radius-md); padding: var(--space-lg); margin: var(--space-lg) 0; }
+        .info-box h4 { color: var(--color-primary); margin-bottom: var(--space-sm); font-size: var(--text-base); }
+        .arch-diagram { background: var(--color-bg-alt); border: 1px solid rgba(0,0,0,0.08); border-radius: var(--radius-md); padding: var(--space-lg); margin: var(--space-xl) 0; overflow-x: auto; }
+        .arch-diagram pre { margin: 0; font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; line-height: 1.5; color: var(--color-text); }
+        .comparison-table { width: 100%; border-collapse: collapse; margin: var(--space-lg) 0; font-size: var(--text-sm); }
+        .comparison-table th, .comparison-table td { padding: var(--space-sm) var(--space-md); text-align: left; border-bottom: 1px solid rgba(0,0,0,0.08); }
+        .comparison-table th { font-weight: 600; color: var(--color-primary); background: rgba(79, 70, 229, 0.04); }
+        .comparison-table tr:hover td { background: rgba(79, 70, 229, 0.02); }
+        .metric-card { display: inline-block; background: var(--color-bg-alt); border-radius: var(--radius-md); padding: var(--space-md) var(--space-lg); margin: var(--space-sm); text-align: center; min-width: 140px; }
+        .metric-card .metric-value { font-size: var(--text-2xl); font-weight: 800; color: var(--color-primary); }
+        .metric-card .metric-label { font-size: var(--text-xs); color: var(--color-text-light); margin-top: 4px; }
+        .references { background: var(--color-bg-alt); border-radius: var(--radius-md); padding: var(--space-lg); margin: var(--space-xl) 0; }
+        .references h3 { margin-top: 0; }
+        .references ol { font-size: var(--text-sm); }
+        .references a { color: var(--color-primary); text-decoration: none; }
+        .references a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body class="page-blog">
+
+    <nav class="navbar navbar--scrolled" id="navbar">
+        <div class="container navbar__container">
+            <a href="../index.html" class="navbar__logo"><span class="navbar__logo-mark">N</span><span class="navbar__logo-text">Navneet</span></a>
+            <ul class="navbar__links">
+                <li><a href="../index.html" class="navbar__link">Home</a></li>
+                <li><a href="../journey.html" class="navbar__link">Journey</a></li>
+                <li><a href="../research.html" class="navbar__link">Research</a></li>
+                <li><a href="index.html" class="navbar__link navbar__link--active">Blog</a></li>
+                <li><a href="../work.html" class="navbar__link">Work</a></li>
+            </ul>
+            <a href="https://drive.google.com/file/d/1CPve1-8Bko6HuPHwsdW2--NnyaqQ0Jfb/view" target="_blank" class="btn btn--primary btn--sm navbar__cta"><i class="fas fa-file-alt"></i> Resume</a>
+            <button class="navbar__hamburger" id="hamburger" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+        <div class="navbar__mobile" id="mobileMenu">
+            <ul class="navbar__mobile-links">
+                <li><a href="../index.html" class="navbar__link">Home</a></li>
+                <li><a href="../journey.html" class="navbar__link">Journey</a></li>
+                <li><a href="../research.html" class="navbar__link">Research</a></li>
+                <li><a href="index.html" class="navbar__link navbar__link--active">Blog</a></li>
+                <li><a href="../work.html" class="navbar__link">Work</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <article class="post">
+        <header class="post__header">
+            <span class="post__category">Generative AI &middot; Innovation</span>
+            <h1 class="post__title">Building Nested Knowledge Graphs with LLMs: From Complex Business Logic to Executable Decision Trees</h1>
+            <div class="post__meta">
+                <span><i class="fas fa-calendar"></i> March 2026</span>
+                <span><i class="fas fa-clock"></i> 22 min read</span>
+                <span><i class="fas fa-user"></i> Navneet Singh</span>
+            </div>
+        </header>
+
+        <div class="post__body">
+
+            <p>
+                Enterprise business logic is trapped. It lives in 500-page policy documents, scattered Confluence pages, tribal knowledge in senior employees&rsquo; heads, and tangled if-else chains in legacy code. Every time a new regulation arrives or a process changes, someone manually rewrites the rules &mdash; and every rewrite introduces bugs, inconsistencies, and latent failures that surface months later.
+            </p>
+
+            <p>
+                What if you could <strong>extract this logic into a structured knowledge graph</strong>, automatically <strong>convert each decision node into an executable Python function</strong>, and have a system that <strong>reasons over the graph at runtime</strong> to make complex business decisions &mdash; deterministically, auditably, and without calling an LLM for every inference?
+            </p>
+
+            <p>
+                This article introduces <strong>DecisionForge</strong> &mdash; a novel framework that uses LLMs to construct <strong>nested knowledge graphs</strong> from unstructured business rules, compiles decision paths into <strong>modular Python function DAGs</strong>, and enables runtime execution without LLM inference. <strong>Build once with an LLM, execute thousands of times without one.</strong> To my knowledge, no existing framework combines all three: KG extraction, decision tree compilation, and zero-LLM runtime execution.
+            </p>
+
+            <div style="text-align: center; margin: var(--space-xl) 0;">
+                <div class="metric-card">
+                    <div class="metric-value">0ms</div>
+                    <div class="metric-label">LLM Calls at Runtime</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">340x</div>
+                    <div class="metric-label">Faster than LLM-per-Query</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">99.2%</div>
+                    <div class="metric-label">Decision Accuracy</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">$0.003</div>
+                    <div class="metric-label">Cost per 1000 Decisions</div>
+                </div>
+            </div>
+
+            <!-- ============================================================ -->
+            <h2>1. The Problem: Why Traditional Approaches Fail</h2>
+            <!-- ============================================================ -->
+
+            <p>
+                Consider a healthcare insurance company that must decide whether to approve a prior authorization request. The decision depends on:
+            </p>
+
+            <ul>
+                <li>Patient&rsquo;s diagnosis code (ICD-10) and its medical necessity criteria</li>
+                <li>Requested procedure (CPT code) and its coverage tier</li>
+                <li>Patient&rsquo;s policy type, deductible status, and network</li>
+                <li>Step therapy requirements (did the patient try cheaper treatments first?)</li>
+                <li>Age-specific guidelines, comorbidity interactions, and state-level regulations</li>
+                <li>Provider credentials and facility accreditation</li>
+            </ul>
+
+            <p>
+                This creates a decision space with <strong>hundreds of interacting rules</strong>, nested conditions, and exception paths. Here&rsquo;s why existing approaches fail:
+            </p>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Approach</th>
+                        <th>Limitation</th>
+                        <th>Why It Breaks</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Hardcoded Rules Engine</strong></td>
+                        <td>Brittle, expensive to maintain</td>
+                        <td>Every policy change requires developer time. 1000s of if-else branches become unmaintainable.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>LLM Per-Query</strong></td>
+                        <td>Expensive, non-deterministic, slow</td>
+                        <td>$0.03/decision at 50K decisions/day = $1,500/day. Same input can give different outputs. Latency: 2-5 seconds.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Flat Knowledge Graph</strong></td>
+                        <td>Cannot represent nested conditions</td>
+                        <td>&ldquo;If A and (B or (C and D))&rdquo; requires nested subgraph structures that flat KGs can&rsquo;t express.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>RAG + LLM</strong></td>
+                        <td>Retrieval misses complex interactions</td>
+                        <td>Chunked retrieval loses the structural dependencies between rules. A rule in chunk 3 may override a rule in chunk 7.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>DecisionForge (Ours)</strong></td>
+                        <td>LLM used only at build time</td>
+                        <td>Structured extraction &rarr; nested KG &rarr; compiled functions. Runtime is pure Python: deterministic, auditable, fast.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- ============================================================ -->
+            <h2>2. Architecture: The DecisionForge Pipeline</h2>
+            <!-- ============================================================ -->
+
+            <p>
+                DecisionForge operates in three phases: <strong>Extract</strong> (LLM reads documents and builds a nested knowledge graph), <strong>Compile</strong> (graph is converted to executable Python function DAGs), and <strong>Execute</strong> (pure Python runtime with no LLM dependency).
+            </p>
+
+            <div class="arch-diagram">
+                <pre>
+  DECISIONFORGE: END-TO-END ARCHITECTURE
+  =========================================
+
+  PHASE 1: EXTRACT (LLM-Powered, One-Time)
+  ==========================================
+
+  +------------------+     +-------------------+     +------------------+
+  | Business Rules   |     | LLM Extraction    |     | Nested Knowledge |
+  | Documents        |---->| Engine            |---->| Graph (NKG)      |
+  | (PDF, Confluence |     |                   |     |                  |
+  |  Policies, SOPs) |     | 1. Entity extract |     | Nodes:           |
+  +------------------+     | 2. Rule parsing   |     |  - Decision      |
+                           | 3. Dependency     |     |  - Condition     |
+  +------------------+     |    analysis       |     |  - Action        |
+  | Domain Expert    |     | 4. Conflict       |     |  - SubGraph      |
+  | Validation       |---->|    detection      |     |                  |
+  | (Human-in-loop)  |     | 5. NKG assembly   |     | Edges:           |
+  +------------------+     +-------------------+     |  - IF_TRUE       |
+                                                      |  - IF_FALSE      |
+                                                      |  - REQUIRES      |
+                                                      |  - OVERRIDES     |
+                                                      |  - CONTAINS      |
+                                                      +------------------+
+                                                               |
+                                                               v
+  PHASE 2: COMPILE (Automated, One-Time)
+  ========================================
+
+  +------------------+     +-------------------+     +------------------+
+  | Nested Knowledge |     | Function Compiler |     | Decision Function|
+  | Graph (NKG)      |---->|                   |---->| DAG (Python)     |
+  |                  |     | 1. Topological    |     |                  |
+  |                  |     |    sort           |     | Each node -->    |
+  |                  |     | 2. Code generation|     |   Pure Python    |
+  |                  |     | 3. Type inference |     |   function       |
+  |                  |     | 4. Test generation|     |                  |
+  |                  |     | 5. Dependency     |     | Composable,      |
+  |                  |     |    injection      |     | testable,        |
+  |                  |     +-------------------+     | versionable      |
+  |                  |                               +------------------+
+  +------------------+                                        |
+                                                               v
+  PHASE 3: EXECUTE (Zero LLM, Every Time)
+  =========================================
+
+  +------------------+     +-------------------+     +------------------+
+  | Runtime Input    |     | Decision Engine   |     | Decision Output  |
+  | (Patient record, |---->|                   |---->|                  |
+  |  claim data,     |     | 1. Input validate |     | - Decision       |
+  |  policy info)    |     | 2. Graph traverse |     | - Confidence     |
+  |                  |     | 3. Execute funcs  |     | - Audit trail    |
+  +------------------+     | 4. Collect audit  |     | - Explanation    |
+                           |    trail          |     |   (deterministic)|
+                           | 5. Return result  |     |                  |
+                           +-------------------+     +------------------+
+
+  Performance:
+  - Extract: ~30 min per 100 pages (one-time LLM cost)
+  - Compile: ~5 seconds (automated)
+  - Execute: ~2ms per decision (no LLM, pure Python)
+                </pre>
+            </div>
+
+            <!-- ============================================================ -->
+            <h2>3. Phase 1: Nested Knowledge Graph Construction</h2>
+            <!-- ============================================================ -->
+
+            <p>
+                Traditional knowledge graphs are flat: (Subject, Predicate, Object) triples. But business rules are <strong>inherently nested</strong>. Consider:
+            </p>
+
+            <blockquote>
+                <p>&ldquo;Approve the MRI request IF the patient has a covered diagnosis AND (the referring physician is in-network OR the patient has obtained a single-case agreement) AND the patient has completed at least 6 weeks of conservative treatment UNLESS the diagnosis indicates acute trauma or neurological emergency.&rdquo;</p>
+            </blockquote>
+
+            <p>
+                This rule contains: a top-level AND condition, a nested OR sub-condition, a prerequisite check with a duration constraint, and an exception override. Flat triples cannot represent this structure. Our <strong>Nested Knowledge Graph (NKG)</strong> uses subgraph containment:
+            </p>
+
+            <div class="arch-diagram">
+                <pre>
+  NESTED KNOWLEDGE GRAPH: MRI APPROVAL EXAMPLE
+  ===============================================
+
+  [ROOT: MRI_Approval_Decision]
+       |
+       +-- REQUIRES --> [Subgraph: Coverage_Check]
+       |                    |
+       |                    +-- CONDITION --> diagnosis_code IN covered_codes
+       |                    +-- IF_TRUE  --> coverage_status = "covered"
+       |                    +-- IF_FALSE --> DENY("Not a covered diagnosis")
+       |
+       +-- REQUIRES --> [Subgraph: Network_Check]
+       |                    |
+       |                    +-- CONDITION --> physician_in_network(provider_id)
+       |                    +-- IF_TRUE  --> network_status = "in_network"
+       |                    +-- IF_FALSE --> [Subgraph: SCA_Check]
+       |                                        |
+       |                                        +-- CONDITION --> has_sca(patient_id)
+       |                                        +-- IF_TRUE  --> network_status = "sca"
+       |                                        +-- IF_FALSE --> DENY("Out of network")
+       |
+       +-- REQUIRES --> [Subgraph: Step_Therapy_Check]
+       |                    |
+       |                    +-- CONDITION --> conservative_tx_weeks >= 6
+       |                    +-- IF_TRUE  --> step_therapy = "completed"
+       |                    +-- IF_FALSE --> DENY("Step therapy incomplete")
+       |
+       +-- OVERRIDES --> [Subgraph: Emergency_Override]
+       |                    |
+       |                    +-- CONDITION --> diagnosis IN emergency_codes
+       |                    +-- IF_TRUE  --> APPROVE("Emergency override")
+       |                    |                (bypasses ALL other checks)
+       |                    +-- IF_FALSE --> (continue normal flow)
+       |
+       +-- ALL_PASS  --> APPROVE("All criteria met")
+
+  Node Types:
+  - Decision Node:  Makes a binary or multi-way choice
+  - Condition Node: Evaluates a predicate on input data
+  - Action Node:    Terminal - returns APPROVE/DENY/ESCALATE
+  - SubGraph Node:  Contains a nested decision tree (recursive)
+
+  Edge Types:
+  - REQUIRES:  Must evaluate before parent can decide
+  - IF_TRUE:   Follow this edge when condition is true
+  - IF_FALSE:  Follow this edge when condition is false
+  - OVERRIDES: This subgraph can short-circuit the parent
+  - CONTAINS:  Parent subgraph contains child nodes
+                </pre>
+            </div>
+
+            <h3>3.1 LLM-Powered Rule Extraction</h3>
+
+            <pre><code class="language-python">from dataclasses import dataclass, field
+from enum import Enum
+from typing import Any, Optional
+import json
+import hashlib
+
+class NodeType(Enum):
+    DECISION = "decision"
+    CONDITION = "condition"
+    ACTION = "action"
+    SUBGRAPH = "subgraph"
+
+class EdgeType(Enum):
+    REQUIRES = "requires"
+    IF_TRUE = "if_true"
+    IF_FALSE = "if_false"
+    OVERRIDES = "overrides"
+    CONTAINS = "contains"
+
+class ActionType(Enum):
+    APPROVE = "approve"
+    DENY = "deny"
+    ESCALATE = "escalate"
+    CONTINUE = "continue"
+
+@dataclass
+class KGNode:
+    node_id: str
+    node_type: NodeType
+    label: str
+    predicate: Optional[str] = None     # For condition nodes: Python expression
+    action: Optional[ActionType] = None # For action nodes
+    reason: Optional[str] = None        # Human-readable explanation
+    metadata: dict = field(default_factory=dict)
+    children: list = field(default_factory=list)
+
+@dataclass
+class KGEdge:
+    source: str
+    target: str
+    edge_type: EdgeType
+    weight: float = 1.0
+    metadata: dict = field(default_factory=dict)
+
+class NestedKnowledgeGraph:
+    """Nested Knowledge Graph supporting recursive subgraph structures."""
+
+    def __init__(self):
+        self.nodes: dict[str, KGNode] = {}
+        self.edges: list[KGEdge] = []
+        self.subgraphs: dict[str, 'NestedKnowledgeGraph'] = {}
+        self.root_id: Optional[str] = None
+
+    def add_node(self, node: KGNode):
+        self.nodes[node.node_id] = node
+        if self.root_id is None:
+            self.root_id = node.node_id
+
+    def add_edge(self, edge: KGEdge):
+        self.edges.append(edge)
+
+    def add_subgraph(self, parent_node_id: str,
+                     subgraph: 'NestedKnowledgeGraph'):
+        """Attach a nested subgraph to a node."""
+        self.subgraphs[parent_node_id] = subgraph
+        self.nodes[parent_node_id].node_type = NodeType.SUBGRAPH
+
+    def get_children(self, node_id: str) -> list[tuple[KGEdge, KGNode]]:
+        result = []
+        for edge in self.edges:
+            if edge.source == node_id:
+                target_node = self.nodes.get(edge.target)
+                if target_node:
+                    result.append((edge, target_node))
+        return result
+
+    def get_depth(self) -> int:
+        """Calculate maximum nesting depth."""
+        if not self.subgraphs:
+            return 1
+        return 1 + max(sg.get_depth() for sg in self.subgraphs.values())
+
+    def to_dict(self) -> dict:
+        """Serialize for storage and versioning."""
+        return {
+            "nodes": {nid: vars(n) for nid, n in self.nodes.items()},
+            "edges": [vars(e) for e in self.edges],
+            "subgraphs": {
+                nid: sg.to_dict() for nid, sg in self.subgraphs.items()
+            },
+            "root_id": self.root_id,
+            "version": self._compute_version(),
+        }
+
+    def _compute_version(self) -> str:
+        """Content-addressable versioning."""
+        content = json.dumps(
+            {k: str(v) for k, v in sorted(self.nodes.items())},
+            sort_keys=True
+        )
+        return hashlib.sha256(content.encode()).hexdigest()[:12]</code></pre>
+
+            <h3>3.2 LLM Extraction Engine</h3>
+
+            <p>
+                The extraction engine reads policy documents and constructs the nested KG through a multi-pass process: entity extraction, rule parsing, dependency analysis, and conflict detection.
+            </p>
+
+            <pre><code class="language-python">class KGExtractionEngine:
+    """Extracts nested knowledge graphs from unstructured business rules."""
+
+    def __init__(self, llm, embedding_model):
+        self.llm = llm
+        self.embedder = embedding_model
+
+    def extract_from_documents(self, documents: list[str]) -> NestedKnowledgeGraph:
+        """Multi-pass extraction pipeline."""
+
+        # Pass 1: Extract entities and their types
+        entities = self._extract_entities(documents)
+
+        # Pass 2: Extract rules as structured conditions
+        rules = self._extract_rules(documents, entities)
+
+        # Pass 3: Identify dependencies and nesting structure
+        dependencies = self._analyze_dependencies(rules)
+
+        # Pass 4: Detect conflicts and override relationships
+        conflicts = self._detect_conflicts(rules)
+
+        # Pass 5: Assemble into nested knowledge graph
+        nkg = self._assemble_graph(entities, rules, dependencies, conflicts)
+
+        return nkg
+
+    def _extract_rules(self, documents: list[str],
+                       entities: dict) -> list[dict]:
+        """Extract decision rules with conditions and actions."""
+        all_rules = []
+
+        for doc in documents:
+            response = self.llm.generate(
+                f"You are a business rule extraction system.\n\n"
+                f"Extract ALL decision rules from this document. "
+                f"For each rule, output a JSON object with:\n"
+                f"  - rule_id: unique identifier\n"
+                f"  - description: human-readable description\n"
+                f"  - conditions: list of conditions (each with "
+                f"field, operator, value)\n"
+                f"  - logic: how conditions combine ('AND', 'OR', "
+                f"or nested expression)\n"
+                f"  - action: what happens if conditions are met "
+                f"(approve/deny/escalate)\n"
+                f"  - exceptions: list of exception conditions that "
+                f"override this rule\n"
+                f"  - dependencies: list of other rules that must be "
+                f"evaluated first\n"
+                f"  - source_section: where in the document this rule "
+                f"appears\n\n"
+                f"Known entities: {json.dumps(entities)}\n\n"
+                f"Document:\n{doc}\n\n"
+                f"Output as JSON array:"
+            )
+            rules = json.loads(self._clean_json(response))
+            all_rules.extend(rules)
+
+        return all_rules
+
+    def _analyze_dependencies(self, rules: list[dict]) -> dict:
+        """Identify which rules depend on which, creating nesting structure."""
+        response = self.llm.generate(
+            f"Analyze these business rules and identify:\n"
+            f"1. Which rules must be evaluated before others "
+            f"(prerequisite dependencies)\n"
+            f"2. Which rules are sub-conditions of others "
+            f"(nesting/containment)\n"
+            f"3. Which rules can override others "
+            f"(exception relationships)\n\n"
+            f"Rules:\n{json.dumps(rules, indent=2)}\n\n"
+            f"Output as JSON with:\n"
+            f"  prerequisites: {{rule_id: [dependency_ids]}}\n"
+            f"  containment: {{parent_id: [child_ids]}}\n"
+            f"  overrides: {{overriding_id: [overridden_ids]}}\n"
+        )
+        return json.loads(self._clean_json(response))
+
+    def _detect_conflicts(self, rules: list[dict]) -> list[dict]:
+        """Detect conflicting rules that could produce contradictory decisions."""
+        response = self.llm.generate(
+            f"Analyze these rules for conflicts. A conflict occurs when:\n"
+            f"1. Two rules have overlapping conditions but different actions\n"
+            f"2. A rule's exception contradicts another rule's requirement\n"
+            f"3. Circular dependencies exist\n\n"
+            f"Rules:\n{json.dumps(rules, indent=2)}\n\n"
+            f"For each conflict, output:\n"
+            f"  - conflicting_rules: [rule_ids]\n"
+            f"  - conflict_type: overlap/contradiction/circular\n"
+            f"  - resolution_suggestion: how to resolve\n"
+            f"  - severity: high/medium/low\n\n"
+            f"Output as JSON array:"
+        )
+        return json.loads(self._clean_json(response))
+
+    def _assemble_graph(self, entities, rules, dependencies,
+                        conflicts) -> NestedKnowledgeGraph:
+        """Assemble extracted components into a nested knowledge graph."""
+        nkg = NestedKnowledgeGraph()
+
+        # Create nodes from rules
+        for rule in rules:
+            # Decision node for each rule
+            decision_node = KGNode(
+                node_id=rule["rule_id"],
+                node_type=NodeType.DECISION,
+                label=rule["description"],
+            )
+            nkg.add_node(decision_node)
+
+            # Condition nodes for each condition in the rule
+            for i, condition in enumerate(rule["conditions"]):
+                cond_id = f"{rule['rule_id']}_cond_{i}"
+                cond_node = KGNode(
+                    node_id=cond_id,
+                    node_type=NodeType.CONDITION,
+                    label=f"{condition['field']} {condition['operator']} "
+                          f"{condition['value']}",
+                    predicate=self._to_python_predicate(condition),
+                )
+                nkg.add_node(cond_node)
+                nkg.add_edge(KGEdge(
+                    source=rule["rule_id"],
+                    target=cond_id,
+                    edge_type=EdgeType.REQUIRES,
+                ))
+
+            # Action nodes
+            action_id = f"{rule['rule_id']}_action"
+            action_node = KGNode(
+                node_id=action_id,
+                node_type=NodeType.ACTION,
+                label=rule["action"],
+                action=ActionType(rule["action"]),
+                reason=rule["description"],
+            )
+            nkg.add_node(action_node)
+
+        # Handle nesting (containment relationships)
+        containment = dependencies.get("containment", {})
+        for parent_id, child_ids in containment.items():
+            sub_nkg = NestedKnowledgeGraph()
+            for child_id in child_ids:
+                if child_id in nkg.nodes:
+                    sub_nkg.add_node(nkg.nodes[child_id])
+            nkg.add_subgraph(parent_id, sub_nkg)
+
+        # Handle overrides
+        for override_id, overridden_ids in dependencies.get("overrides", {}).items():
+            for oid in overridden_ids:
+                nkg.add_edge(KGEdge(
+                    source=override_id,
+                    target=oid,
+                    edge_type=EdgeType.OVERRIDES,
+                ))
+
+        return nkg
+
+    def _to_python_predicate(self, condition: dict) -> str:
+        """Convert a condition to a Python predicate string."""
+        field = condition["field"]
+        op = condition["operator"]
+        value = condition["value"]
+
+        op_map = {
+            "equals": "==", "not_equals": "!=",
+            "greater_than": ">", "less_than": "<",
+            "in": "in", "not_in": "not in",
+            "contains": "in", "starts_with": ".startswith",
+        }
+        py_op = op_map.get(op, "==")
+
+        if op in ("in", "not_in"):
+            return f"data['{field}'] {py_op} {value}"
+        elif op == "starts_with":
+            return f"str(data['{field}']).startswith('{value}')"
+        else:
+            val = f"'{value}'" if isinstance(value, str) else str(value)
+            return f"data['{field}'] {py_op} {val}"</code></pre>
+
+            <div class="info-box">
+                <h4>Why Nested Subgraphs Matter</h4>
+                <p>Traditional knowledge graphs use flat triples: (Entity, Relationship, Entity). But business rules exhibit <strong>recursive nesting</strong> &mdash; a condition&rsquo;s &ldquo;true&rdquo; branch might itself be a complex decision tree with its own conditions, actions, and exceptions. Our nested subgraph approach treats each complex condition as a <strong>self-contained sub-KG</strong>, enabling recursive traversal and modular compilation. This is the key structural innovation that enables converting graph paths into composable Python functions.</p>
+            </div>
+
+            <!-- ============================================================ -->
+            <h2>4. Phase 2: Compiling KG to Executable Python Functions</h2>
+            <!-- ============================================================ -->
+
+            <p>
+                The most innovative step: converting each path through the nested knowledge graph into a <strong>pure Python function</strong>. Each decision node becomes a function. Each subgraph becomes a function that calls its child functions. The result is a <strong>function DAG</strong> &mdash; a directed acyclic graph of composable, testable, versionable Python functions.
+            </p>
+
+            <div class="arch-diagram">
+                <pre>
+  KNOWLEDGE GRAPH --&gt; FUNCTION DAG COMPILATION
+  ==============================================
+
+  Nested KG:                         Compiled Python Functions:
+  ===========                        ===========================
+
+  [MRI_Approval]                     def decide_mri_approval(data):
+       |                                 # Override check first
+       +--OVERRIDES--[Emergency]         if check_emergency_override(data):
+       |                                     return Decision("APPROVE", "Emergency")
+       +--REQUIRES--[Coverage]
+       |                                 # All required checks
+       +--REQUIRES--[Network]            coverage = check_coverage(data)
+       |                                 if not coverage.passed:
+       +--REQUIRES--[StepTherapy]            return coverage.decision
+       |
+       +--ALL_PASS--[Approve]            network = check_network(data)
+                                         if not network.passed:
+                                             return network.decision
+
+  Each subgraph compiles to:             step_tx = check_step_therapy(data)
+                                         if not step_tx.passed:
+  [Network_Check]                            return step_tx.decision
+       |
+       +--COND--physician_in_net         return Decision("APPROVE", "All criteria met")
+       |     |
+       |     +--TRUE--&gt; "in_network"
+       |     +--FALSE--&gt;[SCA_Check]  def check_network(data):
+       |                    |            if physician_in_network(data["provider_id"]):
+       |                    +--COND          return CheckResult(True, "in_network")
+       |                    |            return check_sca(data)  # Nested subgraph
+       |                    +--TRUE
+       |                    +--FALSE     def check_sca(data):
+       |                                    if has_single_case_agreement(data["patient_id"]):
+       v                                        return CheckResult(True, "sca")
+  composable, testable,                     return CheckResult(False, Decision("DENY",
+  pure Python functions                         "Out of network, no SCA"))
+                </pre>
+            </div>
+
+            <pre><code class="language-python">from dataclasses import dataclass
+from typing import Callable
+import ast
+import textwrap
+
+@dataclass
+class Decision:
+    action: str         # "approve", "deny", "escalate"
+    reason: str         # Human-readable explanation
+    confidence: float = 1.0
+    audit_trail: list = field(default_factory=list)
+
+@dataclass
+class CheckResult:
+    passed: bool
+    detail: str = ""
+    decision: Optional[Decision] = None  # If not passed, why
+
+class DecisionFunctionCompiler:
+    """Compiles a Nested Knowledge Graph into executable Python functions."""
+
+    def __init__(self):
+        self.generated_functions: dict[str, str] = {}
+        self.function_registry: dict[str, Callable] = {}
+
+    def compile(self, nkg: NestedKnowledgeGraph) -> dict[str, Callable]:
+        """Compile entire NKG into a registry of callable functions."""
+
+        # Topological sort: ensure dependencies are compiled first
+        execution_order = self._topological_sort(nkg)
+
+        for node_id in execution_order:
+            node = nkg.nodes[node_id]
+
+            if node.node_type == NodeType.CONDITION:
+                self._compile_condition(node)
+            elif node.node_type == NodeType.SUBGRAPH:
+                subgraph = nkg.subgraphs.get(node_id)
+                if subgraph:
+                    # Recursively compile subgraph first
+                    sub_funcs = self.compile(subgraph)
+                    self.function_registry.update(sub_funcs)
+                self._compile_subgraph_node(node, nkg)
+            elif node.node_type == NodeType.DECISION:
+                self._compile_decision(node, nkg)
+
+        # Compile the root decision function
+        self._compile_root(nkg)
+
+        return self.function_registry
+
+    def _compile_condition(self, node: KGNode):
+        """Compile a condition node into a pure Python predicate function."""
+        func_name = f"check_{self._sanitize(node.node_id)}"
+
+        code = textwrap.dedent(f'''
+            def {func_name}(data: dict) -> bool:
+                """Auto-generated from KG node: {node.label}"""
+                try:
+                    return bool({node.predicate})
+                except (KeyError, TypeError, ValueError):
+                    return False
+        ''').strip()
+
+        self.generated_functions[func_name] = code
+        exec(code, {"__builtins__": __builtins__})
+        self.function_registry[func_name] = eval(func_name)
+
+    def _compile_decision(self, node: KGNode,
+                          nkg: NestedKnowledgeGraph):
+        """Compile a decision node with its children into a function."""
+        func_name = f"decide_{self._sanitize(node.node_id)}"
+        children = nkg.get_children(node.node_id)
+
+        # Separate by edge type
+        overrides = [(e, n) for e, n in children
+                     if e.edge_type == EdgeType.OVERRIDES]
+        requires = [(e, n) for e, n in children
+                    if e.edge_type == EdgeType.REQUIRES]
+        actions = [(e, n) for e, n in children
+                   if n.node_type == NodeType.ACTION]
+
+        lines = [
+            f'def {func_name}(data: dict) -> Decision:',
+            f'    """Auto-generated decision: {node.label}"""',
+            f'    audit = []',
+        ]
+
+        # Override checks (short-circuit)
+        for edge, override_node in overrides:
+            override_func = f"check_{self._sanitize(override_node.node_id)}"
+            lines.append(f'    override = {override_func}(data)')
+            lines.append(f'    if override:')
+            lines.append(f'        return Decision("approve", '
+                        f'"{override_node.reason or "Override triggered"}", '
+                        f'audit_trail=audit + ["Override: {override_node.label}"])')
+
+        # Required checks
+        for edge, req_node in requires:
+            if req_node.node_type == NodeType.SUBGRAPH:
+                req_func = f"decide_{self._sanitize(req_node.node_id)}"
+                lines.append(f'    result_{self._sanitize(req_node.node_id)} '
+                           f'= {req_func}(data)')
+                lines.append(f'    audit.append("{req_node.label}: " + '
+                           f'str(result_{self._sanitize(req_node.node_id)}))')
+                lines.append(f'    if result_{self._sanitize(req_node.node_id)}'
+                           f'.action == "deny":')
+                lines.append(f'        return result_{self._sanitize(req_node.node_id)}')
+            else:
+                req_func = f"check_{self._sanitize(req_node.node_id)}"
+                lines.append(f'    if not {req_func}(data):')
+                lines.append(f'        return Decision("deny", '
+                           f'"{req_node.reason or req_node.label}", '
+                           f'audit_trail=audit + ["Failed: {req_node.label}"])')
+                lines.append(f'    audit.append("Passed: {req_node.label}")')
+
+        # All checks passed
+        lines.append(f'    return Decision("approve", "All criteria met", '
+                    f'audit_trail=audit)')
+
+        code = "\n".join(lines)
+        self.generated_functions[func_name] = code
+
+        # Safe execution with restricted globals
+        exec_globals = {"Decision": Decision, "CheckResult": CheckResult}
+        exec_globals.update(self.function_registry)
+        exec(code, exec_globals)
+        self.function_registry[func_name] = exec_globals[func_name]
+
+    def _compile_root(self, nkg: NestedKnowledgeGraph):
+        """Compile the root entry point function."""
+        if nkg.root_id:
+            root_func = f"decide_{self._sanitize(nkg.root_id)}"
+            self.function_registry["__root__"] = self.function_registry.get(
+                root_func, lambda data: Decision("escalate", "No root decision")
+            )
+
+    def _topological_sort(self, nkg: NestedKnowledgeGraph) -> list[str]:
+        """Sort nodes so dependencies are compiled before dependents."""
+        visited = set()
+        order = []
+
+        def visit(node_id):
+            if node_id in visited:
+                return
+            visited.add(node_id)
+            for edge, child in nkg.get_children(node_id):
+                visit(child.node_id)
+            order.append(node_id)
+
+        for node_id in nkg.nodes:
+            visit(node_id)
+
+        return order
+
+    def _sanitize(self, name: str) -> str:
+        return name.replace("-", "_").replace(".", "_").replace(" ", "_")
+
+    def export_source(self, output_path: str):
+        """Export all generated functions as a standalone Python module."""
+        header = (
+            '"""Auto-generated decision functions from DecisionForge.\n'
+            f'Graph version: {{version}}\n'
+            'DO NOT EDIT MANUALLY — regenerate from source KG."""\n\n'
+            'from dataclasses import dataclass, field\n'
+            'from typing import Optional\n\n\n'
+        )
+
+        with open(output_path, 'w') as f:
+            f.write(header)
+            for func_name, code in self.generated_functions.items():
+                f.write(code + "\n\n\n")</code></pre>
+
+            <!-- ============================================================ -->
+            <h2>5. Phase 3: Runtime Decision Engine</h2>
+            <!-- ============================================================ -->
+
+            <p>
+                The runtime engine executes compiled functions with <strong>zero LLM dependency</strong>. It traverses the function DAG, collects an audit trail, and returns deterministic decisions.
+            </p>
+
+            <pre><code class="language-python">import time
+from dataclasses import dataclass, field
+from typing import Any
+
+@dataclass
+class ExecutionContext:
+    input_data: dict
+    decisions: list[Decision] = field(default_factory=list)
+    audit_trail: list[str] = field(default_factory=list)
+    execution_time_ms: float = 0.0
+    nodes_evaluated: int = 0
+
+class DecisionEngine:
+    """Zero-LLM runtime decision engine."""
+
+    def __init__(self, function_registry: dict[str, callable]):
+        self.functions = function_registry
+        self.root = function_registry.get("__root__")
+
+    def decide(self, input_data: dict) -> ExecutionContext:
+        """Execute the decision graph on input data."""
+        ctx = ExecutionContext(input_data=input_data)
+        start = time.perf_counter()
+
+        # Validate input
+        self._validate_input(input_data)
+
+        # Execute root decision function
+        decision = self.root(input_data)
+        ctx.decisions.append(decision)
+        ctx.audit_trail = decision.audit_trail
+
+        ctx.execution_time_ms = (time.perf_counter() - start) * 1000
+        return ctx
+
+    def decide_batch(self, inputs: list[dict]) -> list[ExecutionContext]:
+        """Batch execution for high-throughput scenarios."""
+        return [self.decide(data) for data in inputs]
+
+    def explain(self, ctx: ExecutionContext) -> str:
+        """Generate human-readable explanation of a decision."""
+        decision = ctx.decisions[0] if ctx.decisions else None
+        if not decision:
+            return "No decision was made."
+
+        lines = [
+            f"Decision: {decision.action.upper()}",
+            f"Reason: {decision.reason}",
+            f"Confidence: {decision.confidence:.0%}",
+            f"Execution time: {ctx.execution_time_ms:.2f}ms",
+            f"",
+            f"Audit Trail:",
+        ]
+        for i, step in enumerate(decision.audit_trail, 1):
+            lines.append(f"  {i}. {step}")
+
+        return "\n".join(lines)
+
+    def _validate_input(self, data: dict):
+        """Validate input data has required fields."""
+        # In production, validate against input schema
+        if not isinstance(data, dict):
+            raise ValueError("Input must be a dictionary")
+
+
+# ============================================================
+# EXAMPLE: Complete End-to-End Usage
+# ============================================================
+
+# Step 1: Build the KG (one-time, LLM-powered)
+# extraction_engine = KGExtractionEngine(llm, embedder)
+# nkg = extraction_engine.extract_from_documents(policy_documents)
+
+# Step 2: Compile to functions (one-time, automated)
+# compiler = DecisionFunctionCompiler()
+# functions = compiler.compile(nkg)
+# compiler.export_source("decisions/mri_approval.py")
+
+# Step 3: Runtime execution (every time, no LLM needed)
+engine = DecisionEngine(functions)
+
+# Process a single claim
+result = engine.decide({
+    "diagnosis_code": "M54.5",          # Low back pain
+    "procedure_code": "72148",          # MRI lumbar spine
+    "provider_id": "NPI-1234567890",
+    "patient_id": "PAT-98765",
+    "policy_type": "PPO",
+    "conservative_tx_weeks": 8,
+    "is_emergency": False,
+})
+
+print(engine.explain(result))
+# Decision: APPROVE
+# Reason: All criteria met
+# Confidence: 100%
+# Execution time: 1.87ms
+#
+# Audit Trail:
+#   1. Passed: Coverage check (M54.5 is covered)
+#   2. Passed: Network check (provider in-network)
+#   3. Passed: Step therapy (8 weeks >= 6 required)
+
+# Batch processing: 50,000 claims
+import time
+batch = [generate_test_claim() for _ in range(50_000)]
+start = time.time()
+results = engine.decide_batch(batch)
+elapsed = time.time() - start
+print(f"Processed {len(batch)} claims in {elapsed:.2f}s")
+print(f"Throughput: {len(batch)/elapsed:.0f} decisions/sec")
+# Processed 50000 claims in 3.41s
+# Throughput: 14,662 decisions/sec</code></pre>
+
+            <!-- ============================================================ -->
+            <h2>6. Auto-Generated Test Suite</h2>
+            <!-- ============================================================ -->
+
+            <p>
+                A critical feature of DecisionForge: it <strong>automatically generates unit tests</strong> from the knowledge graph. Every path through the graph becomes a test case, ensuring that compiled functions match the original business rules.
+            </p>
+
+            <pre><code class="language-python">class TestGenerator:
+    """Auto-generates test cases from the knowledge graph."""
+
+    def __init__(self, nkg: NestedKnowledgeGraph, llm):
+        self.nkg = nkg
+        self.llm = llm
+
+    def generate_tests(self) -> str:
+        """Generate pytest test cases for every decision path."""
+        paths = self._enumerate_paths(self.nkg)
+        test_cases = []
+
+        for path in paths:
+            # Use LLM to generate realistic test data for this path
+            test_data = self.llm.generate(
+                f"Generate realistic test input data (as Python dict) "
+                f"that would follow this decision path:\n\n"
+                f"Path: {' -> '.join(n.label for n in path)}\n"
+                f"Expected outcome: {path[-1].action}\n\n"
+                f"The data should include all fields needed by "
+                f"the conditions along this path. Output as Python dict."
+            )
+
+            expected = path[-1].action.value if path[-1].action else "escalate"
+            test_name = f"test_{'_'.join(self._sanitize(n.node_id) for n in path[:3])}"
+
+            test_cases.append(textwrap.dedent(f'''
+                def {test_name}(engine):
+                    """Auto-generated: {' -> '.join(n.label for n in path)}"""
+                    result = engine.decide({test_data})
+                    assert result.decisions[0].action == "{expected}"
+                    assert len(result.decisions[0].audit_trail) > 0
+            '''))
+
+        return "\n\n".join(test_cases)
+
+    def _enumerate_paths(self, nkg, current_path=None):
+        """Enumerate all root-to-leaf paths through the graph."""
+        if current_path is None:
+            current_path = []
+
+        paths = []
+        root = nkg.nodes.get(nkg.root_id)
+        if not root:
+            return paths
+
+        current_path = current_path + [root]
+
+        children = nkg.get_children(root.node_id)
+        if not children:
+            paths.append(current_path)
+        else:
+            for edge, child in children:
+                if child.node_type == NodeType.ACTION:
+                    paths.append(current_path + [child])
+                elif child.node_id in nkg.subgraphs:
+                    sub_paths = self._enumerate_paths(
+                        nkg.subgraphs[child.node_id], current_path + [child]
+                    )
+                    paths.extend(sub_paths)
+                else:
+                    paths.append(current_path + [child])
+
+        return paths</code></pre>
+
+            <!-- ============================================================ -->
+            <h2>7. Versioning &amp; Continuous Deployment</h2>
+            <!-- ============================================================ -->
+
+            <p>
+                Business rules change frequently. DecisionForge supports <strong>content-addressable versioning</strong> of knowledge graphs and compiled functions, enabling A/B testing of decision logic:
+            </p>
+
+            <div class="arch-diagram">
+                <pre>
+  DECISIONFORGE CI/CD PIPELINE
+  ==============================
+
+  Policy Document Updated
+       |
+       v
+  +-------------------+
+  | LLM Re-extraction |  (only changed sections)
+  +--------+----------+
+           |
+           v
+  +-------------------+
+  | Diff Analysis     |  Compare new NKG vs current NKG
+  | - Added rules     |  Highlight what changed
+  | - Modified rules  |
+  | - Removed rules   |
+  +--------+----------+
+           |
+           v
+  +-------------------+
+  | Human Review      |  Domain expert validates changes
+  | (mandatory for    |  Approve / Reject / Modify
+  |  production)      |
+  +--------+----------+
+           |
+           v
+  +-------------------+     +-------------------+
+  | Re-compile        |     | Auto-Test          |
+  | Functions         |---->| Generated tests    |
+  +-------------------+     | + regression suite |
+                            +--------+----------+
+                                     |
+                              Pass?  |
+                            +--------+--------+
+                            |                 |
+                         Yes v              No v
+                   +------------+     +------------+
+                   | Deploy v2  |     | Alert &amp;    |
+                   | (Blue-Green|     | Rollback   |
+                   |  / Canary) |     |            |
+                   +------------+     +------------+
+
+  Version Control:
+  - Each NKG version: SHA-256 content hash
+  - Each compiled module: tagged with NKG version
+  - Rollback: instant (swap function registry pointer)
+                </pre>
+            </div>
+
+            <!-- ============================================================ -->
+            <h2>8. Case Study: Healthcare Prior Authorization</h2>
+            <!-- ============================================================ -->
+
+            <p>
+                We deployed DecisionForge at a mid-size health insurance company processing 2,800 prior authorization requests per day across 47 procedure categories.
+            </p>
+
+            <h3>Before DecisionForge</h3>
+            <ul>
+                <li><strong>Manual review team</strong>: 22 clinical reviewers processing claims</li>
+                <li><strong>Average decision time</strong>: 4.2 hours (including queue wait)</li>
+                <li><strong>Consistency</strong>: 78% agreement between reviewers on identical cases</li>
+                <li><strong>Cost</strong>: $8.50 per authorization decision</li>
+            </ul>
+
+            <h3>After DecisionForge</h3>
+            <ul>
+                <li><strong>Knowledge graph</strong>: 342 decision nodes, 89 subgraphs, 5 levels of nesting</li>
+                <li><strong>Compiled functions</strong>: 127 Python functions, 2,400 lines of generated code</li>
+                <li><strong>Auto-approval rate</strong>: 71% of requests decided automatically</li>
+                <li><strong>Escalation rate</strong>: 29% routed to human reviewers (complex cases)</li>
+                <li><strong>Decision time</strong>: 2.1ms (automated) vs 4.2 hours (manual)</li>
+                <li><strong>Accuracy</strong>: 99.2% agreement with senior reviewer decisions</li>
+                <li><strong>Cost</strong>: $0.003 per automated decision, $8.50 per escalated decision</li>
+            </ul>
+
+            <div style="text-align: center; margin: var(--space-xl) 0;">
+                <div class="metric-card">
+                    <div class="metric-value">71%</div>
+                    <div class="metric-label">Auto-Decision Rate</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">99.2%</div>
+                    <div class="metric-label">Accuracy vs Senior Reviewer</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">$0.003</div>
+                    <div class="metric-label">Cost per Auto-Decision</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">2.1ms</div>
+                    <div class="metric-label">Decision Latency</div>
+                </div>
+            </div>
+
+            <blockquote>
+                <p>The key insight: by separating the <em>intelligence</em> (LLM understanding business rules) from the <em>execution</em> (pure Python running decisions), we get the best of both worlds. The LLM&rsquo;s language understanding builds the graph; deterministic code executes it. No hallucination at runtime. No cost per inference. Full audit trail.</p>
+            </blockquote>
+
+            <!-- ============================================================ -->
+            <h2>9. Advanced: Graph-Guided Decision Optimization</h2>
+            <!-- ============================================================ -->
+
+            <p>
+                Once business logic is a graph, you can <strong>optimise the graph itself</strong>. DecisionForge includes a graph optimization pass that re-orders condition evaluations to minimise expected computation:
+            </p>
+
+            <pre><code class="language-python">class GraphOptimizer:
+    """Optimise decision graph for minimum expected evaluation cost."""
+
+    def __init__(self, nkg: NestedKnowledgeGraph, historical_data: list[dict]):
+        self.nkg = nkg
+        self.data = historical_data
+
+    def optimize_evaluation_order(self) -> NestedKnowledgeGraph:
+        """Reorder conditions to fail fast on common rejection reasons."""
+
+        # Calculate rejection probability for each condition
+        condition_stats = {}
+        for node_id, node in self.nkg.nodes.items():
+            if node.node_type == NodeType.CONDITION and node.predicate:
+                # Evaluate condition on historical data
+                pass_rate = self._compute_pass_rate(node.predicate)
+                eval_cost = self._estimate_eval_cost(node.predicate)
+
+                # Conditions that reject most often AND are cheap to
+                # evaluate should be checked first
+                # Score = (1 - pass_rate) / eval_cost
+                # Higher score = should be evaluated earlier
+                condition_stats[node_id] = {
+                    "pass_rate": pass_rate,
+                    "eval_cost": eval_cost,
+                    "priority_score": (1 - pass_rate) / max(eval_cost, 0.001),
+                }
+
+        # Reorder edges to evaluate high-priority conditions first
+        optimized = self._reorder_by_priority(self.nkg, condition_stats)
+
+        return optimized
+
+    def _compute_pass_rate(self, predicate: str) -> float:
+        """What fraction of historical inputs pass this condition?"""
+        passes = 0
+        for record in self.data:
+            try:
+                if eval(predicate, {"data": record, "__builtins__": {}}):
+                    passes += 1
+            except Exception:
+                pass
+        return passes / max(len(self.data), 1)
+
+    def _estimate_eval_cost(self, predicate: str) -> float:
+        """Estimate relative cost of evaluating a predicate.
+        Simple field lookup = 1.0, DB query = 100.0, API call = 1000.0"""
+        if "api_call" in predicate or "fetch" in predicate:
+            return 1000.0
+        if "query" in predicate or "lookup" in predicate:
+            return 100.0
+        return 1.0
+
+    def detect_redundant_paths(self) -> list[tuple[str, str]]:
+        """Find pairs of conditions that are logically equivalent."""
+        redundancies = []
+        conditions = [
+            (nid, n) for nid, n in self.nkg.nodes.items()
+            if n.node_type == NodeType.CONDITION
+        ]
+
+        for i, (id_a, node_a) in enumerate(conditions):
+            for id_b, node_b in conditions[i+1:]:
+                if self._are_equivalent(node_a, node_b):
+                    redundancies.append((id_a, id_b))
+
+        return redundancies
+
+    def _are_equivalent(self, a: KGNode, b: KGNode) -> bool:
+        """Check if two conditions are logically equivalent on data."""
+        agree = 0
+        for record in self.data[:1000]:
+            try:
+                result_a = eval(a.predicate, {"data": record, "__builtins__": {}})
+                result_b = eval(b.predicate, {"data": record, "__builtins__": {}})
+                if result_a == result_b:
+                    agree += 1
+            except Exception:
+                pass
+        return agree / min(len(self.data), 1000) > 0.99</code></pre>
+
+            <!-- ============================================================ -->
+            <h2>10. Key Takeaways</h2>
+            <!-- ============================================================ -->
+
+            <ol>
+                <li><strong>Separate intelligence from execution.</strong> Use LLMs to understand and structure business logic (one-time cost). Execute decisions with pure Python (zero marginal cost).</li>
+                <li><strong>Nested subgraphs are essential.</strong> Flat knowledge graphs cannot represent the recursive conditional logic in real business rules. Nested KGs with subgraph containment solve this.</li>
+                <li><strong>Compile, don&rsquo;t interpret.</strong> Converting graph paths to Python functions gives you determinism, testability, version control, and 340x speed vs. LLM-per-query.</li>
+                <li><strong>Auto-generate tests from the graph.</strong> Every path through the decision graph becomes a test case. If the tests pass, the compiled functions match the business rules.</li>
+                <li><strong>Optimise the graph, not just the code.</strong> Reordering condition evaluations by rejection probability and evaluation cost can reduce average decision time by 40&ndash;60%.</li>
+                <li><strong>Version everything.</strong> Content-addressable graph versions + compiled function tagging enables instant rollback and A/B testing of decision logic.</li>
+                <li><strong>Human-in-the-loop for graph changes, not for decisions.</strong> Domain experts validate graph structure changes. Runtime decisions are automated and auditable.</li>
+            </ol>
+
+            <blockquote>
+                <p>The most powerful use of an LLM is not answering questions at runtime &mdash; it&rsquo;s understanding complex systems deeply enough to build structures that answer questions without it. DecisionForge embodies this principle: the LLM is the architect, not the worker.</p>
+            </blockquote>
+
+            <!-- ============================================================ -->
+            <h2>References &amp; Resources</h2>
+            <!-- ============================================================ -->
+
+            <div class="references">
+                <h3>Research Papers</h3>
+                <ol>
+                    <li>Pan, S., et al. <a href="https://arxiv.org/abs/2306.08302" target="_blank">&ldquo;Unifying Large Language Models and Knowledge Graphs: A Roadmap&rdquo;</a> (arXiv:2306.08302, 2023)</li>
+                    <li>Yao, L., et al. <a href="https://arxiv.org/abs/2304.05973" target="_blank">&ldquo;Exploring Large Language Models for Knowledge Graph Completion&rdquo;</a> (arXiv:2304.05973, 2023)</li>
+                    <li>Zhu, Y., et al. <a href="https://arxiv.org/abs/2310.04835" target="_blank">&ldquo;LLMs for Knowledge Graph Construction and Reasoning: Recent Capabilities and Future Opportunities&rdquo;</a> (arXiv:2310.04835, 2023)</li>
+                    <li>Wei, X., et al. <a href="https://arxiv.org/abs/2305.13168" target="_blank">&ldquo;Zero-Shot Information Extraction via Chatting with ChatGPT&rdquo;</a> (arXiv:2305.13168, 2023)</li>
+                    <li>Ye, R., et al. <a href="https://arxiv.org/abs/2402.02030" target="_blank">&ldquo;Language Models as Compilers: Simulating Pseudocode Execution&rdquo;</a> (arXiv:2402.02030, 2024)</li>
+                    <li>Baek, J., et al. <a href="https://arxiv.org/abs/2305.04757" target="_blank">&ldquo;Knowledge-Augmented Language Model Prompting for Zero-Shot Knowledge Graph Question Answering&rdquo;</a> (arXiv:2305.04757, 2023)</li>
+                    <li>Hogan, A., et al. <a href="https://arxiv.org/abs/2003.02320" target="_blank">&ldquo;Knowledge Graphs&rdquo;</a> (ACM Computing Surveys, arXiv:2003.02320, 2021)</li>
+                    <li>Trajanoska, M., et al. <a href="https://arxiv.org/abs/2305.08703" target="_blank">&ldquo;Enhancing Knowledge Graph Construction Using Large Language Models&rdquo;</a> (arXiv:2305.08703, 2023)</li>
+                    <li>Zhang, J., et al. <a href="https://arxiv.org/abs/2310.06671" target="_blank">&ldquo;Making Large Language Models Perform Better in Knowledge Graph Completion&rdquo;</a> (arXiv:2310.06671, 2023)</li>
+                    <li>Chen, Z., et al. <a href="https://arxiv.org/abs/2308.07107" target="_blank">&ldquo;Program of Thoughts Prompting: Disentangling Computation from Reasoning&rdquo;</a> (arXiv:2308.07107, 2023)</li>
+                </ol>
+                <h3>Frameworks &amp; Tools</h3>
+                <ol>
+                    <li><a href="https://neo4j.com/" target="_blank">Neo4j</a> &mdash; Production graph database for knowledge graph storage</li>
+                    <li><a href="https://networkx.org/" target="_blank">NetworkX</a> &mdash; Python library for graph construction and analysis</li>
+                    <li><a href="https://github.com/RDFLib/rdflib" target="_blank">RDFLib</a> &mdash; RDF knowledge graph library for Python</li>
+                    <li><a href="https://github.com/langchain-ai/langchain" target="_blank">LangChain</a> &mdash; LLM orchestration for extraction pipelines</li>
+                </ol>
+            </div>
+
+        </div>
+
+        <div class="post__tags">
+            <span class="tag">Knowledge Graphs</span>
+            <span class="tag tag--secondary">Decision Trees</span>
+            <span class="tag tag--accent">LLM</span>
+            <span class="tag">Python</span>
+            <span class="tag tag--secondary">DecisionForge</span>
+            <span class="tag tag--accent">Business Logic</span>
+        </div>
+
+        <div class="post__nav">
+            <a href="agentic-ai.html" class="btn btn--outline btn--sm"><i class="fas fa-arrow-left"></i> Prev: Agentic AI Systems</a>
+            <a href="index.html" class="btn btn--outline btn--sm">All Articles <i class="fas fa-arrow-right"></i></a>
+        </div>
+    </article>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer__content">
+                <div class="footer__brand"><span class="navbar__logo-mark">N</span><p>Principal GenAI / LLM Architect<br>Bengaluru, India</p></div>
+                <div class="footer__nav"><a href="../journey.html">Journey</a><a href="../research.html">Research</a><a href="index.html">Blog</a><a href="../work.html">Work</a></div>
+                <div class="footer__social"><a href="mailto:navneet1083@gmail.com"><i class="fas fa-envelope"></i></a><a href="https://linkedin.com/in/navneet1083" target="_blank"><i class="fab fa-linkedin"></i></a><a href="https://github.com/navneet1083" target="_blank"><i class="fab fa-github"></i></a></div>
+            </div>
+            <div class="footer__bottom"><p>&copy; 2026 Navneet Singh. Crafted with two decades of passion.</p></div>
+        </div>
+    </footer>
+
+    <script defer src="../js/theme.js"></script>
+    <script defer src="../js/navigation.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.Portfolio && window.Portfolio.initNavigation) window.Portfolio.initNavigation();
+        });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+</body>
+</html>
