@@ -58,7 +58,9 @@
         function toggleMobile() {
             hamburger.classList.toggle('navbar__hamburger--active');
             mobileMenu.classList.toggle('navbar__mobile--open');
-            document.body.style.overflow = mobileMenu.classList.contains('navbar__mobile--open') ? 'hidden' : '';
+            const isOpen = mobileMenu.classList.contains('navbar__mobile--open');
+            document.body.style.overflow = isOpen ? 'hidden' : '';
+            console.log('Mobile menu toggled:', isOpen);
         }
 
         // Close mobile menu on link click
