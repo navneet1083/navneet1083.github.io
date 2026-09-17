@@ -24,6 +24,16 @@
         display: block;
     }
 
+    .navbar__mobile-links li {
+        display: block;
+    }
+
+    .navbar__mobile-links .navbar__link {
+        display: block;
+        width: 100%;
+        color: var(--color-text);
+    }
+
     /* Eras: single column */
     .eras {
         grid-template-columns: 1fr;
